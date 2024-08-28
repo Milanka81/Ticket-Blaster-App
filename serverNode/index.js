@@ -7,13 +7,14 @@ require("./config/db");
 const authRouter = require("./routes/authRoutes");
 const eventRouter = require("./routes/eventRoutes");
 const userRouter = require("./routes/userRoutes");
+const { tokenVerify } = require("./middleware/auth");
 
 const app = express();
 app.use(express.json());
 app.use(bodyParser.json());
 
 app.use("/", authRouter);
-app.use("/events", eventRouter);
+app.use("/events", tokenVerify, eventRouter);
 app.use("/users", userRouter);
 
 app.listen(8080, () =>

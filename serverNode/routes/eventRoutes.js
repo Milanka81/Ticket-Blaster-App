@@ -1,11 +1,16 @@
 const express = require("express");
 const router = express.Router();
-const tokenVerify = require("./../middleware/auth");
+const auth = require("./../middleware/auth");
 const eventController = require("./../controllers/eventController");
+const protectedRoutes = require("./../middleware/protectedRoutes");
 
 router
   .route("/")
-  .get(tokenVerify, eventController.getAllEvents)
+  .get(
+    auth.tokenVerify,
+    protectedRoutes.protected,
+    eventController.getAllEvents
+  )
   .post(eventController.postEvent);
 router.route("/standup").get(eventController.getAllStandUps);
 router.route("/concert").get(eventController.getAllConcerts);
