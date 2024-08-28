@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const validator = require("validator");
 const eventSchema = new mongoose.Schema({
   eventName: {
     type: String,
@@ -29,6 +30,17 @@ const eventSchema = new mongoose.Schema({
   },
   totalTickets: {
     type: Number,
+  },
+  availableTickets: {
+    type: Number,
+    default: this.totalTickets,
+    validate: {
+      validator: function (value) {
+        return value <= this.totalTickets;
+      },
+      message:
+        "Amount of available tickets must be less or equal total tickets",
+    },
   },
   description: {
     type: String,
