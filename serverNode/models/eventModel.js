@@ -1,0 +1,59 @@
+const mongoose = require("mongoose");
+const eventSchema = new mongoose.Schema({
+  eventName: {
+    type: String,
+    required: [true, "An event must have a name"],
+    unique: true,
+    trim: true,
+    maxlength: [
+      40,
+      "The event name must have less or equal then 40 characters",
+    ],
+    minlength: [4, "The event name must have more or equal then 10 characters"],
+  },
+
+  category: {
+    type: String,
+    required: true,
+    enum: {
+      values: ["concert", "stand-up"],
+      message: "Category is either: concert or stand-up",
+    },
+  },
+  genre: {
+    type: String,
+  },
+  ticketPrice: {
+    type: Number,
+    required: [true, "An event must have a price"],
+  },
+  totalTickets: {
+    type: Number,
+  },
+  description: {
+    type: String,
+    trim: true,
+    required: [true, "An event must have a description"],
+  },
+  imageCover: {
+    type: String,
+  },
+  images: [String],
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+    select: false,
+  },
+  eventDate: {
+    type: Date,
+    required: [true, "An event must have a start date and time"],
+  },
+  location: {
+    type: String,
+    required: [true, "An event must have a location"],
+  },
+});
+
+const Event = mongoose.model("Event", eventSchema);
+
+module.exports = Event;
