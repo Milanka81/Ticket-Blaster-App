@@ -2,9 +2,10 @@ const nodemailer = require("nodemailer");
 
 const sendEmail = async (options) => {
   const transporter = nodemailer.createTransport({
-    service: "hotmail",
+    host: "sandbox.smtp.mailtrap.io",
+    port: 2525,
     auth: {
-      user: process.env.EMAIL,
+      user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASSWORD,
     },
   });
@@ -12,7 +13,7 @@ const sendEmail = async (options) => {
   const mailOptions = {
     from: {
       name: "Tickets Blaster App",
-      address: process.env.EMAIL,
+      address: process.env.EMAIL_SENDER,
     },
     to: options.email,
     subject: options.subject,
