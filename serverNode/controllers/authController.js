@@ -2,6 +2,7 @@ const User = require("./../models/userModel");
 const jwt = require("jsonwebtoken");
 const sendEmail = require("./../utils/email");
 const crypto = require("crypto");
+const { createSendToken } = require("../utils/createSendToken");
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
@@ -17,14 +18,7 @@ exports.signup = async (req, res) => {
       password,
       passwordConfirm,
     });
-    const token = signToken(user._id);
-    user.password = undefined;
-    res.status(201).json({
-      status: "success",
-      message: "User created",
-      token,
-      data: { user },
-    });
+    createSendToken(user, 201, res);
   } catch (err) {
     res.status(400).send(err);
   }
@@ -47,13 +41,7 @@ exports.login = async (req, res) => {
         message: "Incorrect credentials",
       });
 
-    const token = signToken(user._id);
-
-    res.status(201).json({
-      status: "success",
-      message: "User logged in",
-      token,
-    });
+    createSendToken(user, 200, res);
   } catch (err) {
     res.status(400).send(err);
   }
@@ -118,13 +106,26 @@ exports.resetPassword = async (req, res, next) => {
     user.passwordResetExpires = undefined;
     await user.save();
 
-    const newToken = signToken(user._id);
+    createSendToken(user, 200, res);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
 
-    res.status(201).json({
-      status: "success",
-      message: "User logged in",
-      newToken,
-    });
+exports.updatePassword = async (req, res) => {
+  const { oldPassword, password, passwordConfirm } = req.body;
+
+  try {
+    const user = await User.findById(req.userId).select("+password");
+    if (!(await user.correctPassword(oldPassword, user.password))) {
+      return res.status(404).json({ message: "User doesn't exist" });
+    }
+
+    user.password = password;
+    user.passwordConfirm = passwordConfirm;
+    await user.save();
+
+    createSendToken(user, 200, res);
   } catch (err) {
     res.status(400).send(err);
   }
