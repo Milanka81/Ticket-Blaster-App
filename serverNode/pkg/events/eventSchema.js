@@ -64,6 +64,8 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: [true, "An event must have a location"],
   },
+  deleted: { type: Boolean, default: false },
+  deletedAt: { type: Date, default: undefined },
 });
 
 const Event = mongoose.model("Event", eventSchema);

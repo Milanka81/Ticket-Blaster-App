@@ -54,7 +54,6 @@ exports.updateMyAccount = async (req, res) => {
   }
 };
 
-/////////////////            NO ROUTES YET              ////////////////////////////////
 
 exports.getUser = async (req, res) => {
   try {
@@ -66,12 +65,17 @@ exports.getUser = async (req, res) => {
 };
 
 exports.updateUser = async (req, res) => {
+  const { email, fullName, avatarImage } = req.body;
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    console.log(user);
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { email, fullName, avatarImage },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
     if (!user) {
       return res.status(404).json({ message: "User doesn't exist" });
     }
@@ -83,10 +87,13 @@ exports.updateUser = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
   try {
-    const user = await User.findByIdAndDelete(req.params.id);
+    const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ message: "User doesn't exist" });
     }
+    user.deleted = true;
+    user.deletedAt = Date.now();
+    await user.save({ validateBeforeSave: false });
     res.status(200).json({ status: "success", data: null });
   } catch (err) {
     res.status(400).send(err);

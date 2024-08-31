@@ -43,9 +43,33 @@ exports.getEvent = async (req, res) => {
     res.status(400).send(err);
   }
 };
+
 exports.postEvent = async (req, res) => {
+  const {
+    eventName,
+    category,
+    genre,
+    ticketPrice,
+    totalTickets,
+    description,
+    imageCover,
+    location,
+    images,
+    eventDate,
+  } = req.body;
   try {
-    const event = await Event.create(req.body);
+    const event = await Event.create({
+      eventName,
+      category,
+      genre,
+      ticketPrice,
+      totalTickets,
+      description,
+      imageCover,
+      location,
+      images,
+      eventDate,
+    });
 
     res
       .status(201)
@@ -55,12 +79,39 @@ exports.postEvent = async (req, res) => {
   }
 };
 exports.updateEvent = async (req, res) => {
+  const {
+    eventName,
+    category,
+    genre,
+    ticketPrice,
+    totalTickets,
+    description,
+    imageCover,
+    location,
+    images,
+    eventDate,
+  } = req.body;
   try {
-    const event = await Event.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    console.log(event);
+    const event = await Event.findByIdAndUpdate(
+      req.params.id,
+      {
+        eventName,
+        category,
+        genre,
+        ticketPrice,
+        totalTickets,
+        description,
+        imageCover,
+        location,
+        images,
+        eventDate,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
     if (!event) {
       return res.status(404).send();
     }
@@ -72,10 +123,13 @@ exports.updateEvent = async (req, res) => {
 
 exports.deleteEvent = async (req, res) => {
   try {
-    const event = await Event.findByIdAndDelete(req.params.id);
+    const event = await Event.findById(req.params.id);
     if (!event) {
       return res.status(404).send();
     }
+    event.deleted = true;
+    event.deletedAt = Date.now();
+    await event.save({ validateBeforeSave: false });
     res.status(200).json({ status: "success", data: null });
   } catch (err) {
     res.status(400).send(err);
