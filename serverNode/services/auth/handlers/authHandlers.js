@@ -1,13 +1,7 @@
-const User = require("./../models/userModel");
-const jwt = require("jsonwebtoken");
-const sendEmail = require("./../utils/email");
+const User = require("./../../../pkg/users/userSchema");
+const sendEmail = require("../../users/utils/email");
 const crypto = require("crypto");
 const { createSendToken } = require("../utils/createSendToken");
-const signToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
-};
 
 exports.signup = async (req, res) => {
   try {
@@ -25,6 +19,7 @@ exports.signup = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
+  console.log("login");
   const { email, password } = req.body;
   try {
     if (!email || !password)
@@ -47,7 +42,7 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.forgotPassword = async (req, res, next) => {
+exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
   try {
     const user = await User.findOne({ email });
@@ -80,7 +75,7 @@ exports.forgotPassword = async (req, res, next) => {
     res.status(400).send(err);
   }
 };
-exports.resetPassword = async (req, res, next) => {
+exports.resetPassword = async (req, res) => {
   try {
     const { token } = req.params;
     const { password, passwordConfirm } = req.body;
@@ -104,25 +99,6 @@ exports.resetPassword = async (req, res, next) => {
     user.passwordConfirm = passwordConfirm;
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
-    await user.save();
-
-    createSendToken(user, 200, res);
-  } catch (err) {
-    res.status(400).send(err);
-  }
-};
-
-exports.updatePassword = async (req, res) => {
-  const { oldPassword, password, passwordConfirm } = req.body;
-
-  try {
-    const user = await User.findById(req.userId).select("+password");
-    if (!(await user.correctPassword(oldPassword, user.password))) {
-      return res.status(404).json({ message: "User doesn't exist" });
-    }
-
-    user.password = password;
-    user.passwordConfirm = passwordConfirm;
     await user.save();
 
     createSendToken(user, 200, res);
