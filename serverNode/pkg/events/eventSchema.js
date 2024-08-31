@@ -64,8 +64,12 @@ const eventSchema = new mongoose.Schema({
     type: String,
     required: [true, "An event must have a location"],
   },
-  deleted: { type: Boolean, default: false },
-  deletedAt: { type: Date, default: undefined },
+  active: { type: Boolean, default: true, select: false },
+});
+
+eventSchema.pre(/^find/, function (next) {
+  this.find({ active: { $ne: false } });
+  next();
 });
 
 const Event = mongoose.model("Event", eventSchema);

@@ -53,7 +53,14 @@ exports.updateMyAccount = async (req, res) => {
     res.status(400).send(err);
   }
 };
-
+exports.deleteMyAccount = async (req, res) => {
+  try {
+    await User.findByIdAndUpdate(req.userId, { active: false });
+    res.status(204).json({ status: "success", data: null });
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
 
 exports.getUser = async (req, res) => {
   try {
@@ -87,14 +94,8 @@ exports.updateUser = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      return res.status(404).json({ message: "User doesn't exist" });
-    }
-    user.deleted = true;
-    user.deletedAt = Date.now();
-    await user.save({ validateBeforeSave: false });
-    res.status(200).json({ status: "success", data: null });
+    await User.findByIdAndUpdate(req.params.id, { active: false });
+    res.status(204).json({ status: "success", data: null });
   } catch (err) {
     res.status(400).send(err);
   }

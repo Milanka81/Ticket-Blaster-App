@@ -13,7 +13,8 @@ app.get("/api/v1/users", users.getAllUsers);
 app.get("/api/v1/users", users.getAllUsers);
 app.get("/api/v1/users/:id", users.getUser);
 app.patch("/api/v1/users/:id", users.updateUser);
-app.patch("/api/v1/users/update-account", users.updateMyAccount);
+app.patch("/api/v1/users/update-my-account", users.updateMyAccount);
+app.delete("/api/v1/users/delete-my-account", users.deleteMyAccount);
 app.delete("/api/v1/users/:id", users.deleteUser);
 
 app.listen(process.env.PORTUSERS, (err) => {

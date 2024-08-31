@@ -123,14 +123,10 @@ exports.updateEvent = async (req, res) => {
 
 exports.deleteEvent = async (req, res) => {
   try {
-    const event = await Event.findById(req.params.id);
-    if (!event) {
-      return res.status(404).send();
-    }
-    event.deleted = true;
-    event.deletedAt = Date.now();
-    await event.save({ validateBeforeSave: false });
-    res.status(200).json({ status: "success", data: null });
+    await Event.findByIdAndUpdate(req.params.id, {
+      active: false,
+    });
+    res.status(204).json({ status: "success", data: null });
   } catch (err) {
     res.status(400).send(err);
   }
