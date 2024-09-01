@@ -1,10 +1,12 @@
 const express = require("express");
 const users = require("./handlers/usersHandlers");
 const db = require("../../pkg/db/index");
+const helmet = require("helmet");
 const cors = require("cors");
 const app = express();
 
 db.init();
+app.use(helmet());
 app.use(express.json());
 app.use(cors());
 

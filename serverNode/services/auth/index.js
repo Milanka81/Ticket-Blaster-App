@@ -2,13 +2,13 @@ const express = require("express");
 const auth = require("./handlers/authHandlers");
 const db = require("../../pkg/db/index");
 const cors = require("cors");
-
+const helmet = require("helmet");
 const app = express();
 
 db.init();
+app.use(helmet());
 app.use(express.json());
 app.use(cors());
-
 app.post("/api/v1/auth/create-account", auth.signup);
 app.post("/api/v1/auth/login", auth.login);
 app.post("/api/v1/auth/forgot-password", auth.forgotPassword);

@@ -4,9 +4,11 @@ const cors = require("cors");
 const auth = require("../auth/utils/auth");
 const protected = require("../auth/utils/adminRoutes");
 const events = require("./handlers/eventsHandlers");
+const helmet = require("helmet");
 const app = express();
 
 db.init();
+app.use(helmet());
 app.use(express.json());
 app.use(cors());
 
