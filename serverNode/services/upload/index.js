@@ -3,7 +3,7 @@ const multer = require("multer");
 const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
-const db = require("./../../pkg/db/index");
+const db = require("../../src/db/index");
 const auth = require("../auth/utils/auth");
 const { uploadImage } = require("./handlers/uploadHandlers");
 
@@ -12,15 +12,15 @@ const app = express();
 app.use(cors());
 
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
+  destination: function (req, file, callback) {
     const uploads = "./services/upload/images";
     if (!fs.existsSync(uploads)) {
       fs.mkdirSync(uploads);
     }
-    cb(null, uploads);
+    callback(null, uploads);
   },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
+  filename: function (req, file, callback) {
+    callback(null, Date.now() + path.extname(file.originalname));
   },
 });
 

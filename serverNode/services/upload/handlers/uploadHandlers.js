@@ -1,4 +1,4 @@
-const User = require("./../../../pkg/users/userSchema");
+const User = require("../../../src/users/userSchema");
 
 exports.uploadImage = async (req, res) => {
   try {
