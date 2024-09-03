@@ -1,5 +1,5 @@
 const express = require("express");
-const db = require("../../pkg/db/index");
+const db = require("../../src/db/index");
 const cors = require("cors");
 const auth = require("../auth/utils/auth");
 const protected = require("../auth/utils/adminRoutes");
@@ -11,7 +11,7 @@ db.init();
 app.use(helmet());
 app.use(express.json());
 app.use(cors());
-console.log("test");
+
 app.get("/api/v1/events", events.getAllEvents);
 app.get("/api/v1/events/standup", events.getAllStandUps);
 app.get("/api/v1/events/concert", events.getAllConcerts);

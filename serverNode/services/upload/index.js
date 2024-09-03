@@ -24,7 +24,14 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage: storage });
+const multerFilter = (req, file, callback) => {
+  if (file.mimetype.startsWith("image")) {
+    return callback(null, true);
+  }
+  return callback(new Error("File is not an image"), false);
+};
+
+const upload = multer({ storage: storage, fileFilter: multerFilter });
 
 app.use(auth.tokenVerify, upload.single("image"));
 

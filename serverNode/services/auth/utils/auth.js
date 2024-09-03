@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User = require("../../../src/users/userSchema");
+const User = require("./../../../src/users/userSchema");
 
 const tokenVerify = async (req, res, next) => {
   if (!req.headers.authorization) {

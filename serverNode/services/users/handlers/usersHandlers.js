@@ -1,4 +1,4 @@
-const User = require("./../../../pkg/users/userSchema");
+const User = require("./../../../src/users/userSchema");
 const { createSendToken } = require("../../auth/utils/createSendToken");
 exports.getAllUsers = async (req, res) => {
   try {
@@ -42,11 +42,15 @@ exports.updateMyAccount = async (req, res) => {
         message: "To change current password go to route /change-password",
       });
     }
-
-    const user = await User.findByIdAndUpdate(req.userId, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const { fullName, email } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.userId,
+      { fullName, email },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
     res.status(200).json({ status: "success", data: { user } });
   } catch (err) {
@@ -72,16 +76,11 @@ exports.getUser = async (req, res) => {
 };
 
 exports.updateUser = async (req, res) => {
-  const { email, fullName, avatarImage } = req.body;
   try {
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      { email, fullName, avatarImage },
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!user) {
       return res.status(404).json({ message: "User doesn't exist" });

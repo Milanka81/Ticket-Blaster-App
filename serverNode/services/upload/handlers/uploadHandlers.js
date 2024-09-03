@@ -8,7 +8,7 @@ exports.uploadImage = async (req, res) => {
     const user = await User.findByIdAndUpdate(
       req.userId,
       {
-        avatarImage: `/upload/images/${req.file.filename}`,
+        avatarImage: `${req.file.filename}`,
       },
       {
         new: true,

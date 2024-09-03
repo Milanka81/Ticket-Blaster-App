@@ -1,4 +1,4 @@
-const User = require("./../../../pkg/users/userSchema");
+const User = require("./../../../src/users/userSchema");
 const sendEmail = require("../../users/utils/email");
 const crypto = require("crypto");
 const { createSendToken } = require("../utils/createSendToken");
