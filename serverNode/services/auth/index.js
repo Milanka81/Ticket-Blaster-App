@@ -1,6 +1,6 @@
 const express = require("express");
 const auth = require("./handlers/authHandlers");
-const db = require("../../pkg/db/index");
+const db = require("../../src/db/index");
 const cors = require("cors");
 const helmet = require("helmet");
 const app = express();
