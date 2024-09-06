@@ -5,7 +5,12 @@ const path = require("path");
 const fs = require("fs");
 const db = require("../../src/db/index");
 const auth = require("../auth/utils/auth");
-const { uploadImage } = require("./handlers/uploadHandlers");
+const protected = require("./../auth/utils/adminRoutes");
+const {
+  uploadEventImages,
+  uploadUserAvatar,
+  uploadEventCover,
+} = require("./handlers/uploadHandlers");
 
 db.init();
 const app = express();
@@ -13,7 +18,7 @@ app.use(cors());
 
 const storage = multer.diskStorage({
   destination: function (req, file, callback) {
-    const uploads = "./services/upload/images";
+    const uploads = "public/images/";
     if (!fs.existsSync(uploads)) {
       fs.mkdirSync(uploads);
     }
@@ -33,9 +38,29 @@ const multerFilter = (req, file, callback) => {
 
 const upload = multer({ storage: storage, fileFilter: multerFilter });
 
-app.use(auth.tokenVerify, upload.single("image"));
+// const uploadEventImages = upload.fields([
+//   { name: "avatarImage", maxCount: 1 },
+//   { name: "images", maxCount: 3 },
+// ]);
 
-app.patch("/api/v1/upload", uploadImage);
+upload.array("images", 5);
+
+app.use(auth.tokenVerify);
+
+app.patch("/api/v1/upload/avatar", upload.single("image"), uploadUserAvatar);
+
+app.use(protected.adminRoutes);
+
+app.patch(
+  "/api/v1/upload/eventCover/:id",
+  upload.single("image"),
+  uploadEventCover
+);
+app.patch(
+  "/api/v1/upload/eventImages/:id",
+  upload.array("images", 3),
+  uploadEventImages
+);
 
 app.listen(process.env.PORTUPLOAD, (err) => {
   if (err) {
