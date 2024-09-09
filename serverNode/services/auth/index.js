@@ -13,6 +13,7 @@ app.post("/api/v1/auth/create-account", auth.signup);
 app.post("/api/v1/auth/login", auth.login);
 app.post("/api/v1/auth/forgot-password", auth.forgotPassword);
 app.patch("/api/v1/auth/reset-password/:token", auth.resetPassword);
+app.patch("/api/v1/auth/verify-email/:token", auth.verifyEmail);
 
 app.listen(process.env.PORTAUTH, (err) => {
   if (err) {

@@ -31,4 +31,4 @@ const createSendToken = (user, statusCode, res) => {
   });
 };
 
-module.exports = { createSendToken };
+module.exports = { createSendToken, signToken };
