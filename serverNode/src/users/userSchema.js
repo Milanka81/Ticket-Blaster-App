@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const crypto = require("crypto");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema({
   fullName: {
@@ -42,9 +43,17 @@ const userSchema = new mongoose.Schema({
   avatarImage: {
     type: String,
   },
-  passwordResetToken: String,
-  passwordResetExpires: Date,
+  passwordResetToken: {
+    type: String,
+  },
+  passwordResetExpires: {
+    type: Date,
+  },
   active: { type: Boolean, default: true, select: false },
+  isVerified: { type: Boolean, default: false },
+  verificationToken: {
+    type: String,
+  },
 });
 
 userSchema.pre("save", async function (next) {
@@ -86,6 +95,13 @@ userSchema.methods.createResetPasswordToken = function () {
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 
   return resetToken;
+};
+userSchema.methods.createVerificationToken = function (id) {
+  const verification = jwt.sign({ id }, process.env.JWT_VERIFICATION_SECRET, {
+    expiresIn: process.env.JWT_VERIFICATION_EXPIRES_IN,
+  });
+
+  return verification;
 };
 
 const User = mongoose.model("User", userSchema);
