@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const ticketSchema = new mongoose.Schema({
-  ticket: {
+  event: {
     type: mongoose.Schema.ObjectId,
     ref: "Event",
     required: true,

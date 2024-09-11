@@ -12,9 +12,21 @@ app.use(express.json());
 app.use(cors());
 
 app.get(
+  "/api/v1/ecommerce",
+  ecommerce.createTicketCheckout,
+  auth.tokenVerify,
+  ecommerce.getCart
+);
+// app.get("/api/v1/ecommerce", auth.tokenVerify, ecommerce.getCart);
+app.get(
   "/api/v1/ecommerce/checkout-session/:eventId",
   auth.tokenVerify,
   ecommerce.getCheckoutSession
+);
+app.get(
+  "/api/v1/ecommerce/shopping-cart",
+  auth.tokenVerify,
+  ecommerce.getMyCart
 );
 app.listen(process.env.PORTECOMMERCE, (err) => {
   if (err) {
