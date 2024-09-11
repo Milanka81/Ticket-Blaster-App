@@ -1,6 +1,6 @@
 const adminRoutes = (req, res, next) => {
   try {
-    if (req.userRole === "admin") {
+    if (req.user.role === "admin") {
       next();
     }
     return res.status(401).json({ message: "This route is protected" });

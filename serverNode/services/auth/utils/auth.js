@@ -11,7 +11,7 @@ const tokenVerify = async (req, res, next) => {
     req.userId = decoded.id;
 
     const currentUser = await User.findById(req.userId);
-    req.userRole = currentUser.role;
+    req.user = currentUser;
     next();
   } catch (err) {
     return res.status(401).json({ message: "Invalid token" });
