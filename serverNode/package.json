@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./services/proxy/index.js & nodemon ./services/auth/index.js & nodemon ./services/events/index.js & nodemon ./services/users/index.js & nodemon ./services/upload/index.js"
+    "start": "nodemon ./services/proxy/index.js & nodemon ./services/auth/index.js & nodemon ./services/events/index.js & nodemon ./services/users/index.js & nodemon ./services/upload/index.js & nodemon ./services/ecommerce/index.js"
   },
   "author": "milanka narancic",
   "license": "ISC",
@@ -24,6 +24,7 @@
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.14",
     "nodemon": "^3.1.4",
+    "stripe": "^16.10.0",
     "validator": "^13.12.0"
   }
 }

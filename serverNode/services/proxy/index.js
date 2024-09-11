@@ -1,3 +1,7 @@
+const path = require("path");
+require("dotenv").config({
+  path: path.resolve(__dirname, "./../../../src/config/config.env"),
+});
 const express = require("express");
 const proxy = require("express-http-proxy");
 const cors = require("cors");
@@ -33,11 +37,17 @@ const uploadProxy = proxy("http://localhost:9003", {
     return `/api/v1/upload${req.url}`;
   },
 });
+const ecommercedProxy = proxy("http://localhost:9004", {
+  proxyReqPathResolver: (req) => {
+    return `/api/v1/ecommerce${req.url}`;
+  },
+});
 
 app.use("/api/v1/auth/", authProxy);
 app.use("/api/v1/events/", eventsProxy);
 app.use("/api/v1/users/", usersProxy);
 app.use("/api/v1/upload/", uploadProxy);
+app.use("/api/v1/ecommerce/", ecommercedProxy);
 
 app.listen(9005, (err) => {
   if (err) {
