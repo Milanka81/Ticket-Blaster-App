@@ -24,9 +24,14 @@ app.get(
   ecommerce.getCheckoutSession
 );
 app.get(
-  "/api/v1/ecommerce/shopping-cart",
+  "/api/v1/ecommerce/tickets-history",
   auth.tokenVerify,
-  ecommerce.getMyCart
+  ecommerce.getMyTickets
+);
+app.get(
+  "/api/v1/ecommerce/print-ticket/:id",
+  auth.tokenVerify,
+  ecommerce.getPrintTicket
 );
 app.listen(process.env.PORTECOMMERCE, (err) => {
   if (err) {
