@@ -12,12 +12,16 @@ app.use(express.json());
 app.use(cors());
 
 app.get(
-  "/api/v1/ecommerce",
+  "/api/v1/ecommerce/shopping-cart",
   ecommerce.createTicketCheckout,
   auth.tokenVerify,
   ecommerce.getCart
 );
-// app.get("/api/v1/ecommerce", auth.tokenVerify, ecommerce.getCart);
+app.post(
+  "/api/v1/ecommerce/shopping-cart/:eventId",
+  auth.tokenVerify,
+  ecommerce.addToCart
+);
 app.get(
   "/api/v1/ecommerce/checkout-session/:eventId",
   auth.tokenVerify,
@@ -29,7 +33,7 @@ app.get(
   ecommerce.getMyTickets
 );
 app.get(
-  "/api/v1/ecommerce/print-ticket/:id",
+  "/api/v1/ecommerce/print-ticket/:ticketId",
   auth.tokenVerify,
   ecommerce.getPrintTicket
 );
