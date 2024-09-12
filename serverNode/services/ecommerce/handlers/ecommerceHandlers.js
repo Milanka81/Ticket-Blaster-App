@@ -6,7 +6,7 @@ const Event = require("../../../src/events/eventSchema");
 const Ticket = require("./../../../src/tickets/ticketSchema");
 const Stripe = require("stripe");
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
-
+const QRcode = require("qrcode");
 exports.getCheckoutSession = async (req, res) => {
   const { eventId } = req.params;
 
@@ -66,12 +66,27 @@ exports.getCart = (req, res) => {
   res.json({ message: "getCart" });
 };
 
-exports.getMyCart = async (req, res) => {
+exports.getMyTickets = async (req, res) => {
   try {
     const tickets = await Ticket.find({ user: req.userId });
     const eventsIds = tickets.map((el) => el.event);
     const events = await Event.find({ _id: { $in: eventsIds } });
     res.status(200).json({ "my tickets": events });
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
+exports.getPrintTicket = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const ticket = await Ticket.findById(id);
+    const event = await Event.findById(ticket.event);
+    const url = `${req.protocol}://${req.get("host")}/api/v1/ecommerce/${id}`;
+
+    QRcode.toDataURL(url, (err, qrCodeUrl) => {
+      if (err) return res.status(500).send("Internal Server Error");
+      res.status(200).json({ event, qrCodeUrl });
+    });
   } catch (err) {
     res.status(400).send(err);
   }
