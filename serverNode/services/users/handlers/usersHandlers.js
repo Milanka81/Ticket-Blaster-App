@@ -75,11 +75,10 @@ exports.getUser = async (req, res) => {
   }
 };
 
-exports.updateUser = async (req, res) => {
+exports.updateUserRole = async (req, res) => {
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
+    const user = await User.findByIdAndUpdate(req.params.id, {
+      role: req.body.role,
     });
 
     if (!user) {

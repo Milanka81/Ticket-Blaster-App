@@ -4,6 +4,7 @@ require("dotenv").config({
 });
 const Event = require("../../../src/events/eventSchema");
 const Ticket = require("./../../../src/tickets/ticketSchema");
+const ShoppingCart = require("./../../../src/shoppingCart/shoppingCartSchema");
 const Stripe = require("stripe");
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 const QRcode = require("qrcode");
@@ -62,8 +63,55 @@ exports.createTicketCheckout = async (req, res, next) => {
   }
 };
 
-exports.getCart = (req, res) => {
-  res.json({ message: "getCart" });
+exports.getCart = async (req, res) => {
+  try {
+    const cart = await ShoppingCart.find({ user: req.user.id });
+    const eventsIds = cart.map((el) => el.event);
+    const events = await Event.find({ _id: { $in: eventsIds } });
+    const myCart = events.map((event) => {
+      const cartItem = cart.find(
+        (item) => item.event.toString() === event._id.toString()
+      );
+      return {
+        event: event,
+        quantity: cartItem.quantity,
+        id: cartItem._id,
+      };
+    });
+    res.status(200).json({ "my shopping cart": myCart });
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
+
+exports.addToCart = async (req, res) => {
+  const { eventId } = req.params;
+  const userId = req.user.id;
+  const { quantity } = req.body;
+  try {
+    const item = await ShoppingCart.create({
+      event: eventId,
+      user: userId,
+      quantity,
+    });
+    res
+      .status(201)
+      .json({ status: "success", message: "Item added", data: { item } });
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
+exports.updateCartQuantity = async (req, res) => {
+  const { itemId } = req.params;
+  const { quantity } = req.body;
+  try {
+    const item = await ShoppingCart.findByIdAndUpdate(itemId, { quantity });
+    res
+      .status(201)
+      .json({ status: "success", message: "Quantity updated", data: { item } });
+  } catch (err) {
+    res.status(400).send(err);
+  }
 };
 
 exports.getMyTickets = async (req, res) => {
@@ -76,17 +124,29 @@ exports.getMyTickets = async (req, res) => {
     res.status(400).send(err);
   }
 };
+
 exports.getPrintTicket = async (req, res) => {
-  const { id } = req.params;
+  const { ticketId } = req.params;
   try {
-    const ticket = await Ticket.findById(id);
+    const ticket = await Ticket.findById(ticketId);
     const event = await Event.findById(ticket.event);
-    const url = `${req.protocol}://${req.get("host")}/api/v1/ecommerce/${id}`;
+    const url = `${req.protocol}://${req.get(
+      "host"
+    )}/api/v1/ecommerce/${ticketId}`;
 
     QRcode.toDataURL(url, (err, qrCodeUrl) => {
       if (err) return res.status(500).send("Internal Server Error");
       res.status(200).json({ event, qrCodeUrl });
     });
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
+exports.deleteFromCart = async (req, res) => {
+  const { itemId } = req.params;
+  try {
+    await ShoppingCart.findByIdAndUpdate(itemId, { active: false });
+    res.status(204).json({ status: "success", data: null });
   } catch (err) {
     res.status(400).send(err);
   }

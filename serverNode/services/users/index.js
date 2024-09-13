@@ -21,7 +21,7 @@ app.use("/api/v1/users", protected.adminRoutes);
 
 app.get("/api/v1/users", users.getAllUsers);
 app.get("/api/v1/users/:id", users.getUser);
-app.patch("/api/v1/users/:id", users.updateUser);
+app.patch("/api/v1/users/:id", users.updateUserRole);
 app.delete("/api/v1/users/:id", users.deleteUser);
 
 app.listen(process.env.PORTUSERS, (err) => {
