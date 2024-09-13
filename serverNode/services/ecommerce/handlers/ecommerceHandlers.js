@@ -20,9 +20,9 @@ exports.getCheckoutSession = async (req, res) => {
       payment_method_types: ["card"],
       success_url: `${req.protocol}://${req.get(
         "host"
-      )}/api/v1/ecommerce/?event=${eventId}&user=${req.user.id}&price=${
-        event.ticketPrice
-      }`,
+      )}/api/v1/ecommerce/shopping-cart/?event=${eventId}&user=${
+        req.user.id
+      }&price=${event.ticketPrice}`,
       cancel_url: `${req.protocol}://${req.get("host")}/events`,
       customer_email: req.user.email,
       client_reference_id: eventId,
@@ -43,7 +43,7 @@ exports.getCheckoutSession = async (req, res) => {
         },
       ],
     });
-
+    console.log(event);
     res.status(200).json({ status: "success", session });
   } catch (err) {
     res.status(400).send(err);
@@ -54,10 +54,21 @@ exports.createTicketCheckout = async (req, res, next) => {
   const { event, user, price } = req.query;
 
   if (!event || !user || !price) return next();
-  try {
-    await Ticket.create({ event, user, price });
 
-    res.redirect(req.originalUrl.split("?")[0]);
+  try {
+    const currentEvent = await Event.findById(event);
+    if (currentEvent.availableTickets > 0) {
+      currentEvent.availableTickets -= 1;
+      await currentEvent.save({ validateBeforeSave: false });
+      try {
+        await Ticket.create({ event, user, price });
+        res.redirect(req.originalUrl.split("?")[0]);
+      } catch (err) {
+        res.json({ message: "ticket is not created" });
+      }
+    } else {
+      res.json({ message: "there are no tickets left for this event" });
+    }
   } catch (err) {
     res.status(400).send(err);
   }

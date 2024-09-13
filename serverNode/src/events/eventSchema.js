@@ -30,9 +30,14 @@ const eventSchema = new mongoose.Schema({
   },
   totalTickets: {
     type: Number,
+    required: [
+      true,
+      "An event must have the number of total tickets available",
+    ],
   },
   availableTickets: {
     type: Number,
+    min: 0,
     default: this.totalTickets,
     validate: {
       validator: function (value) {

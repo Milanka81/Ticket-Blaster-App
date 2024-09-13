@@ -2,35 +2,28 @@ const Event = require("../../../src/events/eventSchema");
 
 exports.getAllEvents = async (req, res) => {
   try {
-    const events = await Event.find();
+    let events;
+    let newest;
+    if (req.query.category) {
+      events = await Event.find({ category: req.query.category });
+    } else {
+      events = await Event.find();
+    }
+
     const eventsSort = events.sort((a, b) => b.eventDate - a.eventDate);
+    if (!req.query.category) {
+      newest = eventsSort[0];
+    }
 
     res.status(200).json({
       status: "success",
+      newest,
+      results: eventsSort.length,
       data: {
         eventsSort,
       },
     });
   } catch (err) {
-    res.status(400).send(err);
-  }
-};
-exports.getAllConcerts = async (req, res) => {
-  try {
-    const concerts = await Event.find({ category: "concert" });
-    const concertsSort = concerts.sort((a, b) => b.eventDate - a.eventDate);
-    return res.status(200).json({ status: "success", data: { concertsSort } });
-  } catch (err) {
-    res.status(400).send(err);
-  }
-};
-
-exports.getAllStandUps = async (req, res) => {
-  try {
-    const standups = await Event.find({ category: "stand-up" });
-    const standupsSort = standups.sort((a, b) => b.eventDate - a.eventDate);
-    res.status(200).json({ status: "success", data: { standupsSort } });
-  } catch (error) {
     res.status(400).send(err);
   }
 };
