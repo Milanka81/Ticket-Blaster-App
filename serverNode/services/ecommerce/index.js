@@ -10,33 +10,24 @@ db.init();
 app.use(helmet());
 app.use(express.json());
 app.use(cors());
-
+app.use("/api/v1/ecommerce", auth.tokenVerify);
 app.get(
   "/api/v1/ecommerce/shopping-cart",
   ecommerce.createTicketCheckout,
-  auth.tokenVerify,
   ecommerce.getCart
 );
-app.post(
-  "/api/v1/ecommerce/shopping-cart/:eventId",
-  auth.tokenVerify,
-  ecommerce.addToCart
+app.post("/api/v1/ecommerce/shopping-cart/:eventId", ecommerce.addToCart);
+app.patch(
+  "/api/v1/ecommerce/shopping-cart/:itemId",
+  ecommerce.updateCartQuantity
 );
+app.delete("/api/v1/ecommerce/shopping-cart/:itemId", ecommerce.deleteFromCart);
 app.get(
   "/api/v1/ecommerce/checkout-session/:eventId",
-  auth.tokenVerify,
   ecommerce.getCheckoutSession
 );
-app.get(
-  "/api/v1/ecommerce/tickets-history",
-  auth.tokenVerify,
-  ecommerce.getMyTickets
-);
-app.get(
-  "/api/v1/ecommerce/print-ticket/:ticketId",
-  auth.tokenVerify,
-  ecommerce.getPrintTicket
-);
+app.get("/api/v1/ecommerce/tickets-history", ecommerce.getMyTickets);
+app.get("/api/v1/ecommerce/print-ticket/:ticketId", ecommerce.getPrintTicket);
 app.listen(process.env.PORTECOMMERCE, (err) => {
   if (err) {
     console.log("Could not start service");

@@ -11,6 +11,10 @@ const shoppingCartSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
+  quantity: {
+    type: Number,
+    default: 1,
+  },
   active: {
     type: Boolean,
     default: true,
@@ -20,6 +24,11 @@ const shoppingCartSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
+});
+
+shoppingCartSchema.pre(/^find/, function (next) {
+  this.find({ active: { $ne: false } });
+  next();
 });
 
 const ShoppingCart = mongoose.model("ShoppingCart", shoppingCartSchema);

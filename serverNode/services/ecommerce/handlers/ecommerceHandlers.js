@@ -68,7 +68,17 @@ exports.getCart = async (req, res) => {
     const cart = await ShoppingCart.find({ user: req.user.id });
     const eventsIds = cart.map((el) => el.event);
     const events = await Event.find({ _id: { $in: eventsIds } });
-    res.status(200).json({ "my shopping cart": events });
+    const myCart = events.map((event) => {
+      const cartItem = cart.find(
+        (item) => item.event.toString() === event._id.toString()
+      );
+      return {
+        event: event,
+        quantity: cartItem.quantity,
+        id: cartItem._id,
+      };
+    });
+    res.status(200).json({ "my shopping cart": myCart });
   } catch (err) {
     res.status(400).send(err);
   }
@@ -77,11 +87,28 @@ exports.getCart = async (req, res) => {
 exports.addToCart = async (req, res) => {
   const { eventId } = req.params;
   const userId = req.user.id;
+  const { quantity } = req.body;
   try {
-    const item = await ShoppingCart.create({ event: eventId, user: userId });
+    const item = await ShoppingCart.create({
+      event: eventId,
+      user: userId,
+      quantity,
+    });
     res
       .status(201)
       .json({ status: "success", message: "Item added", data: { item } });
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
+exports.updateCartQuantity = async (req, res) => {
+  const { itemId } = req.params;
+  const { quantity } = req.body;
+  try {
+    const item = await ShoppingCart.findByIdAndUpdate(itemId, { quantity });
+    res
+      .status(201)
+      .json({ status: "success", message: "Quantity updated", data: { item } });
   } catch (err) {
     res.status(400).send(err);
   }
@@ -111,6 +138,15 @@ exports.getPrintTicket = async (req, res) => {
       if (err) return res.status(500).send("Internal Server Error");
       res.status(200).json({ event, qrCodeUrl });
     });
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
+exports.deleteFromCart = async (req, res) => {
+  const { itemId } = req.params;
+  try {
+    await ShoppingCart.findByIdAndUpdate(itemId, { active: false });
+    res.status(204).json({ status: "success", data: null });
   } catch (err) {
     res.status(400).send(err);
   }
