@@ -1,33 +1,42 @@
 const Event = require("../../../src/events/eventSchema");
 
-exports.getAllEvents = async (req, res) => {
+exports.getFilteredEvents = async (req, res) => {
   try {
-    let events;
-    let newest;
-    if (req.query.category) {
-      events = await Event.find({ category: req.query.category });
-    } else {
-      events = await Event.find();
+    let { page, limit, input, category } = req.query;
+
+    input = input || "";
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 10;
+
+    const skip = (page - 1) * limit;
+
+    let query = {
+      $or: [
+        { eventName: { $regex: input, $options: "i" } },
+        { description: { $regex: input, $options: "i" } },
+      ],
+    };
+
+    if (category) {
+      query.category = category;
     }
 
-    const eventsSort = events.sort((a, b) => b.eventDate - a.eventDate);
-    if (!req.query.category) {
-      newest = eventsSort[0];
-    }
+    const events = await Event.find(query)
+      .sort({ eventDate: -1 })
+      .skip(skip)
+      .limit(limit);
 
     res.status(200).json({
       status: "success",
-      newest,
-      results: eventsSort.length,
+      results: events.length,
       data: {
-        eventsSort,
+        events,
       },
     });
   } catch (err) {
     res.status(400).send(err);
   }
 };
-
 exports.getEvent = async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
