@@ -26,8 +26,14 @@ app.get(
   "/api/v1/ecommerce/checkout-session/:eventId",
   ecommerce.getCheckoutSession
 );
+app.post("/api/v1/ecommerce/webhook", ecommerce.confirmPayment);
+app.post(
+  "/api/v1/ecommerce/create-payment-intent",
+  ecommerce.createPaymentIntent
+);
 app.get("/api/v1/ecommerce/tickets-history", ecommerce.getMyTickets);
 app.get("/api/v1/ecommerce/print-ticket/:ticketId", ecommerce.getPrintTicket);
+
 app.listen(process.env.PORTECOMMERCE, (err) => {
   if (err) {
     console.log("Could not start service");

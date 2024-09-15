@@ -25,12 +25,17 @@ exports.signup = async (req, res) => {
       "host"
     )}/api/v1/auth/verify-email/${verificationToken}`;
 
-    const message = `To verify your email address go to this link: ${verificationURL}`;
+    const emailTemplate = `
+    <h3> Welcome, ${user.fullName}!</h3>
+    <p>To verify your email address go to this link:</p>
+    <a href=${verificationURL}> Verify email </a>
+`;
+    // const message = `To verify your email address go to this link: ${verificationURL}`;
     try {
       await sendEmail({
         email,
         subject: "Please, verify your email address",
-        message,
+        emailTemplate,
       });
       res.status(200).json({
         status: "success",

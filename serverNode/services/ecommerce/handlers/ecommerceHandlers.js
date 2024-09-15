@@ -50,6 +50,73 @@ exports.getCheckoutSession = async (req, res) => {
   }
 };
 
+exports.createPaymentIntent = async (req, res) => {
+  const { items } = { ...req.body };
+  const ids = items.map((el) => el._id);
+
+  try {
+    let totalPrice = [];
+
+    const events = await Event.find({
+      _id: { $in: ids },
+    });
+
+    if (!events) return res.status(400).json({ message: "Invalid event id" });
+
+    const myCart = events.map((event) => {
+      const cartItem = items.find(
+        (item) => item._id.toString() === event._id.toString()
+      );
+      return {
+        event: event,
+        quantity: cartItem.quantity,
+      };
+    });
+
+    myCart.forEach((item) => {
+      if (
+        !item.event.availableTickets ||
+        item.event.availableTickets < item.quantity
+      ) {
+        return res.status(400).json({
+          message: "There are no tickets left for this or some of these events",
+        });
+      }
+      const price = item.event.ticketPrice * item.quantity;
+
+      totalPrice.push(price);
+    });
+    const totalAmount = totalPrice.reduce((acc, cur) => acc + cur, 0);
+
+    try {
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: totalAmount,
+        currency: "eur",
+        payment_method_types: ["card"],
+      });
+
+      res.status(200).json({ clientSecret: paymentIntent.client_secret });
+    } catch (err) {
+      res.status(400).send(err);
+    }
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
+
+exports.confirmPayment = async (req, res) => {
+  const event = req.body;
+  try {
+    if (event.type === "payment_intent.succeeded") {
+      const paymentIntent = event.data.object;
+      console.log("Payment succeeded:", paymentIntent);
+    }
+    res.json({ received: true });
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
+
 exports.createTicketCheckout = async (req, res, next) => {
   const { event, user, price } = req.query;
 
