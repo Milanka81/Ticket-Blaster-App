@@ -1,40 +1,42 @@
 const Event = require("../../../src/events/eventSchema");
 
-exports.getAllEvents = async (req, res) => {
+exports.getFilteredEvents = async (req, res) => {
   try {
-    const events = await Event.find();
-    const eventsSort = events.sort((a, b) => b.eventDate - a.eventDate);
+    let { page, limit, input, category } = req.query;
+
+    input = input || "";
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 10;
+
+    const skip = (page - 1) * limit;
+
+    let query = {
+      $or: [
+        { eventName: { $regex: input, $options: "i" } },
+        { description: { $regex: input, $options: "i" } },
+      ],
+    };
+
+    if (category) {
+      query.category = category;
+    }
+
+    const events = await Event.find(query)
+      .sort({ eventDate: -1 })
+      .skip(skip)
+      .limit(limit);
 
     res.status(200).json({
       status: "success",
+      results: events.length,
       data: {
-        eventsSort,
+        events,
       },
     });
   } catch (err) {
     res.status(400).send(err);
   }
 };
-exports.getAllConcerts = async (req, res) => {
-  try {
-    const concerts = await Event.find({ category: "concert" });
-    const concertsSort = concerts.sort((a, b) => b.eventDate - a.eventDate);
-    return res.status(200).json({ status: "success", data: { concertsSort } });
-  } catch (err) {
-    res.status(400).send(err);
-  }
-};
-
-exports.getAllStandUps = async (req, res) => {
-  try {
-    const standups = await Event.find({ category: "stand-up" });
-    const standupsSort = standups.sort((a, b) => b.eventDate - a.eventDate);
-    res.status(200).json({ status: "success", data: { standupsSort } });
-  } catch (error) {
-    res.status(400).send(err);
-  }
-};
-
 exports.getEvent = async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);

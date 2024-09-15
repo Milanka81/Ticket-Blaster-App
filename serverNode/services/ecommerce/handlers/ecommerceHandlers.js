@@ -14,37 +14,42 @@ exports.getCheckoutSession = async (req, res) => {
   try {
     const event = await Event.findById(eventId);
     if (!event) return res.status(400).json({ message: "Invalid event id" });
-
-    const session = await stripe.checkout.sessions.create({
-      mode: "payment",
-      payment_method_types: ["card"],
-      success_url: `${req.protocol}://${req.get(
-        "host"
-      )}/api/v1/ecommerce/?event=${eventId}&user=${req.user.id}&price=${
-        event.ticketPrice
-      }`,
-      cancel_url: `${req.protocol}://${req.get("host")}/events`,
-      customer_email: req.user.email,
-      client_reference_id: eventId,
-      line_items: [
-        {
-          price_data: {
-            product_data: {
-              name: event.eventName,
-              description: event.description,
-              images: [
-                "https://www.pexels.com/photo/people-in-concert-1763075/",
-              ],
+    if (event.availableTickets > 0) {
+      const session = await stripe.checkout.sessions.create({
+        mode: "payment",
+        payment_method_types: ["card"],
+        success_url: `${req.protocol}://${req.get(
+          "host"
+        )}/api/v1/ecommerce/shopping-cart/?event=${eventId}&user=${
+          req.user.id
+        }&price=${event.ticketPrice}`,
+        cancel_url: `${req.protocol}://${req.get("host")}/events`,
+        customer_email: req.user.email,
+        client_reference_id: eventId,
+        line_items: [
+          {
+            price_data: {
+              product_data: {
+                name: event.eventName,
+                description: event.description,
+                images: [
+                  "https://www.pexels.com/photo/people-in-concert-1763075/",
+                ],
+              },
+              unit_amount: event.ticketPrice * 100,
+              currency: "eur",
             },
-            unit_amount: event.ticketPrice * 100,
-            currency: "eur",
+            quantity: 1,
           },
-          quantity: 1,
-        },
-      ],
-    });
+        ],
+      });
 
-    res.status(200).json({ status: "success", session });
+      res.status(200).json({ status: "success", session });
+    } else {
+      res.status(400).json({
+        message: "There are no tickets left for this event",
+      });
+    }
   } catch (err) {
     res.status(400).send(err);
   }
@@ -121,10 +126,23 @@ exports.createTicketCheckout = async (req, res, next) => {
   const { event, user, price } = req.query;
 
   if (!event || !user || !price) return next();
-  try {
-    await Ticket.create({ event, user, price });
 
-    res.redirect(req.originalUrl.split("?")[0]);
+  try {
+    const currentEvent = await Event.findById(event);
+    if (currentEvent.availableTickets > 0) {
+      currentEvent.availableTickets -= 1;
+      await currentEvent.save({ validateBeforeSave: false });
+      try {
+        await Ticket.create({ event, user, price });
+        res.redirect(req.originalUrl.split("?")[0]);
+      } catch (err) {
+        res.status(400).json({ message: "Ticket is not created" });
+      }
+    } else {
+      res.status(400).json({
+        message: "Paymant failed. There are no tickets left for this event",
+      });
+    }
   } catch (err) {
     res.status(400).send(err);
   }
