@@ -8,59 +8,59 @@ const ShoppingCart = require("./../../../src/shoppingCart/shoppingCartSchema");
 const Stripe = require("stripe");
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 const QRcode = require("qrcode");
-exports.getCheckoutSession = async (req, res) => {
-  const { eventId } = req.params;
+// exports.getCheckoutSession = async (req, res) => {
+//   const { eventId } = req.params;
 
-  try {
-    const event = await Event.findById(eventId);
-    if (!event) return res.status(400).json({ message: "Invalid event id" });
-    if (event.availableTickets > 0) {
-      const session = await stripe.checkout.sessions.create({
-        mode: "payment",
-        payment_method_types: ["card"],
-        success_url: `${req.protocol}://${req.get(
-          "host"
-        )}/api/v1/ecommerce/shopping-cart/?event=${eventId}&user=${
-          req.user.id
-        }&price=${event.ticketPrice}`,
-        cancel_url: `${req.protocol}://${req.get("host")}/events`,
-        customer_email: req.user.email,
-        client_reference_id: eventId,
-        line_items: [
-          {
-            price_data: {
-              product_data: {
-                name: event.eventName,
-                description: event.description,
-                images: [
-                  "https://www.pexels.com/photo/people-in-concert-1763075/",
-                ],
-              },
-              unit_amount: event.ticketPrice * 100,
-              currency: "eur",
-            },
-            quantity: 1,
-          },
-        ],
-      });
+//   try {
+//     const event = await Event.findById(eventId);
+//     if (!event) return res.status(400).json({ message: "Invalid event id" });
+//     if (event.availableTickets > 0) {
+//       const session = await stripe.checkout.sessions.create({
+//         mode: "payment",
+//         payment_method_types: ["card"],
+//         success_url: `${req.protocol}://${req.get(
+//           "host"
+//         )}/api/v1/ecommerce/shopping-cart/?event=${eventId}&user=${
+//           req.user.id
+//         }&price=${event.ticketPrice}`,
+//         cancel_url: `${req.protocol}://${req.get("host")}/events`,
+//         customer_email: req.user.email,
+//         client_reference_id: eventId,
+//         line_items: [
+//           {
+//             price_data: {
+//               product_data: {
+//                 name: event.eventName,
+//                 description: event.description,
+//                 images: [
+//                   "https://www.pexels.com/photo/people-in-concert-1763075/",
+//                 ],
+//               },
+//               unit_amount: event.ticketPrice * 100,
+//               currency: "eur",
+//             },
+//             quantity: 1,
+//           },
+//         ],
+//       });
 
-      res.status(200).json({ status: "success", session });
-    } else {
-      res.status(400).json({
-        message: "There are no tickets left for this event",
-      });
-    }
-  } catch (err) {
-    res.status(400).send(err);
-  }
-};
+//       res.status(200).json({ status: "success", session });
+//     } else {
+//       res.status(400).json({
+//         message: "There are no tickets left for this event",
+//       });
+//     }
+//   } catch (err) {
+//     res.status(400).send(err);
+//   }
+// };
 
 exports.createPaymentIntent = async (req, res) => {
   const { items } = { ...req.body };
   const ids = items.map((el) => el._id);
 
   try {
-    let totalPrice = [];
+    let totalAmount = 0;
 
     const events = await Event.find({
       _id: { $in: ids },
@@ -88,16 +88,17 @@ exports.createPaymentIntent = async (req, res) => {
         });
       }
       const price = item.event.ticketPrice * item.quantity;
-
-      totalPrice.push(price);
+      totalAmount += price;
     });
-    const totalAmount = totalPrice.reduce((acc, cur) => acc + cur, 0);
 
     try {
       const paymentIntent = await stripe.paymentIntents.create({
         amount: totalAmount,
         currency: "eur",
         payment_method_types: ["card"],
+        metadata: {
+          items: JSON.stringify(items),
+        },
       });
 
       res.status(200).json({ clientSecret: paymentIntent.client_secret });
@@ -111,42 +112,91 @@ exports.createPaymentIntent = async (req, res) => {
 
 exports.confirmPayment = async (req, res) => {
   const event = req.body;
-  try {
-    if (event.type === "payment_intent.succeeded") {
+  const userId = req.user.id;
+  if (event.type === "payment_intent.succeeded") {
+    try {
       const paymentIntent = event.data.object;
-      console.log("Payment succeeded:", paymentIntent);
-    }
-    res.json({ received: true });
-  } catch (err) {
-    res.status(400).send(err);
-  }
-};
-
-exports.createTicketCheckout = async (req, res, next) => {
-  const { event, user, price } = req.query;
-
-  if (!event || !user || !price) return next();
-
-  try {
-    const currentEvent = await Event.findById(event);
-    if (currentEvent.availableTickets > 0) {
-      currentEvent.availableTickets -= 1;
-      await currentEvent.save({ validateBeforeSave: false });
-      try {
-        await Ticket.create({ event, user, price });
-        res.redirect(req.originalUrl.split("?")[0]);
-      } catch (err) {
-        res.status(400).json({ message: "Ticket is not created" });
-      }
-    } else {
-      res.status(400).json({
-        message: "Paymant failed. There are no tickets left for this event",
+      const items = JSON.parse(paymentIntent.metadata.items);
+      const ids = items.map((el) => el._id);
+      const events = await Event.find({
+        _id: { $in: ids },
       });
+
+      const myCart = events.map((event) => {
+        const cartItem = items.find(
+          (item) => item._id.toString() === event._id.toString()
+        );
+        return {
+          event: event,
+          quantity: cartItem.quantity,
+        };
+      });
+
+      myCart.forEach((item) => {
+        if (
+          !item.event.availableTickets ||
+          item.event.availableTickets < item.quantity
+        ) {
+          return res.status(400).json({
+            message:
+              "There are no tickets left for this or some of these events",
+          });
+        }
+      });
+
+      const updateQuantity = myCart.map((item) => {
+        const newAvailability = item.event.availableTickets - item.quantity;
+        return Event.findByIdAndUpdate(item.event._id, {
+          availableTickets: newAvailability,
+        });
+      });
+      await Promise.all(updateQuantity);
+
+      const createTickets = myCart.map((item) => {
+        return Ticket.create({
+          event: item.event._id,
+          user: userId,
+          price: item.event.ticketPrice,
+          quantity: item.quantity,
+        });
+      });
+
+      await Promise.all(createTickets);
+
+      return res.json({ received: true });
+    } catch (err) {
+      res.status(400).send(err);
     }
-  } catch (err) {
-    res.status(400).send(err);
+  } else {
+    res.status(400).json({ message: "Payment failed" });
   }
 };
+
+// exports.createTicketCheckout = async (req, res, next) => {
+//   const { event, user, price } = req.query;
+
+//   if (!event || !user || !price) return next();
+
+//   try {
+//     const currentEvent = await Event.findById(event);
+//     if (currentEvent.availableTickets > 0) {
+//       currentEvent.availableTickets -= 1;
+//       await currentEvent.save({ validateBeforeSave: false });
+//       try {
+//         await Ticket.create({ event, user, price });
+//         res.redirect(req.originalUrl.split("?")[0]);
+//       } catch (err) {
+//         res.status(400).json({ message: "Ticket is not created" });
+//       }
+//     } else {
+//       res.status(400).json({
+//         message: "Paymant failed. There are no tickets left for this event",
+//       });
+//     }
+//   } catch (err) {
+//     res.status(400).send(err);
+//   }
+// };
 
 exports.getCart = async (req, res) => {
   try {

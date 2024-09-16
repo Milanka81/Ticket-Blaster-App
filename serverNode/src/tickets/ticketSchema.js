@@ -15,6 +15,10 @@ const ticketSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  quantity: {
+    type: Number,
+    default: 1,
+  },
   createdAt: {
     type: Date,
     default: Date.now(),
