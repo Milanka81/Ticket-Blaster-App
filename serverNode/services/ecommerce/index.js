@@ -22,10 +22,10 @@ app.patch(
   ecommerce.updateCartQuantity
 );
 app.delete("/api/v1/ecommerce/shopping-cart/:itemId", ecommerce.deleteFromCart);
-// app.get(
-//   "/api/v1/ecommerce/checkout-session/:eventId",
-//   ecommerce.getCheckoutSession
-// );
+app.get(
+  "/api/v1/ecommerce/checkout-session/:eventId",
+  ecommerce.getCheckoutSession
+);
 app.post("/api/v1/ecommerce/webhook", ecommerce.confirmPayment);
 app.post(
   "/api/v1/ecommerce/create-payment-intent",

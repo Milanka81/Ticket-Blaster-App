@@ -8,52 +8,58 @@ const ShoppingCart = require("./../../../src/shoppingCart/shoppingCartSchema");
 const Stripe = require("stripe");
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 const QRcode = require("qrcode");
-// exports.getCheckoutSession = async (req, res) => {
-//   const { eventId } = req.params;
 
-//   try {
-//     const event = await Event.findById(eventId);
-//     if (!event) return res.status(400).json({ message: "Invalid event id" });
-//     if (event.availableTickets > 0) {
-//       const session = await stripe.checkout.sessions.create({
-//         mode: "payment",
-//         payment_method_types: ["card"],
-//         success_url: `${req.protocol}://${req.get(
-//           "host"
-//         )}/api/v1/ecommerce/shopping-cart/?event=${eventId}&user=${
-//           req.user.id
-//         }&price=${event.ticketPrice}`,
-//         cancel_url: `${req.protocol}://${req.get("host")}/events`,
-//         customer_email: req.user.email,
-//         client_reference_id: eventId,
-//         line_items: [
-//           {
-//             price_data: {
-//               product_data: {
-//                 name: event.eventName,
-//                 description: event.description,
-//                 images: [
-//                   "https://www.pexels.com/photo/people-in-concert-1763075/",
-//                 ],
-//               },
-//               unit_amount: event.ticketPrice * 100,
-//               currency: "eur",
-//             },
-//             quantity: 1,
-//           },
-//         ],
-//       });
+var pdf = require("pdf-creator-node");
+var fs = require("fs");
 
-//       res.status(200).json({ status: "success", session });
-//     } else {
-//       res.status(400).json({
-//         message: "There are no tickets left for this event",
-//       });
-//     }
-//   } catch (err) {
-//     res.status(400).send(err);
-//   }
-// };
+var html = fs.readFileSync("template.html", "utf8");
+
+exports.getCheckoutSession = async (req, res) => {
+  const { eventId } = req.params;
+
+  try {
+    const event = await Event.findById(eventId);
+    if (!event) return res.status(400).json({ message: "Invalid event id" });
+    if (event.availableTickets > 0) {
+      const session = await stripe.checkout.sessions.create({
+        mode: "payment",
+        payment_method_types: ["card"],
+        success_url: `${req.protocol}://${req.get(
+          "host"
+        )}/api/v1/ecommerce/shopping-cart/?event=${eventId}&user=${
+          req.user.id
+        }&price=${event.ticketPrice}`,
+        cancel_url: `${req.protocol}://${req.get("host")}/events`,
+        customer_email: req.user.email,
+        client_reference_id: eventId,
+        line_items: [
+          {
+            price_data: {
+              product_data: {
+                name: event.eventName,
+                description: event.description,
+                images: [
+                  "https://www.pexels.com/photo/people-in-concert-1763075/",
+                ],
+              },
+              unit_amount: event.ticketPrice * 100,
+              currency: "eur",
+            },
+            quantity: 1,
+          },
+        ],
+      });
+
+      res.status(200).json({ status: "success", session });
+    } else {
+      res.status(400).json({
+        message: "There are no tickets left for this event",
+      });
+    }
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
 
 exports.createPaymentIntent = async (req, res) => {
   const { items } = { ...req.body };
@@ -111,8 +117,23 @@ exports.createPaymentIntent = async (req, res) => {
 };
 
 exports.confirmPayment = async (req, res) => {
-  const event = req.body;
   const userId = req.user.id;
+  const event = req.body;
+
+  // const sig = req.headers["stripe-signature"];
+
+  // let event;
+  // try {
+  //   event = stripe.webhooks.constructEvent(
+  //     req.body,
+  //     sig,
+  //     process.env.STRIPE_SECRET_KEY
+  //   );
+  // } catch (err) {
+  //   console.error("Webhook signature verification failed:", err.message);
+  //   return res.status(400).send(`Webhook Error: ${err.message}`);
+  // }
+
   if (event.type === "payment_intent.succeeded") {
     try {
       const paymentIntent = event.data.object;
@@ -139,7 +160,7 @@ exports.confirmPayment = async (req, res) => {
         ) {
           return res.status(400).json({
             message:
-              "There are no tickets left for this or some of these events",
+              "There are no tickets left for this or some of these events. Please, contact us for a refund",
           });
         }
       });
