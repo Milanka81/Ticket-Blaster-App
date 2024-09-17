@@ -9,7 +9,6 @@ exports.signup = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (user) return res.status(400).json({ message: "User already exists" });
-
     const newUser = await User.create({
       fullName,
       email,
@@ -25,17 +24,17 @@ exports.signup = async (req, res) => {
       "host"
     )}/api/v1/auth/verify-email/${verificationToken}`;
 
-    const emailTemplate = `
-    <h3> Welcome, ${user.fullName}!</h3>
-    <p>To verify your email address go to this link:</p>
-    <a href=${verificationURL}> Verify email </a>
-`;
-    // const message = `To verify your email address go to this link: ${verificationURL}`;
+    //     const emailTemplate = `
+    //     <h3> Welcome, ${newUser.fullName}!</h3>
+    //     <p>To verify your email address go to this link:</p>
+    //     <a href=${verificationURL}> Verify email </a>
+    // `;
+    const message = `To verify your email address go to this link: ${verificationURL}`;
     try {
       await sendEmail({
         email,
         subject: "Please, verify your email address",
-        emailTemplate,
+        message,
       });
       res.status(200).json({
         status: "success",
@@ -47,7 +46,7 @@ exports.signup = async (req, res) => {
       res.status(500).json({ status: "error sending email" });
     }
   } catch (err) {
-    res.status(400).send(err);
+    res.status(400).send(err.message);
   }
 };
 
