@@ -27,7 +27,6 @@ exports.uploadUserAvatar = async (req, res) => {
   }
 };
 exports.uploadEventCover = async (req, res) => {
-  console.log(req.params);
   try {
     if (!req.file) {
       return res.status(400).send({ message: "No file uploaded." });
