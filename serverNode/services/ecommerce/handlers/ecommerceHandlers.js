@@ -8,11 +8,25 @@ const ShoppingCart = require("./../../../src/shoppingCart/shoppingCartSchema");
 const Stripe = require("stripe");
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 const QRcode = require("qrcode");
+const Handlebars = require("handlebars");
 
-var pdf = require("pdf-creator-node");
-var fs = require("fs");
+Handlebars.create({ allowProtoPropertiesByDefault: true });
 
-var html = fs.readFileSync("template.html", "utf8");
+const pdf = require("pdf-creator-node");
+const fs = require("fs");
+
+const html = fs.readFileSync(`${__dirname}/../template.html`, "utf8");
+const options = {
+  format: "A4",
+  orientation: "portrait",
+  border: "10mm",
+  header: {
+    height: "20mm",
+  },
+  footer: {
+    height: "20mm",
+  },
+};
 
 exports.getCheckoutSession = async (req, res) => {
   const { eventId } = req.params;
@@ -73,7 +87,7 @@ exports.createPaymentIntent = async (req, res) => {
     });
 
     if (!events) return res.status(400).json({ message: "Invalid event id" });
-
+    const eventArr = [...events];
     const myCart = events.map((event) => {
       const cartItem = items.find(
         (item) => item._id.toString() === event._id.toString()
@@ -106,10 +120,73 @@ exports.createPaymentIntent = async (req, res) => {
           items: JSON.stringify(items),
         },
       });
+      // const cleanedEvents = myCart.map((event) => ({
+      //   eventName: event.event.eventName,
+      //   ticketPrice: event.event.ticketPrice,
+      //   eventDate: event.event.eventDate,
+      //   location: event.event.location,
+      //   quantity: event.quantity,
+      //   image: path.join(
+      //     __dirname,
+      //     "..",
+      //     "..",
+      //     "..",
+      //     "public",
+      //     "images",
+      //     event.event.imageCover
+      //   ),
+      // }));
+
+      const updatedEvents = myCart.map((event) => {
+        const imagePath = path.join(
+          __dirname,
+          "..",
+          "..",
+          "..",
+          "public",
+          "images",
+          event.event.imageCover
+        );
+
+        const date = event.event.eventDate.toISOString().slice(0, 10);
+
+        const imageBase64 = fs.readFileSync(imagePath, "base64"); // Read the file and encode as Base64
+        return {
+          ...event,
+          date,
+          image: `data:image/jpeg;base64,${imageBase64}`, // Embed image as Base64 string
+        };
+      });
+
+      const cleanedEvents = updatedEvents.map((event) => ({
+        eventName: event.event.eventName,
+        ticketPrice: event.event.ticketPrice,
+        eventDate: event.date,
+        location: event.event.location,
+        quantity: event.quantity,
+        image: event.image,
+        total: event.event.ticketPrice * event.quantity,
+      }));
+
+      const document = {
+        html: html,
+        data: { events: cleanedEvents },
+        path: `${__dirname}/../cart.pdf`,
+        type: "",
+      };
+
+      pdf
+        .create(document, options)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
 
       res.status(200).json({ clientSecret: paymentIntent.client_secret });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(400).send(err.message);
     }
   } catch (err) {
     res.status(400).send(err);
