@@ -3,12 +3,14 @@ require("dotenv").config({
   path: path.resolve(__dirname, "./../../../src/config/config.env"),
 });
 const Event = require("../../../src/events/eventSchema");
+const User = require("./../../../src/users/userSchema");
 const Ticket = require("./../../../src/tickets/ticketSchema");
 const ShoppingCart = require("./../../../src/shoppingCart/shoppingCartSchema");
 const Stripe = require("stripe");
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 const QRcode = require("qrcode");
 const Handlebars = require("handlebars");
+const sendEmail = require("./../../users/utils/email");
 
 Handlebars.create({ allowProtoPropertiesByDefault: true });
 
@@ -85,9 +87,10 @@ exports.createPaymentIntent = async (req, res) => {
     const events = await Event.find({
       _id: { $in: ids },
     });
+    const user = await User.findById(req.user.id);
 
     if (!events) return res.status(400).json({ message: "Invalid event id" });
-    const eventArr = [...events];
+
     const myCart = events.map((event) => {
       const cartItem = items.find(
         (item) => item._id.toString() === event._id.toString()
@@ -120,24 +123,9 @@ exports.createPaymentIntent = async (req, res) => {
           items: JSON.stringify(items),
         },
       });
-      // const cleanedEvents = myCart.map((event) => ({
-      //   eventName: event.event.eventName,
-      //   ticketPrice: event.event.ticketPrice,
-      //   eventDate: event.event.eventDate,
-      //   location: event.event.location,
-      //   quantity: event.quantity,
-      //   image: path.join(
-      //     __dirname,
-      //     "..",
-      //     "..",
-      //     "..",
-      //     "public",
-      //     "images",
-      //     event.event.imageCover
-      //   ),
-      // }));
 
       const updatedEvents = myCart.map((event) => {
+        const imageMime = event.event.imageCover?.split(".").pop();
         const imagePath = path.join(
           __dirname,
           "..",
@@ -148,13 +136,14 @@ exports.createPaymentIntent = async (req, res) => {
           event.event.imageCover
         );
 
-        const date = event.event.eventDate.toISOString().slice(0, 10);
+        const date1 = event.event.eventDate.toString();
+        const date = date1.slice(4, 15);
 
-        const imageBase64 = fs.readFileSync(imagePath, "base64"); // Read the file and encode as Base64
+        const imageBase64 = fs.readFileSync(imagePath, "base64");
         return {
           ...event,
           date,
-          image: `data:image/jpeg;base64,${imageBase64}`, // Embed image as Base64 string
+          image: `data:image/${imageMime};base64,${imageBase64}`,
         };
       });
 
@@ -183,6 +172,22 @@ exports.createPaymentIntent = async (req, res) => {
         .catch((error) => {
           console.error(error);
         });
+      try {
+        await sendEmail({
+          email: user.email,
+          subject: "Thank you for your purchase!",
+          message: "Check out this attached pdf file",
+          attachments: [
+            {
+              filename: "cart.pdf",
+              path: `${__dirname}/../cart.pdf`,
+              contentType: "application/pdf",
+            },
+          ],
+        });
+      } catch (err) {
+        console.log("error sending email");
+      }
 
       res.status(200).json({ clientSecret: paymentIntent.client_secret });
     } catch (err) {
@@ -219,7 +224,6 @@ exports.confirmPayment = async (req, res) => {
       const events = await Event.find({
         _id: { $in: ids },
       });
-
       const myCart = events.map((event) => {
         const cartItem = items.find(
           (item) => item._id.toString() === event._id.toString()
