@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const { createSendToken } = require("../utils/createSendToken");
 
-exports.signup = async (req, res) => {
+exports.register = async (req, res) => {
   const { fullName, email, password, passwordConfirm } = req.body;
   try {
     const user = await User.findOne({ email });
@@ -24,11 +24,6 @@ exports.signup = async (req, res) => {
       "host"
     )}/api/v1/auth/verify-email/${verificationToken}`;
 
-    //     const emailTemplate = `
-    //     <h3> Welcome, ${newUser.fullName}!</h3>
-    //     <p>To verify your email address go to this link:</p>
-    //     <a href=${verificationURL}> Verify email </a>
-    // `;
     const message = `To verify your email address go to this link: ${verificationURL}`;
     try {
       await sendEmail({

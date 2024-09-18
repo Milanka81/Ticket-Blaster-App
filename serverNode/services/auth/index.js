@@ -9,7 +9,7 @@ db.init();
 app.use(helmet());
 app.use(express.json());
 app.use(cors());
-app.post("/api/v1/auth/create-account", auth.signup);
+app.post("/api/v1/auth/register", auth.register);
 app.post("/api/v1/auth/login", auth.login);
 app.post("/api/v1/auth/forgot-password", auth.forgotPassword);
 app.patch("/api/v1/auth/reset-password/:token", auth.resetPassword);
