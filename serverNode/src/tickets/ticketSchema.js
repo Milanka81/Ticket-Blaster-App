@@ -19,6 +19,9 @@ const ticketSchema = new mongoose.Schema({
     type: Number,
     default: 1,
   },
+  qrCode: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now(),
