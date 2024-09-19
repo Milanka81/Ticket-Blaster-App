@@ -32,20 +32,21 @@
       }
       .list-group-item {
         font-weight: bold;
-        border-bottom: 1px solid #ddd;
+        border: 1px solid #ddd;
         margin-bottom: 10px;
         padding: 10px;
         padding-bottom: 20px;
         border-radius: 5px;
-        min-height: 90px;
+        min-height: 150px;
       }
       .event-image {
         float: left;
         border-radius: 20px;
-        width: 136px;
-        height: 81px;
+        width: 150px;
+        margin: 15px;
       }
       .name {
+        display: inline-block;
         font-size: 24px;
         text-align: left;
         letter-spacing: -1.32px;
@@ -62,25 +63,30 @@
         color: #393939;
       }
       .total-price {
-        text-align: right;
         font-size: 24px;
         letter-spacing: -1.32px;
         color: #000;
+        margin-top: 5px;
+        text-align: right;
       }
       .ticket-price {
-        text-align: right;
         font-size: 18px;
         letter-spacing: -0.99px;
         color: #ff48ab;
+        text-align: right;
       }
       .main-info {
         float: left;
-        margin-left: 20px;
-        margin-top: 5px;
+        margin-top: 15px;
+        min-width: 430px;
       }
       .price {
+        margin-top: 25px;
+        margin-right: 15px;
+      }
+      .qr-code {
         float: right;
-        margin-top: 15px;
+        width: 150px;
       }
     </style>
   </head>
@@ -88,7 +94,7 @@
     <div class="container">
       <h1>Your tickets</h1>
       <ul class="list-group">
-        {{#each events}}
+        {{#each tickets}}
         <li class="list-group-item">
           <img
             class="event-image"
@@ -99,13 +105,13 @@
             <p class="name">{{this.eventName}}</p>
             <p class="date">{{this.eventDate}}</p>
             <p class="place">{{this.location}}</p>
-          </div>
-          <div class="price">
             <p class="total-price">{{this.total}} EUR</p>
             <p class="ticket-price">
               {{this.quantity}} x {{this.ticketPrice}} EUR
             </p>
           </div>
+
+          <img class="qr-code" src="{{this.qrCode}}" alt="QR Code" />
         </li>
         {{/each}}
       </ul>

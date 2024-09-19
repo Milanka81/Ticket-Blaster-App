@@ -11,21 +11,17 @@ app.use(helmet());
 app.use(express.json());
 app.use(cors());
 app.use("/api/v1/ecommerce", auth.tokenVerify);
-// app.get(
-//   "/api/v1/ecommerce/shopping-cart",
-//   ecommerce.createTicketCheckout,
-//   ecommerce.getCart
-// );
+app.get("/api/v1/ecommerce/shopping-cart", ecommerce.getCart);
 app.post("/api/v1/ecommerce/shopping-cart/:eventId", ecommerce.addToCart);
 app.patch(
   "/api/v1/ecommerce/shopping-cart/:itemId",
   ecommerce.updateCartQuantity
 );
 app.delete("/api/v1/ecommerce/shopping-cart/:itemId", ecommerce.deleteFromCart);
-app.get(
-  "/api/v1/ecommerce/checkout-session/:eventId",
-  ecommerce.getCheckoutSession
-);
+// app.get(
+//   "/api/v1/ecommerce/checkout-session/:eventId",
+//   ecommerce.getCheckoutSession
+// );
 app.post("/api/v1/ecommerce/webhook", ecommerce.confirmPayment);
 app.post(
   "/api/v1/ecommerce/create-payment-intent",
