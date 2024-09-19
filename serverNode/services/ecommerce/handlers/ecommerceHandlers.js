@@ -136,8 +136,8 @@ exports.createPaymentIntent = async (req, res) => {
           event.event.imageCover
         );
 
-        const date1 = event.event.eventDate.toString();
-        const date = date1.slice(4, 15);
+        const dateToString = event.event.eventDate.toString();
+        const date = dateToString.slice(4, 15);
 
         const imageBase64 = fs.readFileSync(imagePath, "base64");
         return {
@@ -367,14 +367,27 @@ exports.getPrintTicket = async (req, res) => {
   try {
     const ticket = await Ticket.findById(ticketId);
     const event = await Event.findById(ticket.event);
-    const url = `${req.protocol}://${req.get(
-      "host"
-    )}/api/v1/ecommerce/${ticketId}`;
+    const imageMime = event.imageCover?.split(".").pop();
+    const imagePath = path.join(
+      __dirname,
+      "..",
+      "..",
+      "..",
+      "public",
+      "images",
+      event.imageCover
+    );
 
-    QRcode.toDataURL(url, (err, qrCodeUrl) => {
-      if (err) return res.status(500).send("Internal Server Error");
-      res.status(200).json({ event, qrCodeUrl });
-    });
+    const imageBase64 = fs.readFileSync(imagePath, "base64");
+
+    const ticketInfo = {
+      name: event.eventName,
+      date: event.eventDate,
+      place: event.location,
+      image: `data:image/${imageMime};base64,${imageBase64}`,
+      qrCode: ticket.qr,
+    };
+    res.status(200).json({ ticketInfo });
   } catch (err) {
     res.status(400).send(err);
   }
