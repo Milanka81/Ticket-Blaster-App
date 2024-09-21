@@ -1,0 +1,69 @@
+.navbarContainer {
+  width: 75rem;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 96em;
+  height: 70px;
+  background: #000000;
+}
+.logo {
+  margin-right: 2rem;
+}
+.searchBtnsContainer {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+  align-items: center;
+}
+.navlinks {
+  text-align: left;
+  font-size: 17px;
+  letter-spacing: -0.77px;
+  color: #d3d3d3;
+
+  text-decoration: none;
+}
+.searchbar {
+  width: 295px;
+  height: 42px;
+  background: #ffffff;
+  border-radius: 21px;
+  text-align: left;
+}
+.searchbar::placeholder {
+  letter-spacing: -0.99px;
+  color: #393939;
+  font: normal normal bold 16px/19px Lato;
+  padding-left: 1rem;
+}
+.btnLogin {
+  background: #ff48ab;
+  border-radius: 20px;
+  width: 102px;
+  height: 42px;
+  font: normal normal 900 16px/19px Lato;
+  letter-spacing: -0.88px;
+  color: #000000;
+}
+.btnCreateAccount {
+  width: 156px;
+  height: 42px;
+  border: 1px solid #ee47a0;
+  border-radius: 20px;
+  text-align: center;
+  font: normal normal 900 16px/19px Lato;
+  letter-spacing: -0.88px;
+  background: #000000;
+  color: #ffffff;
+}
+.copyright {
+  color: #d3d3d3;
+  margin-left: auto;
+}
