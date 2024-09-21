@@ -1,12 +1,12 @@
 import { Outlet } from "react-router";
 
-const ConcertsPage = () => {
+const EventsPage = () => {
   return (
     <>
-      <div>ConcertsPage</div>
+      <div>EventsPage</div>
       <Outlet />
     </>
   );
 };
 
-export default ConcertsPage;
+export default EventsPage;

@@ -5,27 +5,51 @@ import RegisterPage from "../Pages/RegisterPage/RegisterPage";
 import LoginPage from "../Pages/LoginPage/LoginPage";
 import ForgotPasswordPage from "../Pages/ForgotPasswordPage/ForgotPasswordPage";
 import ResetPasswordPage from "../Pages/ResetPasswordPage/ResetPasswordPage";
-import ConcertsPage from "../Pages/ConcertsPage/ConcertsPage";
-import StandUpsPage from "../Pages/StandUpsPage/StandUpsPage";
-import ConcertPage from "../Pages/ConcertPage/ConcertPage";
+import EventsPage from "../Pages/EventsPage/EventsPage";
+import EventPage from "../Pages/EventPage/EventPage";
+import CheckoutPage from "../Pages/CheckoutPage/CheckoutPage";
+import PrintTicketPage from "../Pages/PrintTicketPage/PrintTicketPage";
+import ShoppingCartPage from "../Pages/ShoppingCartPage/ShoppingCartPage";
+import UserDetailsPage from "../Pages/UserDetailsPage/UserDetailsPage";
+import TicketHistoryPage from "../Pages/TicketHistoryPage/TicketHistoryPage";
+import BoughtTicketsPage from "../Pages/BoughtTicketsPage/BoughtTicketsPage";
+import AllEventsPage from "../Pages/AllEventsPage/AllEventsPage";
+import AllUsersPage from "../Pages/AllUsersPage/AllUsersPage";
+import AdminEventPage from "../Pages/AdminEventPage/AdminEventPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
-      { path: "", element: <HomePage /> },
-      {
-        path: "concerts",
-        element: <ConcertsPage />,
-        children: [{ path: ":concertId", element: <ConcertPage /> }],
-      },
-
-      { path: "stand-ups", element: <StandUpsPage /> },
       { path: "register", element: <RegisterPage /> },
       { path: "login", element: <LoginPage /> },
       { path: "forgot-password", element: <ForgotPasswordPage /> },
       { path: "reset-password/:token", element: <ResetPasswordPage /> },
+      { path: "", element: <HomePage /> },
+      { path: "user-details", element: <UserDetailsPage /> },
+      {
+        path: "events",
+        element: <EventsPage />,
+        children: [{ path: ":eventId", element: <EventPage /> }],
+      },
+      { path: "shopping-cart", element: <ShoppingCartPage /> },
+      {
+        path: "checkout",
+        element: <CheckoutPage />,
+      },
+      {
+        path: "tickets",
+        element: <BoughtTicketsPage />,
+        children: [{ path: ":ticketId", element: <PrintTicketPage /> }],
+      },
+      { path: "tickets-history", element: <TicketHistoryPage /> },
+      {
+        path: "all-events",
+        element: <AllEventsPage />,
+        children: [{ path: "admin-event", element: <AdminEventPage /> }],
+      },
+      { path: "all-users", element: <AllUsersPage /> },
     ],
   },
 ]);
