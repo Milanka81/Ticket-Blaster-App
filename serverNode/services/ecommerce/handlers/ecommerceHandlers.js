@@ -87,7 +87,6 @@ exports.createPaymentIntent = async (req, res) => {
     const events = await Event.find({
       _id: { $in: ids },
     });
-    const user = await User.findById(req.user.id);
 
     if (!events) return res.status(400).json({ message: "Invalid event id" });
 
@@ -124,71 +123,6 @@ exports.createPaymentIntent = async (req, res) => {
         },
       });
 
-      const updatedEvents = myCart.map((event) => {
-        const imageMime = event.event.imageCover?.split(".").pop();
-        const imagePath = path.join(
-          __dirname,
-          "..",
-          "..",
-          "..",
-          "public",
-          "images",
-          event.event.imageCover
-        );
-
-        const dateToString = event.event.eventDate.toString();
-        const date = dateToString.slice(4, 15);
-
-        const imageBase64 = fs.readFileSync(imagePath, "base64");
-        return {
-          ...event,
-          date,
-          image: `data:image/${imageMime};base64,${imageBase64}`,
-        };
-      });
-
-      const cleanedEvents = updatedEvents.map((event) => ({
-        eventName: event.event.eventName,
-        ticketPrice: event.event.ticketPrice,
-        eventDate: event.date,
-        location: event.event.location,
-        quantity: event.quantity,
-        image: event.image,
-        total: event.event.ticketPrice * event.quantity,
-      }));
-
-      const document = {
-        html: html,
-        data: { events: cleanedEvents },
-        path: `${__dirname}/../cart.pdf`,
-        type: "",
-      };
-
-      pdf
-        .create(document, options)
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-      try {
-        await sendEmail({
-          email: user.email,
-          subject: "Thank you for your purchase!",
-          message: "Check out this attached pdf file",
-          attachments: [
-            {
-              filename: "cart.pdf",
-              path: `${__dirname}/../cart.pdf`,
-              contentType: "application/pdf",
-            },
-          ],
-        });
-      } catch (err) {
-        console.log("error sending email");
-      }
-
       res.status(200).json({ clientSecret: paymentIntent.client_secret });
     } catch (err) {
       res.status(400).send(err.message);
@@ -199,7 +133,6 @@ exports.createPaymentIntent = async (req, res) => {
 };
 
 exports.confirmPayment = async (req, res) => {
-  const userId = req.user.id;
   const event = req.body;
 
   // const sig = req.headers["stripe-signature"];
@@ -224,6 +157,7 @@ exports.confirmPayment = async (req, res) => {
       const events = await Event.find({
         _id: { $in: ids },
       });
+      const user = await User.findById(req.user.id);
       const myCart = events.map((event) => {
         const cartItem = items.find(
           (item) => item._id.toString() === event._id.toString()
@@ -254,20 +188,111 @@ exports.confirmPayment = async (req, res) => {
       });
       await Promise.all(updateQuantity);
 
-      const createTickets = myCart.map((item) => {
-        return Ticket.create({
+      const createTickets = myCart.map(async (item) => {
+        const ticket = await Ticket.create({
           event: item.event._id,
-          user: userId,
+          user: user._id,
           price: item.event.ticketPrice,
           quantity: item.quantity,
         });
+
+        const url = `${req.protocol}://${req.get(
+          "host"
+        )}/api/v1/ecommerce?ticketId=${ticket._id}&eventId=${
+          item.event._id
+        }&userId=${user._Id}`;
+
+        const qrCode = await QRcode.toDataURL(url);
+
+        ticket.qrCode = qrCode;
+        await ticket.save();
+
+        return ticket;
       });
 
-      await Promise.all(createTickets);
+      const tickets = await Promise.all(createTickets);
 
-      return res.json({ received: true });
+      const myTickets = myCart.map((event) => {
+        const cartItem = tickets.find(
+          (item) => item.event.toString() === event.event._id.toString()
+        );
+        return {
+          ...event,
+          qr: cartItem.qrCode,
+          quantity: cartItem.quantity,
+        };
+      });
+
+      const updatedEvents = myTickets.map((ticket) => {
+        const imageMime = ticket.event.imageCover?.split(".").pop();
+        const imagePath = path.join(
+          __dirname,
+          "..",
+          "..",
+          "..",
+          "public",
+          "images",
+          ticket.event.imageCover
+        );
+
+        const date1 = ticket.event.eventDate.toString();
+        const date = date1.slice(4, 15);
+
+        const imageBase64 = fs.readFileSync(imagePath, "base64");
+        return {
+          ...ticket,
+          date,
+          image: `data:image/${imageMime};base64,${imageBase64}`,
+          qr: ticket.qr,
+        };
+      });
+
+      const ticketInfo = updatedEvents.map((event) => ({
+        eventName: event.event.eventName,
+        ticketPrice: event.event.ticketPrice,
+        eventDate: event.date,
+        location: event.event.location,
+        quantity: event.quantity,
+        image: event.image,
+        total: event.event.ticketPrice * event.quantity,
+        qrCode: event.qr,
+      }));
+
+      const document = {
+        html: html,
+        data: { tickets: ticketInfo },
+        path: `${__dirname}/../cart.pdf`,
+        type: "",
+      };
+
+      pdf
+        .create(document, options)
+        .then((res) => {
+          try {
+            sendEmail({
+              email: user.email,
+              subject: "Thank you for your purchase!",
+              message: "Your tickets are in the attached pdf file",
+              attachments: [
+                {
+                  filename: "cart.pdf",
+                  path: `${__dirname}/../cart.pdf`,
+                  contentType: "application/pdf",
+                },
+              ],
+            });
+            console.log("email has been sent to the user");
+          } catch (err) {
+            console.log("error sending email");
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+
+      return res.status(200).json({ message: "Payment received" });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(400).send(err.message);
     }
   } else {
     res.status(400).json({ message: "Payment failed" });
