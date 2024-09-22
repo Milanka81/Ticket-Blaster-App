@@ -348,7 +348,7 @@ exports.getCart = async (req, res) => {
 
 exports.addToCart = async (req, res) => {
   const { eventId } = req.params;
-  const userId = req.user.id;
+  const userId = req.user._id;
   const { quantity } = req.body;
   try {
     const item = await ShoppingCart.create({
@@ -378,7 +378,7 @@ exports.updateCartQuantity = async (req, res) => {
 
 exports.getMyTickets = async (req, res) => {
   try {
-    const tickets = await Ticket.find({ user: req.userId });
+    const tickets = await Ticket.find({ user: req.user._id });
     const eventsIds = tickets.map((el) => el.event);
     const events = await Event.find({ _id: { $in: eventsIds } });
     res.status(200).json({ "my tickets": events });

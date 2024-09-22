@@ -20,7 +20,7 @@ exports.updatePassword = async (req, res) => {
   const { oldPassword, password, passwordConfirm } = req.body;
 
   try {
-    const user = await User.findById(req.userId).select("+password");
+    const user = await User.findById(req.user._id).select("+password");
     if (!(await user.correctPassword(oldPassword, user.password))) {
       return res.status(404).json({ message: "User doesn't exist" });
     }
@@ -44,7 +44,7 @@ exports.updateMyAccount = async (req, res) => {
     }
     const { fullName, email } = req.body;
     const user = await User.findByIdAndUpdate(
-      req.userId,
+      req.userd,
       { fullName, email },
       {
         new: true,
@@ -59,7 +59,7 @@ exports.updateMyAccount = async (req, res) => {
 };
 exports.deleteMyAccount = async (req, res) => {
   try {
-    await User.findByIdAndUpdate(req.userId, { active: false });
+    await User.findByIdAndUpdate(req.user._id, { active: false });
     res.status(204).json({ status: "success", data: null });
   } catch (err) {
     res.status(400).send(err);
