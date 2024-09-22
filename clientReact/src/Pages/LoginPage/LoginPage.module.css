@@ -1,0 +1,15 @@
+.link {
+  text-align: left;
+  text-decoration: underline;
+  font-size: 1.1rem;
+  letter-spacing: -0.99px;
+  color: #393939;
+  font: normal normal normal 18px/22px Lato;
+}
+.flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 1rem 0;
+  font-weight: 500;
+}
