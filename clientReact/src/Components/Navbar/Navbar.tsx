@@ -1,6 +1,8 @@
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router";
 import styles from "./Navbar.module.css";
+import btnStyles from "../Button/Button.module.css";
+import Button from "./../Button/Button";
 
 const Navbar = ({ role }: { role: string }) => {
   const navigate = useNavigate();
@@ -10,10 +12,10 @@ const Navbar = ({ role }: { role: string }) => {
         <NavLink className={styles.logo} to="/">
           <img src="/img/Path 1.svg"></img>
         </NavLink>
-        <NavLink className={styles.navlinks} to="/events">
+        <NavLink className={styles.navlinks} to="/events?category=concert">
           Musical Concerts
         </NavLink>
-        <NavLink className={styles.navlinks} to="/events">
+        <NavLink className={styles.navlinks} to="/events?category=stand-up">
           Stand-up Comedy
         </NavLink>
         {role === "header" ? (
@@ -23,21 +25,22 @@ const Navbar = ({ role }: { role: string }) => {
               type="text"
               placeholder="Search"
             />
-            <button
-              className={styles.btnLogin}
+
+            <Button
+              className={btnStyles.btnSmall}
               onClick={() => navigate("/login")}
             >
-              Log in
-            </button>
-            <button
-              className={styles.btnCreateAccount}
+              Log In
+            </Button>
+            <Button
+              className={btnStyles.btnMedium}
               onClick={() => navigate("/register")}
             >
               Create Account
-            </button>
+            </Button>
           </div>
         ) : (
-          <p className={styles.copyright}>®Copyright TicketBlaster 2004</p>
+          <p className={styles.copyright}>®Copyright TicketBlaster 2024</p>
         )}
       </div>
     </div>

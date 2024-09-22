@@ -1,0 +1,52 @@
+.btnSmall {
+  background: #ff48ab;
+  border-radius: 20px;
+  width: 6.4rem;
+  height: 2.6rem;
+  font-size: 1rem;
+  font-weight: bold;
+  letter-spacing: -0.88px;
+  color: #000000;
+  cursor: pointer;
+  border: none;
+}
+.btnMedium {
+  width: 9.75rem;
+  height: 2.6rem;
+  border: 1px solid #ee47a0;
+  border-radius: 20px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: bold;
+  letter-spacing: -0.88px;
+  background: #000000;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.btnLarge {
+  width: 100%;
+  height: 3rem;
+  background: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 21px;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #000000;
+  margin-top: 1rem;
+  cursor: pointer;
+}
+.borderPink {
+  border-color: #ff48ab;
+}
+.colorWhite {
+  color: #fff;
+}
+.backgrondWhite {
+  background-color: #fff;
+}
+.backgroundPink {
+  background-color: #ff48ab;
+  border: 2px solid #ff48ab;
+}
