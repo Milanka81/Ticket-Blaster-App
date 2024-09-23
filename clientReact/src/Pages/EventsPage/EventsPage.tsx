@@ -1,5 +1,6 @@
 import { Outlet } from "react-router";
 import { useLocation } from "react-router-dom";
+import Title from "../../Components/Title/Title.tsx";
 
 const EventsPage = () => {
   const location = useLocation();
@@ -7,7 +8,7 @@ const EventsPage = () => {
   const category = searchParams.get("category");
   return (
     <>
-      <div>EventsPage {category}</div>
+      <Title>EventsPage: {category}</Title>
       <Outlet />
     </>
   );
