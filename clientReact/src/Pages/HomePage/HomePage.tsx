@@ -1,5 +1,6 @@
+import Title from "../../Components/Title/Title.tsx";
 const HomePage = () => {
-  return <div>HomePage</div>;
+  return <Title>HomePage</Title>;
 };
 
 export default HomePage;
