@@ -1,8 +1,8 @@
 import styles from "./Form.module.css";
-import { FormEventHandler } from "react";
+import { FormEventHandler, ReactNode } from "react";
 
 interface FormProps {
-  children: React.ReactNode;
+  children: ReactNode;
   onSubmit: FormEventHandler<HTMLFormElement>;
 }
 
