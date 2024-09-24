@@ -200,10 +200,9 @@ exports.confirmPayment = async (req, res) => {
           "host"
         )}/api/v1/ecommerce?ticketId=${ticket._id}&eventId=${
           item.event._id
-        }&userId=${user._Id}`;
+        }&userId=${user._id}`;
 
         const qrCode = await QRcode.toDataURL(url);
-
         ticket.qrCode = qrCode;
         await ticket.save();
 
@@ -216,45 +215,30 @@ exports.confirmPayment = async (req, res) => {
         const cartItem = tickets.find(
           (item) => item.event.toString() === event.event._id.toString()
         );
+        const imageMime = event.event.imageCover?.split(".").pop();
+        const imagePath = `${__dirname}/../../../public/images/${event.event.imageCover}`;
+        const imageBase64 = fs.readFileSync(imagePath, "base64");
+        const dateToString = event.event.eventDate.toString();
+        const date = dateToString.slice(4, 15);
+        const { _id, ...newEvent } = event.event;
+
         return {
-          ...event,
+          ...newEvent,
           qr: cartItem.qrCode,
           quantity: cartItem.quantity,
-        };
-      });
-
-      const updatedEvents = myTickets.map((ticket) => {
-        const imageMime = ticket.event.imageCover?.split(".").pop();
-        const imagePath = path.join(
-          __dirname,
-          "..",
-          "..",
-          "..",
-          "public",
-          "images",
-          ticket.event.imageCover
-        );
-
-        const date1 = ticket.event.eventDate.toString();
-        const date = date1.slice(4, 15);
-
-        const imageBase64 = fs.readFileSync(imagePath, "base64");
-        return {
-          ...ticket,
           date,
           image: `data:image/${imageMime};base64,${imageBase64}`,
-          qr: ticket.qr,
         };
       });
 
-      const ticketInfo = updatedEvents.map((event) => ({
-        eventName: event.event.eventName,
-        ticketPrice: event.event.ticketPrice,
+      const ticketInfo = myTickets.map((event) => ({
+        eventName: event._doc.eventName,
+        ticketPrice: event._doc.ticketPrice,
         eventDate: event.date,
-        location: event.event.location,
+        location: event._doc.location,
         quantity: event.quantity,
         image: event.image,
-        total: event.event.ticketPrice * event.quantity,
+        total: event._doc.ticketPrice * event.quantity,
         qrCode: event.qr,
       }));
 
@@ -268,34 +252,31 @@ exports.confirmPayment = async (req, res) => {
       pdf
         .create(document, options)
         .then((res) => {
-          try {
-            sendEmail({
-              email: user.email,
-              subject: "Thank you for your purchase!",
-              message: "Your tickets are in the attached pdf file",
-              attachments: [
-                {
-                  filename: "cart.pdf",
-                  path: `${__dirname}/../cart.pdf`,
-                  contentType: "application/pdf",
-                },
-              ],
-            });
-            console.log("email has been sent to the user");
-          } catch (err) {
-            console.log("error sending email");
-          }
+          sendEmail({
+            email: user.email,
+            subject: "Thank you for your purchase!",
+            message: "Your tickets are in the attached pdf file",
+            attachments: [
+              {
+                filename: "cart.pdf",
+                path: `${__dirname}/../cart.pdf`,
+                contentType: "application/pdf",
+              },
+            ],
+          });
         })
-        .catch((error) => {
-          console.error(error);
+        .catch((err) => {
+          console.error(err.message);
         });
 
-      return res.status(200).json({ message: "Payment received" });
+      return res
+        .status(200)
+        .json({ message: "Payment received, check your email!" });
     } catch (err) {
       res.status(400).send(err.message);
     }
   } else {
-    res.status(400).json({ message: "Payment failed" });
+    return res.status(400).json({ message: "Payment failed" });
   }
 };
 
