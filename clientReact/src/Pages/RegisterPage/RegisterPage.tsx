@@ -1,14 +1,13 @@
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Input from "../../Components/Input/Input";
-import Button from "../../Components/Button/Button.tsx";
 import btnStyles from "../../Components/Button/Button.module.css";
-import styles from "./RegisterPage.module.css";
+import styles from "../../Components/Form/Form.module.css";
 import Title from "../../Components/Title/Title.tsx";
 import Form from "../../Components/Form/Form.tsx";
 import { register } from "../../services/authService/index.tsx";
-import { useState } from "react";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -105,12 +104,12 @@ const RegisterPage = () => {
       >
         Create Account
       </button>
-      <Button
+      <button
         className={`${btnStyles.btnLarge} ${btnStyles.borderPink}`}
         onClick={() => navigate("/login")}
       >
         Already have an account?
-      </Button>
+      </button>
       {message && <p className={styles.message}>{message}</p>}
     </Form>
   );
