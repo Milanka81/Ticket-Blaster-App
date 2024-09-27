@@ -7,7 +7,7 @@ exports.uploadUserAvatar = async (req, res) => {
       return res.status(400).send({ message: "No file uploaded." });
     }
     const user = await User.findByIdAndUpdate(
-      req.userId,
+      req.user,
       {
         avatarImage: `${req.file.filename}`,
       },
