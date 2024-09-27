@@ -1,14 +1,18 @@
 const User = require("./../../../src/users/userSchema");
+const mongoose = require("mongoose");
 const sendEmail = require("../../users/utils/email");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
+const bcrypt = require("bcryptjs");
 const { createSendToken } = require("../utils/createSendToken");
 
 exports.register = async (req, res) => {
-  const { fullName, email, password, passwordConfirm } = req.body;
+  const { fullName, email, password, passwordConfirm, clientUrl } = req.body;
   try {
     const user = await User.findOne({ email });
-    if (user) return res.status(400).json({ message: "User already exists" });
+    if (user) {
+      return res.status(400).json({ message: "This email is already in use" });
+    }
     const newUser = await User.create({
       fullName,
       email,
@@ -20,11 +24,12 @@ exports.register = async (req, res) => {
     newUser.verificationToken = verificationToken;
     await newUser.save({ validateBeforeSave: false });
 
-    const verificationURL = `${req.protocol}://${req.get(
-      "host"
-    )}/api/v1/auth/verify-email/${verificationToken}`;
+    const verificationURL = `${clientUrl.origin}/verify-email/${verificationToken}`;
 
-    const message = `To verify your email address go to this link: ${verificationURL}`;
+    const message = `<h3>Welcome, ${newUser.fullName}!</h3>
+<p>Please confirm your email address by clicking on this link</p>
+<a href=${verificationURL}> Verify email </a>`;
+
     try {
       await sendEmail({
         email,
@@ -40,8 +45,15 @@ exports.register = async (req, res) => {
       await newUser.save({ validateBeforeSave: false });
       res.status(500).json({ status: "error sending email" });
     }
-  } catch (err) {
-    res.status(400).send(err.message);
+  } catch (error) {
+    let errorsStr = "";
+    if (error instanceof mongoose.Error.ValidationError) {
+      for (let field in error.errors) {
+        errorsStr += "\n" + error.errors[field].properties.message;
+      }
+    }
+    const errorMessages = errorsStr.trim();
+    return res.status(400).json({ message: errorMessages || error.message });
   }
 };
 
@@ -54,7 +66,9 @@ exports.verifyEmail = async (req, res) => {
     if (!user) return res.status(400).json({ message: "Invalid token" });
 
     if (user.isVerified)
-      return res.status(400).json({ message: "User already verified" });
+      return res
+        .status(400)
+        .json({ message: "User has already been verified" });
 
     user.isVerified = true;
     user.verificationToken = undefined;
@@ -75,38 +89,48 @@ exports.login = async (req, res) => {
         status: "failed",
         message: "Both email and password must be provided",
       });
-
     const user = await User.findOne({ email }).select("+password");
 
-    if (!user)
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!user || !isPasswordValid)
       return res.status(401).json({
         status: "failed",
         message: "Incorrect credentials",
       });
 
     createSendToken(user, 200, res);
-  } catch (err) {
-    res.status(400).send(err);
+  } catch (error) {
+    let errorsStr = "";
+    if (error instanceof mongoose.Error.ValidationError) {
+      for (let field in error.errors) {
+        errorsStr += "\n" + error.errors[field].properties.message;
+      }
+    }
+    const errorMessages = errorsStr.trim();
+    return res.status(400).json({ message: errorMessages || error.message });
   }
 };
 
 exports.forgotPassword = async (req, res) => {
-  const { email } = req.body;
+  const { email, clientUrl } = req.body;
+
   try {
     const user = await User.findOne({ email });
     if (!user) {
       return res
         .status(404)
-        .json({ message: "User with this email doesn't exist" });
+        .json({ message: "Wrong or invalid email, try again!" });
     }
     const resetToken = user.createResetPasswordToken();
     await user.save({ validateBeforeSave: false });
 
-    const resetURL = `${req.protocol}://${req.get(
-      "host"
-    )}/api/v1/auth/reset-password/${resetToken}`;
+    const resetURL = `${clientUrl.origin}/reset-password/${resetToken}`;
 
-    const message = `To reset your password go to this link: ${resetURL}`;
+    const message = `<h3>Hello, ${user.fullName}!</h3>
+    <p>To reset your password go to this link:</p>
+    <a href=${resetURL}>Reset your password</a>`;
+
     try {
       await sendEmail({ email, subject: "Your password reset token", message });
       res.status(200).json({
@@ -119,8 +143,8 @@ exports.forgotPassword = async (req, res) => {
       await user.save({ validateBeforeSave: false });
       res.status(500).json({ status: "error sending email" });
     }
-  } catch (err) {
-    res.status(400).send(err);
+  } catch (error) {
+    res.status(400).send(err.message);
   }
 };
 exports.resetPassword = async (req, res) => {
