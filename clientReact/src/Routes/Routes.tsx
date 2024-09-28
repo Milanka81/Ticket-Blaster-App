@@ -16,6 +16,7 @@ import BoughtTicketsPage from "../Pages/BoughtTicketsPage/BoughtTicketsPage";
 import AllEventsPage from "../Pages/AllEventsPage/AllEventsPage";
 import AllUsersPage from "../Pages/AllUsersPage/AllUsersPage";
 import AdminEventPage from "../Pages/AdminEventPage/AdminEventPage";
+import VerifyEmail from "../Pages/VerifyEmail/VerifyEmail";
 
 export const router = createBrowserRouter([
   {
@@ -23,6 +24,7 @@ export const router = createBrowserRouter([
     element: <App />,
     children: [
       { path: "register", element: <RegisterPage /> },
+      { path: "verify-email/:token", element: <VerifyEmail /> },
       { path: "login", element: <LoginPage /> },
       { path: "forgot-password", element: <ForgotPasswordPage /> },
       { path: "reset-password/:token", element: <ResetPasswordPage /> },
