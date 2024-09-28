@@ -33,7 +33,8 @@ const RegisterPage = () => {
         .oneOf([Yup.ref("password")], "Passwords do not match"),
     }),
     onSubmit: (values) => {
-      register(values)
+      const clientUrl = window.location.origin;
+      register({ ...values, clientUrl })
         .then((res) => {
           setMessage(res.data.message);
         })

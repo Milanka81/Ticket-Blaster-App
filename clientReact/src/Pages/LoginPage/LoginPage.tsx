@@ -30,6 +30,7 @@ const LoginPage = () => {
     onSubmit: (values) => {
       login(values)
         .then((res) => {
+          console.log(res.data);
           if (!res.data.token) {
             return setMessage("Something went wrong, try again later");
           }
@@ -41,6 +42,7 @@ const LoginPage = () => {
         });
     },
   });
+
   return (
     <Form onSubmit={formik.handleSubmit}>
       <Title>Log In</Title>
