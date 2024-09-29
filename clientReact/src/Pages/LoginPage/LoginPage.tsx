@@ -10,7 +10,7 @@ import btnStyles from "../../Components/Button/Button.module.css";
 import Title from "../../Components/Title/Title.tsx";
 import Form from "../../Components/Form/Form.tsx";
 import { useDispatch } from "react-redux";
-import { updateName } from "../../store/userSlice.tsx";
+import { updateName, isLogin } from "../../store/userSlice.tsx";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -39,6 +39,7 @@ const LoginPage = () => {
           document.cookie = `jwt=${res.data.token}; path=/; secure; httpOnly; SameSite=Strict`;
 
           dispatch(updateName(res.data.user.fullName));
+          dispatch(isLogin());
           navigate("/");
         })
         .catch((error) => {

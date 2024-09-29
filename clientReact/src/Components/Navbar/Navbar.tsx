@@ -3,12 +3,14 @@ import { useNavigate } from "react-router";
 import styles from "./Navbar.module.css";
 import btnStyles from "../Button/Button.module.css";
 import Button from "./../Button/Button";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "../../store/index";
+import { isLogout } from "../../store/userSlice";
 import { logout } from "../../services/authService";
-import { useSelector } from "react-redux";
-import { RootState } from "../../store/index";
 
 const Navbar = ({ role }: { role: string }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
   const fullName = useSelector((state: RootState) => state.user.fullName);
   const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
 
@@ -48,6 +50,7 @@ const Navbar = ({ role }: { role: string }) => {
             <Button
               className={btnStyles.btnSmall}
               onClick={() => {
+                dispatch(isLogout());
                 logout();
                 navigate("/login");
               }}
