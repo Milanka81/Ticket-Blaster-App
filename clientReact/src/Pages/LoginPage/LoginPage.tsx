@@ -30,11 +30,10 @@ const LoginPage = () => {
     onSubmit: (values) => {
       login(values)
         .then((res) => {
-          console.log(res.data);
           if (!res.data.token) {
             return setMessage("Something went wrong, try again later");
           }
-          document.cookie = `token=${res.data.token}; path=/; secure; httpOnly; SameSite=Strict`;
+          document.cookie = `jwt=${res.data.token}; path=/; secure; httpOnly; SameSite=Strict`;
           navigate("/");
         })
         .catch((error) => {
@@ -86,7 +85,7 @@ const LoginPage = () => {
       >
         Don't have an account?
       </button>
-      {message && <p className={styles.message}>{message}</p>}
+      {message && <p className={styles.infoMessage}>🔖 {message}</p>}
     </Form>
   );
 };

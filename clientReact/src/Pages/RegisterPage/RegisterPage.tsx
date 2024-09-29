@@ -111,7 +111,7 @@ const RegisterPage = () => {
       >
         Already have an account?
       </button>
-      {message && <p className={styles.message}>{message}</p>}
+      {message && <p className={styles.infoMessage}>🔖 {message}</p>}
     </Form>
   );
 };

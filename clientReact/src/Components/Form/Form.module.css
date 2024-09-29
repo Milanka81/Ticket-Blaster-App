@@ -16,6 +16,8 @@
 .message {
   font-size: 1rem;
   font-weight: bold;
+  padding: 0;
+  margin: 0;
 }
 .link {
   text-align: left;
@@ -31,4 +33,19 @@
   align-items: center;
   margin: 1rem 0;
   font-weight: 500;
+}
+.messageTitle {
+  font-size: 1.5rem;
+  font-weight: 500;
+  padding: 0;
+  margin-top: 3rem;
+}
+.infoMessage {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #ee47a0;
+  margin: 0;
+}
+.infoMessageContainer {
+  margin-top: 2rem;
 }
