@@ -4,9 +4,15 @@ import styles from "./Navbar.module.css";
 import btnStyles from "../Button/Button.module.css";
 import Button from "./../Button/Button";
 import { logout } from "../../services/authService";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/index";
 
 const Navbar = ({ role }: { role: string }) => {
   const navigate = useNavigate();
+  const fullName = useSelector((state: RootState) => state.user.fullName);
+  const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
+
+  console.log(isLoggedIn);
   return (
     <div className={styles.navbar}>
       <div className={styles.navbarContainer}>
@@ -34,19 +40,19 @@ const Navbar = ({ role }: { role: string }) => {
               Log In
             </Button>
             <Button
+              className={btnStyles.btnMedium}
+              onClick={() => navigate("/register")}
+            >
+              Create Account
+            </Button>
+            <Button
               className={btnStyles.btnSmall}
               onClick={() => {
                 logout();
                 navigate("/login");
               }}
             >
-              Log Out
-            </Button>
-            <Button
-              className={btnStyles.btnMedium}
-              onClick={() => navigate("/register")}
-            >
-              Create Account
+              Log Out {fullName}
             </Button>
           </div>
         ) : (
