@@ -9,9 +9,12 @@ import styles from "../../Components/Form/Form.module.css";
 import btnStyles from "../../Components/Button/Button.module.css";
 import Title from "../../Components/Title/Title.tsx";
 import Form from "../../Components/Form/Form.tsx";
+import { useDispatch } from "react-redux";
+import { updateName } from "../../store/userSlice.tsx";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [message, setMessage] = useState("");
   const formik = useFormik({
@@ -34,6 +37,8 @@ const LoginPage = () => {
             return setMessage("Something went wrong, try again later");
           }
           document.cookie = `jwt=${res.data.token}; path=/; secure; httpOnly; SameSite=Strict`;
+
+          dispatch(updateName(res.data.user.fullName));
           navigate("/");
         })
         .catch((error) => {

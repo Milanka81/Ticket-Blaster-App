@@ -23,3 +23,4 @@ export const resetPassword = (
 ): Promise<AxiosResponse> => {
   return axios.patch(`${BASE_URL}/reset-password/${token}`, values);
 };
+export const isLoggedIn = () => axios.get(`${BASE_URL}/check-auth`);
