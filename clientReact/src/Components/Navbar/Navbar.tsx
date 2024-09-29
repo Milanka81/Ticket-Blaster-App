@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import styles from "./Navbar.module.css";
 import btnStyles from "../Button/Button.module.css";
 import Button from "./../Button/Button";
+import { logout } from "../../services/authService";
 
 const Navbar = ({ role }: { role: string }) => {
   const navigate = useNavigate();
@@ -31,6 +32,15 @@ const Navbar = ({ role }: { role: string }) => {
               onClick={() => navigate("/login")}
             >
               Log In
+            </Button>
+            <Button
+              className={btnStyles.btnSmall}
+              onClick={() => {
+                logout();
+                navigate("/login");
+              }}
+            >
+              Log Out
             </Button>
             <Button
               className={btnStyles.btnMedium}

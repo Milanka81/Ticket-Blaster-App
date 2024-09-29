@@ -21,7 +21,7 @@ const ForgotPasswordPage = () => {
         .required("Email is required"),
     }),
     onSubmit: (values) => {
-      const clientUrl = window.location;
+      const clientUrl = window.location.origin;
       forgotPassword({ ...values, clientUrl })
         .then((res) => {
           setMessage(res.data.message);
@@ -32,33 +32,39 @@ const ForgotPasswordPage = () => {
     },
   });
   return (
-    <Form onSubmit={formik.handleSubmit}>
-      <Title>Forgot Password?</Title>
-      <Input
-        name="email"
-        type="email"
-        label="Email"
-        value={formik.values.email}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-      />
-      {formik.touched.email && formik.errors.email && (
-        <p className={styles.inputError}>{formik.errors.email}</p>
+    <div>
+      <Form onSubmit={formik.handleSubmit}>
+        <Title>Forgot Password?</Title>
+        <Input
+          name="email"
+          type="email"
+          label="Email"
+          value={formik.values.email}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
+        {formik.touched.email && formik.errors.email && (
+          <p className={styles.inputError}>{formik.errors.email}</p>
+        )}
+        <button
+          className={`${btnStyles.btnLarge} ${btnStyles.colorWhite} ${btnStyles.backgroundPink}`}
+          type="submit"
+        >
+          Send password reset email
+        </button>
+        <button
+          className={`${btnStyles.btnLarge} ${btnStyles.borderPink}`}
+          onClick={() => navigate("/login")}
+        >
+          Back to login
+        </button>
+      </Form>
+      {message && (
+        <div className={styles.infoMessageContainer}>
+          <p className={styles.infoMessage}>🔖 {message}</p>
+        </div>
       )}
-      <button
-        className={`${btnStyles.btnLarge} ${btnStyles.colorWhite} ${btnStyles.backgroundPink}`}
-        type="submit"
-      >
-        Send password reset email
-      </button>
-      <button
-        className={`${btnStyles.btnLarge} ${btnStyles.borderPink}`}
-        onClick={() => navigate("/login")}
-      >
-        Back to login
-      </button>
-      {message && <p className={styles.message}>{message}</p>}
-    </Form>
+    </div>
   );
 };
 

@@ -1,9 +1,12 @@
 import { useParams } from "react-router";
-import React, { useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getNewToken, verifyEmail } from "../../services/authService";
 import Input from "../../Components/Input/Input";
 import btnStyles from "../../Components/Button/Button.module.css";
+import formStyles from "../../Components/Form/Form.module.css";
+import Form from "../../Components/Form/Form";
+
 const getNewVerificationToken = (
   email: string,
   setMessage: React.Dispatch<React.SetStateAction<string>>
@@ -34,7 +37,7 @@ const VerifyEmail = () => {
         })
         .catch((error) => {
           if (error.response.data.message === "jwt expired") {
-            setTokenExpired(true);
+            return setTokenExpired(true);
           }
           setMessage(error.response.data.message);
         });
@@ -43,26 +46,37 @@ const VerifyEmail = () => {
 
   return (
     <div>
-      {tokenExpired ? (
+      {tokenExpired && (
         <div>
-          <p>Your verification token has expired</p>
-
-          <Input
-            name="email"
-            type="email"
-            label="Email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <button
-            className={`${btnStyles.btnLarge} ${btnStyles.borderPink}`}
-            onClick={() => getNewVerificationToken(email, setMessage)}
+          <h3 className={formStyles.messageTitle}>
+            Your verification token has expired! Enter your email to get a new
+            one:
+          </h3>
+          <Form
+            onSubmit={(e: FormEvent) => {
+              e.preventDefault();
+              getNewVerificationToken(email, setMessage);
+            }}
           >
-            Get new verification link
-          </button>
-          {message && <p>{message}</p>}
+            <Input
+              name="email"
+              type="email"
+              label="Email"
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <button
+              className={`${btnStyles.btnLarge} ${btnStyles.colorWhite} ${btnStyles.backgroundPink}`}
+              type="submit"
+            >
+              Get new verification link
+            </button>
+          </Form>
         </div>
-      ) : (
-        <p>{message}</p>
+      )}
+      {message && (
+        <div className={formStyles.infoMessageContainer}>
+          <p className={formStyles.infoMessage}>🔖 {message}</p>
+        </div>
       )}
     </div>
   );
