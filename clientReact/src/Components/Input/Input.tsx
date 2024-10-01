@@ -9,7 +9,12 @@ const Input: FC<InputProps> = ({ name, label, ...rest }) => {
   return (
     <div className={styles.inputLabelWrapper}>
       <label htmlFor={name}>{label}</label>
-      <input className={styles.input} id={name} {...rest}></input>
+      <input
+        className={styles.input}
+        id={name}
+        autoComplete={name === "password" ? "current-password" : name}
+        {...rest}
+      ></input>
     </div>
   );
 };
