@@ -13,7 +13,8 @@ export const getNewToken = (
   return axios.post(`${BASE_URL}/verificationToken`, { email, clientUrl });
 };
 export const login = ({ ...values }) => axios.post(`${BASE_URL}/login`, values);
-export const logout = () => axios.post(`${BASE_URL}/logout`);
+export const logout = () =>
+  axios.get(`${BASE_URL}/logout`, { withCredentials: true });
 export const forgotPassword = ({ ...values }) =>
   axios.post(`${BASE_URL}/forgot-password`, values);
 
@@ -23,4 +24,5 @@ export const resetPassword = (
 ): Promise<AxiosResponse> => {
   return axios.patch(`${BASE_URL}/reset-password/${token}`, values);
 };
-export const isLoggedIn = () => axios.get(`${BASE_URL}/check-auth`);
+export const isLoggedIn = () =>
+  axios.get(`${BASE_URL}/me`, { withCredentials: true });
