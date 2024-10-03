@@ -6,7 +6,7 @@ const signToken = (id) => {
   });
 };
 
-const createSendToken = (user, statusCode, res) => {
+const createToken = (user, statusCode, res) => {
   const token = signToken(user._id);
   const cookieOptions = {
     expires: new Date(
@@ -14,19 +14,19 @@ const createSendToken = (user, statusCode, res) => {
     ),
     httpOnly: true,
     sameSite: "None",
-    secure: true,
   };
 
+  if (process.env.NODE_ENV === "production") {
+    cookieOptions.secure = true;
+  }
   res.cookie("jwt", token, cookieOptions);
 
   user.password = undefined;
 
   res.status(statusCode).json({
     status: "success",
-    data: {
-      user,
-    },
+    user,
   });
 };
 
-module.exports = { createSendToken, signToken };
+module.exports = { createToken, signToken };

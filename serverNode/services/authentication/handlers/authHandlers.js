@@ -1,13 +1,14 @@
-const User = require("./../../../src/users/userSchema");
+const User = require("../../../src/users/userSchema");
 const mongoose = require("mongoose");
 const sendEmail = require("../../users/utils/email");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const bcrypt = require("bcryptjs");
-const { createSendToken } = require("../utils/createSendToken");
+const { createToken } = require("../utils/createToken");
 
 exports.register = async (req, res) => {
   const { fullName, email, password, passwordConfirm, clientUrl } = req.body;
+
   try {
     const user = await User.findOne({ email });
     if (user) {
@@ -24,7 +25,7 @@ exports.register = async (req, res) => {
     newUser.verificationToken = verificationToken;
     await newUser.save({ validateBeforeSave: false });
 
-    const verificationURL = `${clientUrl.origin}/verify-email/${verificationToken}`;
+    const verificationURL = `${clientUrl}/verify-email/${verificationToken}`;
 
     const message = `<h3>Welcome, ${newUser.fullName}!</h3>
 <p>Please confirm your email address by clicking on this link</p>
@@ -56,6 +57,47 @@ exports.register = async (req, res) => {
     return res.status(400).json({ message: errorMessages || error.message });
   }
 };
+exports.sendVerification = async (req, res) => {
+  const { email, clientUrl } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email" });
+    }
+    if (user && !user.verificationToken) {
+      return res
+        .status(400)
+        .json({ message: "This email has already been verified" });
+    }
+    const verificationToken = user.createVerificationToken(user._id);
+    user.verificationToken = verificationToken;
+    await user.save({ validateBeforeSave: false });
+
+    const verificationURL = `${clientUrl}/verify-email/${verificationToken}`;
+
+    const message = `<h3>Welcome, ${user.fullName}!</h3>
+<p>Please confirm your email address by clicking on this link</p>
+<a href=${verificationURL}> Verify email </a>`;
+
+    try {
+      await sendEmail({
+        email,
+        subject: "Please, verify your email address",
+        message,
+      });
+      res.status(200).json({
+        status: "success",
+        message: "Verification link has been sent to your email",
+      });
+    } catch (err) {
+      user.verificationToken = undefined;
+      await user.save({ validateBeforeSave: false });
+      res.status(500).json({ status: "error sending email" });
+    }
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
 
 exports.verifyEmail = async (req, res) => {
   const { token } = req.params;
@@ -65,17 +107,11 @@ exports.verifyEmail = async (req, res) => {
     const user = await User.findById(decoded.id);
     if (!user) return res.status(400).json({ message: "Invalid token" });
 
-    if (user.isVerified)
-      return res
-        .status(400)
-        .json({ message: "User has already been verified" });
-
     user.isVerified = true;
     user.verificationToken = undefined;
 
     await user.save({ validateBeforeSave: false });
-
-    createSendToken(user, 200, res);
+    res.status(200).json({ message: "Your email is successfully verified" });
   } catch (err) {
     res.status(400).send(err);
   }
@@ -91,21 +127,22 @@ exports.login = async (req, res) => {
       });
     const user = await User.findOne({ email }).select("+password");
 
-    if (!user)
-      return res.status(401).json({
-        status: "failed",
-        message: "Incorrect credentials",
-      });
-
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
-    if (!isPasswordValid)
+    if (!user || !isPasswordValid)
       return res.status(401).json({
         status: "failed",
         message: "Incorrect credentials",
       });
 
-    createSendToken(user, 200, res);
+    if (user.isVerified === false) {
+      return res.status(401).json({
+        status: "failed",
+        message: "Please,verify your email",
+      });
+    }
+
+    createToken(user, 200, res);
   } catch (error) {
     let errorsStr = "";
     if (error instanceof mongoose.Error.ValidationError) {
@@ -131,7 +168,7 @@ exports.forgotPassword = async (req, res) => {
     const resetToken = user.createResetPasswordToken();
     await user.save({ validateBeforeSave: false });
 
-    const resetURL = `${clientUrl.origin}/reset-password/${resetToken}`;
+    const resetURL = `${clientUrl}/reset-password/${resetToken}`;
 
     const message = `<h3>Hello, ${user.fullName}!</h3>
     <p>To reset your password go to this link:</p>
@@ -169,9 +206,7 @@ exports.resetPassword = async (req, res) => {
     }
 
     if (!user) {
-      return res
-        .status(404)
-        .json({ message: "User with this email doesn't exist" });
+      return res.status(404).json({ message: "Invalid or expired token" });
     }
     user.password = password;
     user.passwordConfirm = passwordConfirm;
@@ -179,7 +214,7 @@ exports.resetPassword = async (req, res) => {
     user.passwordResetExpires = undefined;
     await user.save();
 
-    createSendToken(user, 200, res);
+    res.status(200).json({ message: "Your password has been changed" });
   } catch (err) {
     res.status(400).send(err);
   }
@@ -187,22 +222,25 @@ exports.resetPassword = async (req, res) => {
 exports.logout = (req, res) => {
   try {
     if (req.cookies["jwt"]) {
-      res.cookie("jwt", "", {
-        expires: new Date(0),
+      res.cookie("jwt", req.cookies["jwt"], {
+        expires: new Date(Date.now() + 10 * 1000),
         httpOnly: true,
-        sameSite: "None",
-        secure: true,
+        sameSite: "Lax",
       });
       return res.status(200).json({ message: "Logged out successfully" });
+    } else {
+      return res
+        .status(200)
+        .json({ message: "You have already been logged out" });
     }
   } catch (error) {
     res.status(400).send(error.message);
   }
 };
-
 exports.isLoggedin = async (req, res) => {
+  console.log(req.cookies);
   try {
-    if (!req.cookies.jwt) {
+    if (!req.cookies["jwt"]) {
       return res
         .status(200)
         .json({ loggedIn: false, message: "Not logged in" });
