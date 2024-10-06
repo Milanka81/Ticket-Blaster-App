@@ -1,4 +1,5 @@
 import { useState } from "react";
+// import axios from "axios";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -10,7 +11,7 @@ import btnStyles from "../../Components/Button/Button.module.css";
 import Title from "../../Components/Title/Title.tsx";
 import Form from "../../Components/Form/Form.tsx";
 import { useDispatch } from "react-redux";
-import { updateName } from "../../store/userSlice.tsx";
+import { setLogin, setUser } from "../../store/userSlice.tsx";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -33,7 +34,9 @@ const LoginPage = () => {
     onSubmit: (values) => {
       login(values)
         .then((res) => {
-          dispatch(updateName(res.data.user.fullName));
+          console.log(res.data);
+          dispatch(setLogin());
+          dispatch(setUser(res.data.user));
           navigate("/");
         })
         .catch((error) => {

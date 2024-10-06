@@ -1,6 +1,11 @@
+import UserBar from "../../Components/UserBar/UserBar";
 
 const UserDetailsPage = () => {
-  return <div>UserDetailsPage</div>;
+  return (
+    <div>
+      <UserBar title="User Details" />
+    </div>
+  );
 };
 
 export default UserDetailsPage;

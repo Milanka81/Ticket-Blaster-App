@@ -1,0 +1,16 @@
+.navContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+nav a {
+  text-decoration: none;
+}
+
+.navLinks {
+  display: flex;
+  gap: 1rem;
+}
+.active {
+  color: #ff48ab;
+}

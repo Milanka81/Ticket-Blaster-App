@@ -1,15 +1,15 @@
 import { Outlet } from "react-router";
-import Navbar from "./Components/Navbar/Navbar";
+import MainBar from "./Components/MainBar/MainBar";
 import "./App.css";
 
 function App() {
   return (
     <>
-      <Navbar role="header" />
+      <MainBar role="header" />
       <div className="container">
         <Outlet />
       </div>
-      <Navbar role="footer" />
+      <MainBar role="footer" />
     </>
   );
 }

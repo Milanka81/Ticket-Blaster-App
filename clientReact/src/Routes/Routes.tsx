@@ -15,7 +15,7 @@ import TicketHistoryPage from "../Pages/TicketHistoryPage/TicketHistoryPage";
 import BoughtTicketsPage from "../Pages/BoughtTicketsPage/BoughtTicketsPage";
 import AllEventsPage from "../Pages/AllEventsPage/AllEventsPage";
 import AllUsersPage from "../Pages/AllUsersPage/AllUsersPage";
-import AdminEventPage from "../Pages/AdminEventPage/AdminEventPage";
+import AdminEventsPage from "../Pages/AdminEventsPage/AdminEventsPage";
 import VerifyEmail from "../Pages/VerifyEmail/VerifyEmail";
 
 export const router = createBrowserRouter([
@@ -49,7 +49,7 @@ export const router = createBrowserRouter([
       {
         path: "all-events",
         element: <AllEventsPage />,
-        children: [{ path: "admin-event", element: <AdminEventPage /> }],
+        children: [{ path: "admin-events", element: <AdminEventsPage /> }],
       },
       { path: "all-users", element: <AllUsersPage /> },
     ],

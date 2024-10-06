@@ -1,11 +1,11 @@
-.navbarContainer {
+.mainbarContainer {
   width: 78%;
   margin: 0 auto;
   display: flex;
   align-items: center;
   gap: 1rem;
 }
-.navbar {
+.mainbar {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -48,4 +48,11 @@
 .copyright {
   color: #d3d3d3;
   margin-left: auto;
+}
+.iconsContainer {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-left: 1rem;
+  align-items: center;
 }
