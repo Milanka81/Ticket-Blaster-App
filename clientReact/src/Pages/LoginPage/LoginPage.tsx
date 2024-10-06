@@ -11,7 +11,7 @@ import btnStyles from "../../Components/Button/Button.module.css";
 import Title from "../../Components/Title/Title.tsx";
 import Form from "../../Components/Form/Form.tsx";
 import { useDispatch } from "react-redux";
-import { setLogin, setUser } from "../../store/userSlice.tsx";
+import { setLogin } from "../../store/userSlice.tsx";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -33,10 +33,8 @@ const LoginPage = () => {
     }),
     onSubmit: (values) => {
       login(values)
-        .then((res) => {
-          console.log(res.data);
+        .then(() => {
           dispatch(setLogin());
-          dispatch(setUser(res.data.user));
           navigate("/");
         })
         .catch((error) => {

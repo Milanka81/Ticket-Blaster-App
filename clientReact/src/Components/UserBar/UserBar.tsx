@@ -1,12 +1,14 @@
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router";
 import Title from "../Title/Title";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setLogout } from "../../store/userSlice.tsx";
+import { saveUserRole, setLogout } from "../../store/userSlice.tsx";
 import { RootState } from "../../store/index";
 import styles from "./UserBar.module.css";
 import { logout } from "../../services/authService/index.tsx";
+import { getMyAccount } from "../../services/userService/index.tsx";
+
 interface UserBarProps {
   title: string;
 }
@@ -14,11 +16,12 @@ interface UserBarProps {
 const UserBar: FC<UserBarProps> = ({ title }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.user.user);
 
-  const userRole = user?.role || "guest";
+  useEffect(() => {
+    getMyAccount().then((res) => dispatch(saveUserRole(res.data.user.role)));
+  }, [dispatch]);
 
-  console.log(userRole);
+  const userRole = useSelector((state: RootState) => state.user.role);
 
   const handleLogOut = () => {
     logout().then(() => {
@@ -35,7 +38,7 @@ const UserBar: FC<UserBarProps> = ({ title }) => {
           <>
             <NavLink
               className={({ isActive }) => (isActive ? `${styles.active}` : "")}
-              to="/admin-events"
+              to="/all-events/admin-events"
             >
               Events
             </NavLink>
