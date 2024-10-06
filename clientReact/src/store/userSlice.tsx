@@ -1,27 +1,30 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { isLoggedIn } from "../services/authService";
-
+import { AuthState } from "./user";
 export const checkAuth = createAsyncThunk("user/checkAuth", async () => {
   return isLoggedIn().then((res) => res.data.loggedIn);
 });
 
-const initialState = {
-  fullName: "",
+const initialState: AuthState = {
   isLoggedIn: false,
+  user: null,
 };
 
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    updateName(state, action) {
-      state.fullName = action.payload;
-    },
-    isLogin(state) {
+    setLogin(state) {
       state.isLoggedIn = true;
     },
-    isLogout(state) {
+    setUser: (state, action) => {
+      state.user = action.payload;
+    },
+    setLogout(state) {
       state.isLoggedIn = false;
+    },
+    updateStatus(state, action) {
+      state.isLoggedIn = action.payload;
     },
   },
   // extraReducers: (builder) => {
@@ -39,5 +42,5 @@ const userSlice = createSlice({
   // },
 });
 
-export const { updateName, isLogin, isLogout } = userSlice.actions;
+export const { setLogin, setUser, setLogout, updateStatus } = userSlice.actions;
 export default userSlice.reducer;

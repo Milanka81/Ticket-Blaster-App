@@ -1,36 +1,30 @@
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router";
-import styles from "./Navbar.module.css";
+import styles from "./MainBar.module.css";
 import btnStyles from "../Button/Button.module.css";
-import Button from "./../Button/Button";
+import Button from "../Button/Button.tsx";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/index";
-import { isLoggedIn, logout } from "../../services/authService";
-import { useEffect, useState } from "react";
+import { isLoggedIn } from "../../services/authService/index.tsx";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { updateStatus } from "../../store/userSlice.tsx";
 
-const Navbar = ({ role }: { role: string }) => {
+const MainBar = ({ role }: { role: string }) => {
   const navigate = useNavigate();
-  const fullName = useSelector((state: RootState) => state.user.fullName);
-  const [loggedIn, setLoggedIn] = useState(false);
+  const dispatch = useDispatch();
+  // const fullName = useSelector((state: RootState) => state.user.fullName);
+  const loggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
 
   useEffect(() => {
-    isLoggedIn()
-      .then((res) => {
-        console.log(res.data);
-        setLoggedIn(res.data.loggedIn);
-      })
-      .catch((err) => console.log(err));
-  }, [loggedIn]);
-
-  const handleLogOut = () => {
-    logout().then(() => {
-      navigate("/login");
+    isLoggedIn().then((res) => {
+      dispatch(updateStatus(res.data.loggedIn));
     });
-  };
+  }, [loggedIn, dispatch]);
 
   return (
-    <div className={styles.navbar}>
-      <div className={styles.navbarContainer}>
+    <div className={styles.mainbar}>
+      <div className={styles.mainbarContainer}>
         <NavLink className={styles.logo} to="/">
           <img src="/img/Path 1.svg"></img>
         </NavLink>
@@ -40,6 +34,7 @@ const Navbar = ({ role }: { role: string }) => {
         <NavLink className={styles.navlinks} to="/events?category=stand-up">
           Stand-up Comedy
         </NavLink>
+
         {role === "header" ? (
           <div className={styles.searchBtnsContainer}>
             <input
@@ -56,6 +51,7 @@ const Navbar = ({ role }: { role: string }) => {
                 >
                   Log In
                 </Button>
+
                 <Button
                   className={btnStyles.btnMedium}
                   onClick={() => navigate("/register")}
@@ -64,9 +60,14 @@ const Navbar = ({ role }: { role: string }) => {
                 </Button>
               </div>
             ) : (
-              <Button className={btnStyles.btnSmall} onClick={handleLogOut}>
-                Log Out {fullName}
-              </Button>
+              <div className={styles.iconsContainer}>
+                <NavLink to="/shopping-cart">
+                  <img src="/img/shopping-cart.svg"></img>
+                </NavLink>
+                <NavLink to="/user-details">
+                  <img src="/img/user.svg"></img>
+                </NavLink>
+              </div>
             )}
           </div>
         ) : (
@@ -77,4 +78,4 @@ const Navbar = ({ role }: { role: string }) => {
   );
 };
 
-export default Navbar;
+export default MainBar;
