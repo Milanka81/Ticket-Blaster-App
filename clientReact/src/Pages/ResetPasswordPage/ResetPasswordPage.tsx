@@ -29,14 +29,16 @@ const ResetPasswordPage = () => {
     onSubmit: (values) => {
       if (token) {
         resetPassword(token, values)
-          .then((res) => {
-            setMessage(res.data.message + ", redirecting to login...");
+          .then(() => {
+            setMessage(
+              "Password has been changed successfully, redirecting to login..."
+            );
             setTimeout(() => {
               navigate("/login");
             }, 3000);
           })
-          .catch((error) => {
-            setMessage(error.response?.data.message);
+          .catch(() => {
+            setMessage("Something went wrong");
           });
       } else {
         setMessage("Token is missing or invalid");
