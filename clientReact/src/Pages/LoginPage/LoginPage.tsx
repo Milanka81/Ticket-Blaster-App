@@ -10,12 +10,12 @@ import styles from "../../Components/Form/Form.module.css";
 import btnStyles from "../../Components/Button/Button.module.css";
 import Title from "../../Components/Title/Title.tsx";
 import Form from "../../Components/Form/Form.tsx";
-import { useDispatch } from "react-redux";
-import { setLogin } from "../../store/userSlice.tsx";
+import { useAppDispatch } from "../../hooks.ts";
+import { setLogin } from "../../store/userSlice.ts";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const [message, setMessage] = useState("");
   const formik = useFormik({
