@@ -1,9 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./userSlice";
+import dropdownReducer from "./dropdownSlice";
 import { TypedUseSelectorHook, useSelector } from "react-redux";
 
 const store = configureStore({
-  reducer: { user: userReducer },
+  reducer: { user: userReducer, dropdown: dropdownReducer },
 });
 
 export type RootState = ReturnType<typeof store.getState>;
