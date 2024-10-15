@@ -7,10 +7,10 @@ nav a {
 
 .dropdownMenu {
   position: absolute;
-  top: 100%; /* Position the dropdown below the icon */
-  left: 50%; /* Center horizontally */
+  top: 100%;
+  left: 50%;
   transform: translateX(-50%);
-  background-color: white;
+  background-color: rgb(255, 255, 255);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid #ff48ab;
   border-radius: 4px;

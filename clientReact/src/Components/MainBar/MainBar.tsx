@@ -3,9 +3,10 @@ import { useNavigate } from "react-router";
 import styles from "./MainBar.module.css";
 import btnStyles from "../Button/Button.module.css";
 import Button from "../Button/Button.tsx";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks.ts";
 import { checkAuth } from "../../store/userSlice.ts";
+import { toggleDropdown } from "../../store/dropdownSlice.ts";
 import UserBar from "../UserBar/UserBar.tsx";
 
 const MainBar = ({ role }: { role: string }) => {
@@ -13,18 +14,11 @@ const MainBar = ({ role }: { role: string }) => {
   const dispatch = useAppDispatch();
   const loggedIn = useAppSelector((state) => state.user.isLoggedIn);
   const loading = useAppSelector((state) => state.user.loading);
-
+  const isDropdownOpen = useAppSelector((state) => state.dropdown.isOpen);
   useEffect(() => {
     dispatch(checkAuth());
   }, [dispatch]);
 
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  console.log(isDropdownOpen);
   return (
     <div className={styles.mainbar}>
       {!loading && (
@@ -68,9 +62,12 @@ const MainBar = ({ role }: { role: string }) => {
                   <NavLink to="/shopping-cart">
                     <img src="/img/shopping-cart.svg"></img>
                   </NavLink>
-                  <div className={styles.userIcon} onClick={toggleDropdown}>
+                  <div
+                    className={styles.userIcon}
+                    onClick={() => dispatch(toggleDropdown())}
+                  >
                     <img src="/img/user.svg"></img>
-                    <UserBar isDropdownOpen={isDropdownOpen} />
+                    {isDropdownOpen && <UserBar />}
                   </div>
                 </div>
               )}
