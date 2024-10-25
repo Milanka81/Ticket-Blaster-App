@@ -7,6 +7,7 @@ import { filteredEvents } from "../../store/eventsSlice.ts";
 import EventCard from "../../Components/EventCard/EventCard.tsx";
 import styles from "../HomePage/HomePage.module.css";
 interface Event {
+  _id: string;
   imageCover: string;
   eventName: string;
   eventDate: string;
@@ -22,7 +23,7 @@ const EventsPage = () => {
   const events: Event[] = useAppSelector((state) => state.events.events);
 
   const page = 1;
-  const limit = 20;
+  const limit = 10;
   const input = "";
 
   useEffect(() => {
@@ -38,7 +39,7 @@ const EventsPage = () => {
       <Title>{title}</Title>
       <div className={styles.eventsContainer}>
         {events.map((el) => (
-          <EventCard event={el} fullContent={false} />
+          <EventCard key={el._id} event={el} />
         ))}
       </div>
       <Outlet />

@@ -11,18 +11,15 @@ interface Event {
 
 interface EventCardProps {
   event: Event;
-  fullContent: boolean;
 }
 
-const EventCard: FC<EventCardProps> = ({ event, fullContent }) => {
+const EventCard: FC<EventCardProps> = ({ event }) => {
   const serverBaseUrl = "http://localhost:9005";
   const imageUrl = event.imageCover
     ? `${serverBaseUrl}/images/${event.imageCover}`
     : "/img/favicon.svg";
 
-  console.log(imageUrl);
-  const dateToString = event.eventDate.toString();
-  const date = dateToString.slice(0, 10);
+  const date = event.eventDate.slice(0, 10);
 
   return (
     <div className={styles.cardContainer}>
@@ -30,9 +27,7 @@ const EventCard: FC<EventCardProps> = ({ event, fullContent }) => {
       <div className={styles.infoContainer}>
         <p className={styles.eventName}>{event.eventName}</p>
         <p className={styles.eventDate}>{date}</p>
-        <p className={styles.description}>
-          {showContent(event.description, fullContent)}
-        </p>
+        <p className={styles.description}>{showContent(event.description)}</p>
         <div className={styles.locationGetTicketBtnContainer}>
           <p className={styles.location}>{event.location}</p>
           <button className={styles.getTicketBtn}>Get Tickets</button>
