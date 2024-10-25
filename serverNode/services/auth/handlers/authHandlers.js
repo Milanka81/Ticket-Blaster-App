@@ -24,7 +24,7 @@ exports.register = async (req, res) => {
     newUser.verificationToken = verificationToken;
     await newUser.save({ validateBeforeSave: false });
 
-    const verificationURL = `${clientUrl.origin}/verify-email/${verificationToken}`;
+    const verificationURL = `${clientUrl}/verify-email/${verificationToken}`;
 
     const message = `<h3>Welcome, ${newUser.fullName}!</h3>
 <p>Please confirm your email address by clicking on this link</p>
@@ -68,7 +68,7 @@ exports.verifyEmail = async (req, res) => {
     if (user.isVerified)
       return res
         .status(400)
-        .json({ message: "User has already been verified" });
+        .json({ message: "Your account has been verified" });
 
     user.isVerified = true;
     user.verificationToken = undefined;
@@ -131,7 +131,7 @@ exports.forgotPassword = async (req, res) => {
     const resetToken = user.createResetPasswordToken();
     await user.save({ validateBeforeSave: false });
 
-    const resetURL = `${clientUrl.origin}/reset-password/${resetToken}`;
+    const resetURL = `${clientUrl}/reset-password/${resetToken}`;
 
     const message = `<h3>Hello, ${user.fullName}!</h3>
     <p>To reset your password go to this link:</p>

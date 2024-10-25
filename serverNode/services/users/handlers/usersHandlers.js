@@ -35,6 +35,10 @@ exports.updatePassword = async (req, res) => {
   }
 };
 
+exports.getMyAccount = async (req, res) => {
+  res.status(200).json({ user: req.user });
+};
+
 exports.updateMyAccount = async (req, res) => {
   try {
     if (req.body.password || req.body.passwordConfirm) {

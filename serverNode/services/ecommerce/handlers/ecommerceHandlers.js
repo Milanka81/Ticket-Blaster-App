@@ -211,7 +211,7 @@ exports.confirmPayment = async (req, res) => {
 
       const tickets = await Promise.all(createTickets);
 
-      const myTickets = myCart.map((event) => {
+      const myTimkkkkjkmckets = myCart.map((event) => {
         const cartItem = tickets.find(
           (item) => item.event.toString() === event.event._id.toString()
         );

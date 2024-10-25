@@ -16,6 +16,7 @@ const limiter = rateLimit({
 });
 
 app.use("/api", limiter);
+app.use("/images", express.static(path.join(__dirname, "../../public/images")));
 
 const authProxy = proxy("http://localhost:9000", {
   proxyReqPathResolver: (req) => {

@@ -6,11 +6,19 @@ const protected = require("../auth/utils/adminRoutes");
 const events = require("./handlers/eventsHandlers");
 const helmet = require("helmet");
 const app = express();
+const path = require("path");
 
 db.init();
 app.use(helmet());
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
+    credentials: true,
+    maxAge: 900000,
+  })
+);
 
 app.get("/api/v1/events", events.getFilteredEvents);
 app.get("/api/v1/events/:id", events.getEvent);

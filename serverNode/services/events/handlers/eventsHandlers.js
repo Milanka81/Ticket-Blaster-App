@@ -4,16 +4,21 @@ exports.getFilteredEvents = async (req, res) => {
   try {
     let { page, limit, input, category } = req.query;
 
-    input = input || "";
+    input = input ?? "";
     page = parseInt(page) || 1;
     limit = parseInt(limit) || 10;
 
     const skip = (page - 1) * limit;
 
+    const ticketPriceQuery = !isNaN(Number(input))
+      ? { ticketPrice: { $lte: Number(input) } }
+      : {};
+
     let query = {
       $or: [
         { eventName: { $regex: input, $options: "i" } },
         { description: { $regex: input, $options: "i" } },
+        ticketPriceQuery,
       ],
     };
 
