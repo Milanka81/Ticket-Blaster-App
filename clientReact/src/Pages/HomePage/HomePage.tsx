@@ -4,7 +4,9 @@ import { filteredEvents } from "../../store/eventsSlice.ts";
 import EventCard from "../../Components/EventCard/EventCard.tsx";
 import styles from "./HomePage.module.css";
 import Title from "../../Components/Title/Title.tsx";
+import NextEvent from "../../Components/NextEvent/nextEvent.tsx";
 interface Event {
+  _id: string;
   imageCover: string;
   eventName: string;
   eventDate: string;
@@ -27,22 +29,27 @@ const HomePage = () => {
 
   if (!events) return <p>No events available</p>;
 
-  const concertEvents = events.filter((el) => el.category === "concert");
-  const standUpEvents = events.filter((el) => el.category === "stand-up");
+  const concertEvents = events.filter(
+    (el) => el.category === "concert" && el._id !== events[0]._id
+  );
+  const standUpEvents = events.filter(
+    (el) => el.category === "stand-up" && el._id !== events[0]._id
+  );
 
   return (
     <div>
+      {events[0] && <NextEvent event={events[0]} />}
       <div className={styles.eventsContainer}>
         <div className={styles.categoryContainer}>
           <Title>Musical Concerts</Title>
           {concertEvents.map((el) => (
-            <EventCard event={el} fullContent={false} />
+            <EventCard key={el._id} event={el} />
           ))}
         </div>
         <div className={styles.categoryContainer}>
           <Title>Stand-up Comedy</Title>
           {standUpEvents.map((el) => (
-            <EventCard event={el} fullContent={false} />
+            <EventCard key={el._id} event={el} />
           ))}
         </div>
       </div>
