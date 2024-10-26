@@ -1,0 +1,11 @@
+.container {
+  padding-right: 2rem;
+}
+
+.eventsContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 2rem;
+  column-gap: 2rem;
+  margin-bottom: 2rem;
+}

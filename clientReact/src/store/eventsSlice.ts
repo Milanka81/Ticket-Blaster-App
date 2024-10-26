@@ -12,17 +12,19 @@ export const filteredEvents = createAsyncThunk(
   "filteredEvents",
   async ({ page, limit, input, category }: EventsFilter) => {
     const response = await getAllEvents(page, limit, input, category);
-    return response.data.data;
+    return response.data;
   }
 );
 interface EventsState {
   events: [];
+  results: number;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: EventsState = {
   events: [],
+  results: 0,
   loading: false,
   error: null,
 };
@@ -37,7 +39,8 @@ const eventsSlice = createSlice({
       })
       .addCase(filteredEvents.fulfilled, (state, action) => {
         state.loading = false;
-        state.events = action.payload.events;
+        state.events = action.payload.data.events;
+        state.results = action.payload.results;
         state.error = null;
       })
       .addCase(filteredEvents.rejected, (state, action) => {

@@ -1,10 +1,12 @@
 import { useEffect } from "react";
+import { useNavigate } from "react-router";
 import { useAppDispatch, useAppSelector } from "../../hooks.ts";
 import { filteredEvents } from "../../store/eventsSlice.ts";
 import EventCard from "../../Components/EventCard/EventCard.tsx";
 import styles from "./HomePage.module.css";
 import Title from "../../Components/Title/Title.tsx";
-import NextEvent from "../../Components/NextEvent/nextEvent.tsx";
+import NextEvent from "../../Components/NextEvent/NextEvent.tsx";
+import btnStyle from "../../Components/Button/Button.module.css";
 interface Event {
   _id: string;
   imageCover: string;
@@ -15,6 +17,7 @@ interface Event {
   category: string;
 }
 const HomePage = () => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const events: Event[] = useAppSelector((state) => state.events.events);
 
@@ -22,6 +25,10 @@ const HomePage = () => {
   const limit = 20;
   const input = "";
   const category = "";
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   useEffect(() => {
     dispatch(filteredEvents({ page, limit, input, category }));
@@ -45,12 +52,24 @@ const HomePage = () => {
           {concertEvents.map((el) => (
             <EventCard key={el._id} event={el} />
           ))}
+          <button
+            className={btnStyle.loadMoreButton}
+            onClick={() => navigate("/events?category=concert")}
+          >
+            See All Musical Concerts
+          </button>
         </div>
         <div className={styles.categoryContainer}>
           <Title>Stand-up Comedy</Title>
           {standUpEvents.map((el) => (
             <EventCard key={el._id} event={el} />
           ))}
+          <button
+            className={btnStyle.loadMoreButton}
+            onClick={() => navigate("/events?category=stand-up")}
+          >
+            See All Stand-up Comedy Shows
+          </button>
         </div>
       </div>
     </div>
