@@ -53,4 +53,34 @@
   background: #000000;
   border-radius: 20px;
   cursor: pointer;
+  display: grid;
+  justify-content: center;
+  align-items: center;
+}
+.btnAdd {
+  grid-column-start: 3;
+  justify-self: right;
+  align-self: center;
+  width: 8rem;
+  height: 2rem;
+  color: #fff;
+  background: #000000;
+  border-radius: 20px;
+  cursor: pointer;
+}
+.inputError {
+  align-self: flex-end;
+  letter-spacing: -0.99px;
+  color: #ed0000a6;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+}
+.flexDiv {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.location {
+  grid-column-start: 2;
 }

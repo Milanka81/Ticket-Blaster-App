@@ -18,7 +18,6 @@ const MainBar = ({ role }: { role: string }) => {
   useEffect(() => {
     dispatch(checkAuth());
   }, [dispatch]);
-
   return (
     <div className={styles.mainbar}>
       {!loading && (

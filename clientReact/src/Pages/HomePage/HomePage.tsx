@@ -22,7 +22,7 @@ const HomePage = () => {
   const events: Event[] = useAppSelector((state) => state.events.events);
 
   const page = 1;
-  const limit = 20;
+  const limit = 0;
   const input = "";
   const category = "";
 
@@ -36,12 +36,12 @@ const HomePage = () => {
 
   if (!events) return <p>No events available</p>;
 
-  const concertEvents = events.filter(
-    (el) => el.category === "concert" && el._id !== events[0]._id
-  );
-  const standUpEvents = events.filter(
-    (el) => el.category === "stand-up" && el._id !== events[0]._id
-  );
+  const concertEvents = events
+    .filter((el) => el.category === "concert" && el._id !== events[0]._id)
+    .slice(0, 5);
+  const standUpEvents = events
+    .filter((el) => el.category === "stand-up" && el._id !== events[0]._id)
+    .slice(0, 5);
 
   return (
     <div>
