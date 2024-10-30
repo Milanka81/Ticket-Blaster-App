@@ -16,18 +16,12 @@ const AllEventsPage = () => {
       ticketPrice: "",
       totalTickets: "",
       description: "",
-      imageCover: "",
+      imageCover: null,
       location: "",
       eventDate: "",
     },
     onSubmit: (values) => {
-      const formattedValues = {
-        ...values,
-        ticketPrice: Number(values.ticketPrice),
-        totalTickets: Number(values.totalTickets),
-      };
-
-      postEvent(formattedValues).then(() => navigate("/"));
+      postEvent(values).then(() => navigate("/"));
     },
     validationSchema: Yup.object().shape({
       // imageCover: Yup.mixed().required("Image is required"),
@@ -42,13 +36,14 @@ const AllEventsPage = () => {
       eventDate: Yup.string().required("Event date is required"),
     }),
   });
+
   return (
     <div>
       <Title>Events</Title>
       <form
         className={styles.container}
         onSubmit={formik.handleSubmit}
-        // encType="multipart/form-data"
+        encType="multipart/form-data"
       >
         <div className={styles.flexDiv}>
           <Input
@@ -100,19 +95,28 @@ const AllEventsPage = () => {
           )}
         </div>
         <div className={styles.imageContainer}>
-          <label htmlFor="img" className={styles.uploadBtn}>
+          <label htmlFor="imageCover" className={styles.uploadBtn}>
             Upload Event Art
           </label>
           <input
-            name="img"
-            id="img"
+            name="imageCover"
+            id="imageCover"
             type="file"
             accept="image/*"
             hidden
-            onChange={() => {}}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                formik.setFieldValue("imageCover", file);
+              }
+            }}
           />
           {formik.values.imageCover ? (
-            <img className={styles.image} src={""} alt="event image" />
+            <img
+              className={styles.uploadedImage}
+              src={URL.createObjectURL(formik.values.imageCover)}
+              alt="event image"
+            />
           ) : (
             <img className={styles.image} />
           )}

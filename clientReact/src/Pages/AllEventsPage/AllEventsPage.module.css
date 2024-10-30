@@ -15,6 +15,11 @@
   border: 1px solid #707070;
   border-radius: 18px;
 }
+.uploadedImage {
+  width: 25rem;
+  max-height: 20rem;
+  border-radius: 18px;
+}
 .details {
   grid-row-start: 2;
   grid-column: 2 / span 2;
