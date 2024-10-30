@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const User = require("./../../../src/users/userSchema");
 
 const tokenVerify = async (req, res, next) => {
-  if (!req.cookies.jwt) {
+  if (!req.cookies?.jwt) {
     return res.status(401).json({ message: "You are not authenticated" });
   }
   try {
