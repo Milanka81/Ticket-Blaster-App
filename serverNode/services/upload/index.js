@@ -3,6 +3,7 @@ const multer = require("multer");
 const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
+const cookieParser = require("cookie-parser");
 const db = require("../../src/db/index");
 const auth = require("../auth/utils/auth");
 const protected = require("./../auth/utils/adminRoutes");
@@ -14,7 +15,15 @@ const {
 
 db.init();
 const app = express();
-app.use(cors());
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
+    credentials: true,
+    maxAge: 900000,
+  })
+);
 
 const storage = multer.diskStorage({
   destination: function (req, file, callback) {

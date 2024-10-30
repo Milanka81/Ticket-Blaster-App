@@ -20,6 +20,7 @@ exports.getFilteredEvents = async (req, res) => {
         { description: { $regex: input, $options: "i" } },
         ticketPriceQuery,
       ],
+      eventDate: { $gte: new Date() },
     };
 
     if (category) {
@@ -27,7 +28,7 @@ exports.getFilteredEvents = async (req, res) => {
     }
 
     const events = await Event.find(query)
-      .sort({ eventDate: -1 })
+      .sort({ eventDate: 1 })
       .skip(skip)
       .limit(limit);
 
@@ -55,26 +56,27 @@ exports.postEvent = async (req, res) => {
   const {
     eventName,
     category,
-    genre,
     ticketPrice,
     totalTickets,
     description,
-    imageCover,
     location,
-    images,
     eventDate,
   } = req.body;
+
+  let imageCover = "";
+  if (req.file) {
+    imageCover = req.file.filename;
+  }
+
   try {
     const event = await Event.create({
       eventName,
       category,
-      genre,
       ticketPrice,
       totalTickets,
       description,
       imageCover,
       location,
-      images,
       eventDate,
     });
 

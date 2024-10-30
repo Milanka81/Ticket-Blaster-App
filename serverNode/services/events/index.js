@@ -7,10 +7,13 @@ const events = require("./handlers/eventsHandlers");
 const helmet = require("helmet");
 const app = express();
 const path = require("path");
-
+const cookieParser = require("cookie-parser");
+const { upload } = require("../middlewares/uploadImage");
 db.init();
 app.use(helmet());
 app.use(express.json());
+app.use(cookieParser());
+
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -24,8 +27,7 @@ app.get("/api/v1/events", events.getFilteredEvents);
 app.get("/api/v1/events/:id", events.getEvent);
 
 app.use("/api/v1/events", auth.tokenVerify, protected.adminRoutes);
-
-app.post("/api/v1/events", events.postEvent);
+app.post("/api/v1/events", upload.single("imageCover"), events.postEvent);
 app.patch("/api/v1/events/:id", events.updateEvent);
 app.delete("/api/v1/events/:id", events.deleteEvent);
 
