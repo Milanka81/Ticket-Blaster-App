@@ -10,4 +10,7 @@ export const getAllEvents = (
   axios.get(
     `${BASE_URL}?page=${page}&limit=${limit}&input=${input}&category=${category}`
   );
-export const postEvent = ({ ...values }) => axios.post(`${BASE_URL}`, values);
+export const postEvent = ({ ...values }) =>
+  axios.post(`${BASE_URL}`, values, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
