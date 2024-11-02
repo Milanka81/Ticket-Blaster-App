@@ -10,7 +10,17 @@ export const getAllEvents = (
   axios.get(
     `${BASE_URL}?page=${page}&limit=${limit}&input=${input}&category=${category}`
   );
+
+export const getEvent = (id: string): Promise<AxiosResponse> => {
+  return axios.get(`${BASE_URL}/${id}`);
+};
 export const postEvent = ({ ...values }) =>
   axios.post(`${BASE_URL}`, values, {
     headers: { "Content-Type": "multipart/form-data" },
   });
+export const updateEvent = (
+  id: string,
+  { ...values }
+): Promise<AxiosResponse> => {
+  return axios.patch(`${BASE_URL}/${id}`, values);
+};

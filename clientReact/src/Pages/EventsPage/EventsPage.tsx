@@ -1,4 +1,3 @@
-import { Outlet } from "react-router";
 import { useLocation } from "react-router-dom";
 import Title from "../../Components/Title/Title.tsx";
 import { useEffect, useState } from "react";
@@ -59,9 +58,10 @@ const EventsPage = () => {
         onClick={() => setLimit((limit) => limit + 1)}
         disabled={results < limit}
       >
-        Load More {btnName}
+        {results < limit
+          ? `No more ${btnName} to display`
+          : `Load More ${btnName}`}
       </button>
-      <Outlet />
     </div>
   );
 };
