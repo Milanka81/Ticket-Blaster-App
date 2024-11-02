@@ -1,7 +1,9 @@
 import { FC } from "react";
 import styles from "./EventCard.module.css";
 import { showContent } from "../../utils";
+import { useNavigate } from "react-router";
 interface Event {
+  _id: string;
   imageCover: string;
   eventName: string;
   eventDate: string;
@@ -14,6 +16,7 @@ interface EventCardProps {
 }
 
 const EventCard: FC<EventCardProps> = ({ event }) => {
+  const navigate = useNavigate();
   const serverBaseUrl = "http://localhost:9005";
   const imageUrl = event.imageCover
     ? `${serverBaseUrl}/images/${event.imageCover}`
@@ -30,7 +33,14 @@ const EventCard: FC<EventCardProps> = ({ event }) => {
         <p className={styles.description}>{showContent(event.description)}</p>
         <div className={styles.locationGetTicketBtnContainer}>
           <p className={styles.location}>{event.location}</p>
-          <button className={styles.getTicketBtn}>Get Tickets</button>
+          <button
+            className={styles.getTicketBtn}
+            onClick={() => {
+              navigate(`/events/${event._id}`);
+            }}
+          >
+            Get Tickets
+          </button>
         </div>
       </div>
     </div>

@@ -33,8 +33,8 @@ export const router = createBrowserRouter([
       {
         path: "events",
         element: <EventsPage />,
-        children: [{ path: ":eventId", element: <EventPage /> }],
       },
+      { path: "events/:eventId", element: <EventPage componentState="view" /> },
       { path: "shopping-cart", element: <ShoppingCartPage /> },
       {
         path: "checkout",
