@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router";
 import styles from "./MainBar.module.css";
 import btnStyles from "../Button/Button.module.css";
@@ -8,13 +8,18 @@ import { useAppDispatch, useAppSelector } from "../../hooks.ts";
 import { checkAuth } from "../../store/userSlice.ts";
 import { toggleDropdown } from "../../store/dropdownSlice.ts";
 import UserBar from "../UserBar/UserBar.tsx";
+import { setInput } from "../../store/eventsSlice.ts";
 
 const MainBar = ({ role }: { role: string }) => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const category = searchParams.get("category") || "";
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const loggedIn = useAppSelector((state) => state.user.isLoggedIn);
   const loading = useAppSelector((state) => state.user.loading);
   const isDropdownOpen = useAppSelector((state) => state.dropdown.isOpen);
+
   useEffect(() => {
     dispatch(checkAuth());
   }, [dispatch]);
@@ -25,10 +30,24 @@ const MainBar = ({ role }: { role: string }) => {
           <NavLink className={styles.logo} to="/">
             <img src="/img/Path 1.svg"></img>
           </NavLink>
-          <NavLink className={styles.navlinks} to="/events?category=concert">
+          <NavLink
+            className={
+              category === "concert"
+                ? `${styles.navlinks} ${styles.active}`
+                : `${styles.navlinks}`
+            }
+            to="/events?category=concert"
+          >
             Musical Concerts
           </NavLink>
-          <NavLink className={styles.navlinks} to="/events?category=stand-up">
+          <NavLink
+            className={
+              category === "stand-up"
+                ? `${styles.navlinks} ${styles.active}`
+                : `${styles.navlinks}`
+            }
+            to="/events?category=stand-up"
+          >
             Stand-up Comedy
           </NavLink>
 
@@ -38,6 +57,7 @@ const MainBar = ({ role }: { role: string }) => {
                 className={styles.searchbar}
                 type="text"
                 placeholder="Search"
+                onChange={(e) => dispatch(setInput(e.target.value))}
               />
 
               {!loggedIn ? (

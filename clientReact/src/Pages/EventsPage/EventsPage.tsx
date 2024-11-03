@@ -22,17 +22,17 @@ const EventsPage = () => {
   const dispatch = useAppDispatch();
   const events: Event[] = useAppSelector((state) => state.events.events);
   const results = useAppSelector((state) => state.events.results);
-  const [limit, setLimit] = useState(1);
+  const input = useAppSelector((state) => state.events.input);
+  const [limit, setLimit] = useState(10);
 
   const page = 1;
-  const input = "";
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
-    setLimit(1);
+    setLimit(10);
   }, [category]);
 
   useEffect(() => {
@@ -47,20 +47,26 @@ const EventsPage = () => {
 
   return (
     <div className={styles.container}>
-      <Title>{title}</Title>
-      <div className={styles.eventsContainer}>
+      {input ? (
+        <Title>Search results for: {input}</Title>
+      ) : (
+        <Title>{title}</Title>
+      )}
+      <div
+        className={
+          input ? `${styles.searchContainer}` : `${styles.eventsContainer}`
+        }
+      >
         {events.map((el) => (
           <EventCard key={el._id} event={el} />
         ))}
       </div>
       <button
         className={btnStyle.loadMoreButton}
-        onClick={() => setLimit((limit) => limit + 1)}
+        onClick={() => setLimit((limit) => limit + 10)}
         disabled={results < limit}
       >
-        {results < limit
-          ? `No more ${btnName} to display`
-          : `Load More ${btnName}`}
+        {results < limit ? `No more events to display` : `Load More ${btnName}`}
       </button>
     </div>
   );
