@@ -20,6 +20,7 @@ interface EventsState {
   results: number;
   loading: boolean;
   error: string | null;
+  input: string;
 }
 
 const initialState: EventsState = {
@@ -27,11 +28,16 @@ const initialState: EventsState = {
   results: 0,
   loading: false,
   error: null,
+  input: "",
 };
 const eventsSlice = createSlice({
   name: "events",
   initialState,
-  reducers: {},
+  reducers: {
+    setInput(state, action) {
+      state.input = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(filteredEvents.pending, (state) => {
@@ -50,4 +56,5 @@ const eventsSlice = createSlice({
       });
   },
 });
+export const { setInput } = eventsSlice.actions;
 export default eventsSlice.reducer;

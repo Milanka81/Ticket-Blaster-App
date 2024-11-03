@@ -27,8 +27,10 @@
   font-size: 1rem;
   letter-spacing: -0.77px;
   color: #d3d3d3;
-
   text-decoration: none;
+}
+.active {
+  color: #ff48ab;
 }
 .searchbar {
   width: 18.4rem;

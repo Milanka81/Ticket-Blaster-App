@@ -28,9 +28,11 @@ const EventCard: FC<EventCardProps> = ({ event }) => {
     <div className={styles.cardContainer}>
       <img src={imageUrl} alt={event.eventName} className={styles.image} />
       <div className={styles.infoContainer}>
-        <p className={styles.eventName}>{event.eventName}</p>
-        <p className={styles.eventDate}>{date}</p>
-        <p className={styles.description}>{showContent(event.description)}</p>
+        <div className={styles.mainData}>
+          <p className={styles.eventName}>{event.eventName}</p>
+          <p className={styles.eventDate}>{date}</p>
+          <p className={styles.description}>{showContent(event.description)}</p>
+        </div>
         <div className={styles.locationGetTicketBtnContainer}>
           <p className={styles.location}>{event.location}</p>
           <button
