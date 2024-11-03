@@ -4,6 +4,7 @@ import "./App.css";
 import { useAppDispatch, useAppSelector } from "./hooks";
 import { closeDropdown } from "./store/dropdownSlice";
 import EventsPage from "./Pages/EventsPage/EventsPage";
+import { clearInput } from "./store/eventsSlice";
 
 function App() {
   const dispatch = useAppDispatch();
@@ -11,6 +12,7 @@ function App() {
   const input = useAppSelector((state) => state.events.input);
   const closeDropdownHandler = () => {
     if (isDropdownOpen) dispatch(closeDropdown());
+    if (input) dispatch(clearInput());
   };
   return (
     <div onClick={closeDropdownHandler}>

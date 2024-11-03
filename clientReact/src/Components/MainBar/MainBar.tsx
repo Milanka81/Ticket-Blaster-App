@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import styles from "./MainBar.module.css";
 import btnStyles from "../Button/Button.module.css";
 import Button from "../Button/Button.tsx";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks.ts";
 import { checkAuth } from "../../store/userSlice.ts";
 import { toggleDropdown } from "../../store/dropdownSlice.ts";
@@ -19,10 +19,19 @@ const MainBar = ({ role }: { role: string }) => {
   const loggedIn = useAppSelector((state) => state.user.isLoggedIn);
   const loading = useAppSelector((state) => state.user.loading);
   const isDropdownOpen = useAppSelector((state) => state.dropdown.isOpen);
+  const input = useAppSelector((state) => state.events.input);
+  const inputEl = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (inputEl.current) inputEl.current.focus();
+  }, []);
 
   useEffect(() => {
     dispatch(checkAuth());
   }, [dispatch]);
+
+  console.log(input);
+
   return (
     <div className={styles.mainbar}>
       {!loading && (
@@ -57,6 +66,8 @@ const MainBar = ({ role }: { role: string }) => {
                 className={styles.searchbar}
                 type="text"
                 placeholder="Search"
+                ref={inputEl}
+                value={inputEl.current ? input : ""}
                 onChange={(e) => dispatch(setInput(e.target.value))}
               />
 
