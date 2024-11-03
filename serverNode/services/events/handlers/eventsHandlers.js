@@ -18,9 +18,11 @@ exports.getFilteredEvents = async (req, res) => {
       $or: [
         { eventName: { $regex: input, $options: "i" } },
         { description: { $regex: input, $options: "i" } },
-        ticketPriceQuery,
+        ...(!isNaN(Number(input))
+          ? [{ ticketPrice: { $lte: Number(input) } }]
+          : []),
       ],
-      eventDate: { $gte: new Date() },
+      eventDate: { $gte: Date.now() },
     };
 
     if (category) {
