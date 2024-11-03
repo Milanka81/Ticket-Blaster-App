@@ -37,6 +37,9 @@ const eventsSlice = createSlice({
     setInput(state, action) {
       state.input = action.payload;
     },
+    clearInput(state) {
+      state.input = "";
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -56,5 +59,5 @@ const eventsSlice = createSlice({
       });
   },
 });
-export const { setInput } = eventsSlice.actions;
+export const { setInput, clearInput } = eventsSlice.actions;
 export default eventsSlice.reducer;
