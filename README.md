@@ -108,10 +108,10 @@ All services are secured with JWT for authenticated access.
 
 For additional functionality, implemented:
 
-Mobile-Friendly CSS
-Email Confirmation for Registration
-Email Ticket Delivery
-Ticket Quantity Limiting
+### Mobile-Friendly CSS,
+### Email Confirmation for Registration,
+### Email Ticket Delivery,
+### Ticket Quantity Limiting
 
 ## Application Pages
 
