@@ -60,13 +60,13 @@ TicketBlaster offers distinct access levels:
 
 ### Login and Signup
 
-You can login as an admin with credentials:
+You can login as an **admin** with credentials:
 
 ```bash
 email: sara@gmail.com, password: pass1234
 ```
 
-and as a user with
+and as a **user** with
 
 ```bash
 email: test@test.com, password: test1234
