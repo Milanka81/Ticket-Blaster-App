@@ -60,16 +60,16 @@ TicketBlaster offers distinct access levels:
 
 ### Login and Signup
 
-You can login as an admin with credentials:
+You can login as an **admin** with credentials:
 
 ```bash
-email: admin, password: pass1234
+email: sara@gmail.com, password: pass1234
 ```
 
-and as a user with
+and as a **user** with
 
 ```bash
-email: user, password: pass1234
+email: test@test.com, password: test1234
 ```
 
 or register as a new user with your own credentials.
@@ -108,10 +108,10 @@ All services are secured with JWT for authenticated access.
 
 For additional functionality, implemented:
 
-Mobile-Friendly CSS
-Email Confirmation for Registration
-Email Ticket Delivery
-Ticket Quantity Limiting
+- Responsive CSS,
+- Email Confirmation for Registration,
+- Email Ticket Delivery,
+- Ticket Quantity Limiting
 
 ## Application Pages
 
