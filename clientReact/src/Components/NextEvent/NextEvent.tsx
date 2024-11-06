@@ -1,6 +1,8 @@
 import styles from "./NextEvent.module.css";
 import { FC } from "react";
+import { useNavigate } from "react-router";
 interface Event {
+  _id: string;
   imageCover: string;
   eventName: string;
   eventDate: string;
@@ -12,6 +14,7 @@ interface EventProps {
   event: Event;
 }
 const NextEvent: FC<EventProps> = ({ event }) => {
+  const navigate = useNavigate();
   const serverBaseUrl = "http://localhost:9005";
   const imageUrl = event.imageCover
     ? `${serverBaseUrl}/images/${event.imageCover}`
@@ -30,7 +33,14 @@ const NextEvent: FC<EventProps> = ({ event }) => {
         <p className={styles.dateLocation}>
           {event.eventDate.slice(0, 10)}, {event.location}
         </p>
-        <button className={styles.getTicketBtn}>Get Tickets</button>
+        <button
+          className={styles.getTicketBtn}
+          onClick={() => {
+            navigate(`/events/${event._id}`);
+          }}
+        >
+          Get Tickets
+        </button>
       </div>
     </div>
   );

@@ -13,7 +13,6 @@ import ShoppingCartPage from "../Pages/ShoppingCartPage/ShoppingCartPage";
 import UserDetailsPage from "../Pages/UserDetailsPage/UserDetailsPage";
 import TicketHistoryPage from "../Pages/TicketHistoryPage/TicketHistoryPage";
 import BoughtTicketsPage from "../Pages/BoughtTicketsPage/BoughtTicketsPage";
-import AllEventsPage from "../Pages/AllEventsPage/AllEventsPage";
 import AllUsersPage from "../Pages/AllUsersPage/AllUsersPage";
 import AdminEventsPage from "../Pages/AdminEventsPage/AdminEventsPage";
 import VerifyEmail from "../Pages/VerifyEmail/VerifyEmail";
@@ -34,7 +33,11 @@ export const router = createBrowserRouter([
         path: "events",
         element: <EventsPage />,
       },
-      { path: "events/:eventId", element: <EventPage componentState="view" /> },
+      { path: "events/:eventId", element: <EventPage componentState="edit" /> },
+      {
+        path: "admin-events/create-event",
+        element: <EventPage componentState="add" />,
+      },
       { path: "shopping-cart", element: <ShoppingCartPage /> },
       {
         path: "checkout",
@@ -46,11 +49,7 @@ export const router = createBrowserRouter([
         children: [{ path: ":ticketId", element: <PrintTicketPage /> }],
       },
       { path: "tickets-history", element: <TicketHistoryPage /> },
-      {
-        path: "all-events",
-        element: <AllEventsPage />,
-        children: [{ path: "admin-events", element: <AdminEventsPage /> }],
-      },
+      { path: "admin-events", element: <AdminEventsPage /> },
       { path: "all-users", element: <AllUsersPage /> },
     ],
   },

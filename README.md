@@ -2,24 +2,6 @@
 
 TicketBlaster is an online ticketing application designed for purchasing tickets to music concerts and stand-up comedy events. This application features user-friendly navigation and robust functionality across three user types, allowing browsing, ticket purchasing, and full event management.
 
-## Table of Contents
-
-- [Project Overview](#project-overview)
-- [Installation](#installation)
-- [Database Setup](#database-setup)
-- [Usage](#usage)
-  - [Login and Signup](#login-and-signup)
-  - [Admin Dashboard](#admin-dashboard)
-  - [User Preferences](#user-preferences)
-  - [Homepage Sections](#homepage-sections)
-  - [Game Details](#game-details)
-  - [Account Management](#account-management)
-- [Contributing](#contributing)
-
-## Project Overview
-
-This repository contains a React app, an Express app, and a MySQL database. The React app serves as the frontend, while the Express app acts as the backend API. The MySQL database stores the application's data.
-
 ## Installation
 
 Clone the repository:

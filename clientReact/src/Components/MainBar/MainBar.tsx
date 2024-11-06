@@ -30,8 +30,6 @@ const MainBar = ({ role }: { role: string }) => {
     dispatch(checkAuth());
   }, [dispatch]);
 
-  console.log(input);
-
   return (
     <div className={styles.mainbar}>
       {!loading && (
