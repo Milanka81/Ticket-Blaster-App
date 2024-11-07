@@ -34,10 +34,6 @@ export const router = createBrowserRouter([
         element: <EventsPage />,
       },
       { path: "events/:eventId", element: <EventPage componentState="edit" /> },
-      {
-        path: "admin-events/create-event",
-        element: <EventPage componentState="add" />,
-      },
       { path: "shopping-cart", element: <ShoppingCartPage /> },
       {
         path: "checkout",
@@ -49,7 +45,14 @@ export const router = createBrowserRouter([
         children: [{ path: ":ticketId", element: <PrintTicketPage /> }],
       },
       { path: "tickets-history", element: <TicketHistoryPage /> },
-      { path: "admin-events", element: <AdminEventsPage /> },
+      {
+        path: "admin-events",
+        element: <AdminEventsPage />,
+      },
+      {
+        path: "admin-events/create-event",
+        element: <EventPage componentState="add" />,
+      },
       { path: "all-users", element: <AllUsersPage /> },
     ],
   },

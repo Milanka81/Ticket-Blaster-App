@@ -26,8 +26,6 @@ const EventsPage = () => {
   const results = useAppSelector((state) => state.events.results);
   const input = useAppSelector((state) => state.events.input);
   const [limit, setLimit] = useState(10);
-  const { pathname } = useLocation();
-  const adminPath = pathname === "/admin-events";
   const page = 1;
 
   useEffect(() => {
@@ -53,8 +51,6 @@ const EventsPage = () => {
       <div className={styles.flexContainer}>
         {input ? (
           <Title>Search results for: {input}</Title>
-        ) : adminPath ? (
-          <Title>Events</Title>
         ) : (
           <Title>{title}</Title>
         )}

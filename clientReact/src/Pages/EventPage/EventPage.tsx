@@ -9,7 +9,7 @@ import { getEvent, postEvent, updateEvent } from "../../services/eventService";
 import { useParams } from "react-router";
 import { handleEmpty, imgSrc } from "../../utils";
 type EventPageProps = {
-  componentState: "add" | "edit" | "view";
+  componentState: "add" | "edit";
 };
 const EventPage: FC<EventPageProps> = ({ componentState }) => {
   const { eventId } = useParams<{ eventId: string }>();
@@ -45,9 +45,6 @@ const EventPage: FC<EventPageProps> = ({ componentState }) => {
           postEvent(values)
             .then(() => navigate("/"))
             .catch((err) => console.log(err));
-          break;
-        case "view":
-          console.log("view");
           break;
         case "edit":
           if (eventId) {
@@ -166,7 +163,7 @@ const EventPage: FC<EventPageProps> = ({ componentState }) => {
             <img className={styles.imagePlaceholder} />
           )}
 
-          {formik.values.imageCover &&
+          {componentState === "edit" &&
             typeof formik.values.imageCover !== "string" && (
               <button
                 className={styles.btnBack}
@@ -238,7 +235,7 @@ const EventPage: FC<EventPageProps> = ({ componentState }) => {
         </div>
         <div className={styles.flexDiv}>
           <button className={styles.btnAdd} type="submit">
-            {componentState === "view" ? "Add to Cart" : "Save"}
+            Save
           </button>
           <button
             className={styles.btnBack}

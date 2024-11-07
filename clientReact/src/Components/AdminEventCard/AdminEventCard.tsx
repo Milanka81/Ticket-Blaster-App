@@ -1,5 +1,6 @@
 import { FC } from "react";
 import styles from "./AdminEventCard.module.css";
+import { imgSrc } from "../../utils";
 // import { useNavigate } from "react-router";
 
 interface Event {
@@ -17,16 +18,16 @@ interface EventCardProps {
 
 const AdminEventCard: FC<EventCardProps> = ({ event }) => {
   // const navigate = useNavigate();
-  const serverBaseUrl = "http://localhost:9005";
-  const imageUrl = event.imageCover
-    ? `${serverBaseUrl}/images/${event.imageCover}`
-    : "/img/favicon.svg";
 
   const date = event.eventDate.slice(0, 10);
 
   return (
     <div className={`${styles.cardContainer} ${styles.adminCardContainer}`}>
-      <img src={imageUrl} alt={event.eventName} className={styles.imageAdmin} />
+      <img
+        src={imgSrc(event.imageCover)}
+        alt={event.eventName}
+        className={styles.imageAdmin}
+      />
       <div className={styles.infoContainer}>
         <p className={`${styles.eventName} ${styles.adminEventName}`}>
           {event.eventName}
