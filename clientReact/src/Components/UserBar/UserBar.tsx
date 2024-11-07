@@ -30,7 +30,7 @@ const UserBar = () => {
       <div className={styles.dropdownMenu}>
         {userRole === "admin" && (
           <>
-            <NavLink to="/all-events/admin-events">Events</NavLink>
+            <NavLink to="/admin-events">Events</NavLink>
             <NavLink to="/all-users">Users</NavLink>
           </>
         )}

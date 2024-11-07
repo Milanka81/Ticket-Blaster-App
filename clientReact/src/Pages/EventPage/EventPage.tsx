@@ -7,9 +7,9 @@ import styles from "./EventPage.module.css";
 import Input from "../../Components/Input/Input";
 import { getEvent, postEvent, updateEvent } from "../../services/eventService";
 import { useParams } from "react-router";
-import { handleEmpty } from "../../utils";
+import { handleEmpty, imgSrc } from "../../utils";
 type EventPageProps = {
-  componentState: "add" | "edit" | "view";
+  componentState: "add" | "edit";
 };
 const EventPage: FC<EventPageProps> = ({ componentState }) => {
   const { eventId } = useParams<{ eventId: string }>();
@@ -25,7 +25,7 @@ const EventPage: FC<EventPageProps> = ({ componentState }) => {
     eventDate: "",
   });
   const formattedDate = event.eventDate?.slice(0, 10);
-
+  console.log(" event.imageCover", event.imageCover);
   useEffect(() => {
     if (eventId) {
       getEvent(eventId).then((res) => {
@@ -42,11 +42,9 @@ const EventPage: FC<EventPageProps> = ({ componentState }) => {
     onSubmit: (values) => {
       switch (componentState) {
         case "add":
-          postEvent(values).then(() => navigate("/"));
-
-          break;
-        case "view":
-          console.log("view");
+          postEvent(values)
+            .then(() => navigate("/"))
+            .catch((err) => console.log(err));
           break;
         case "edit":
           if (eventId) {
@@ -73,10 +71,8 @@ const EventPage: FC<EventPageProps> = ({ componentState }) => {
       eventDate: Yup.string().required("Event date is required"),
     }),
   });
-  const serverBaseUrl = "http://localhost:9005";
-  const imageUrl = formik.values?.imageCover
-    ? `${serverBaseUrl}/images/${formik.values.imageCover}`
-    : "/img/favicon.svg";
+  console.log("formik.values.imageCover", formik.values.imageCover);
+  console.log(typeof formik.values.imageCover === "string");
 
   return (
     <div>
@@ -126,7 +122,9 @@ const EventPage: FC<EventPageProps> = ({ componentState }) => {
             id="eventDate"
             name="eventDate"
             type="date"
-            value={formattedDate}
+            value={
+              componentState === "add" ? formik.values.eventDate : formattedDate
+            }
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
@@ -135,33 +133,47 @@ const EventPage: FC<EventPageProps> = ({ componentState }) => {
           )}
         </div>
         <div className={styles.imageContainer}>
-          {componentState !== "view" && (
-            <>
-              <label htmlFor="imageCover" className={styles.uploadBtn}>
-                Upload Event Art
-              </label>
-              <input
-                name="imageCover"
-                id="imageCover"
-                type="file"
-                accept="image/*"
-                hidden
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
-                    formik.setFieldValue("imageCover", file);
-                  }
-                }}
-              />
-            </>
+          <label htmlFor="imageCover" className={styles.uploadBtn}>
+            Upload Event Art
+          </label>
+          <input
+            name="imageCover"
+            id="imageCover"
+            type="file"
+            accept="image/*"
+            hidden
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                formik.setFieldValue("imageCover", file);
+              }
+            }}
+          />
+          {formik.values.imageCover ? (
+            <img
+              className={styles.uploadedImage}
+              src={
+                typeof formik.values.imageCover === "string"
+                  ? imgSrc(formik.values.imageCover)
+                  : URL.createObjectURL(formik.values.imageCover)
+              }
+              alt={formik.values.eventName}
+            />
+          ) : (
+            <img className={styles.imagePlaceholder} />
           )}
 
-          <img
-            className={styles.uploadedImage}
-            src={imageUrl}
-            alt={formik.values.eventName || "event"}
-          />
-
+          {componentState === "edit" &&
+            typeof formik.values.imageCover !== "string" && (
+              <button
+                className={styles.btnBack}
+                onClick={() => {
+                  formik.setFieldValue("imageCover", event.imageCover);
+                }}
+              >
+                Drop image
+              </button>
+            )}
           {formik.touched.imageCover && formik.errors.imageCover && (
             <p className={styles.inputError}>{formik.errors.imageCover}</p>
           )}
@@ -221,9 +233,18 @@ const EventPage: FC<EventPageProps> = ({ componentState }) => {
             <p className={styles.inputError}>{formik.errors.location}</p>
           )}
         </div>
-        <button className={styles.btnAdd} type="submit">
-          {componentState === "view" ? "Add to Cart" : "Save"}
-        </button>
+        <div className={styles.flexDiv}>
+          <button className={styles.btnAdd} type="submit">
+            Save
+          </button>
+          <button
+            className={styles.btnBack}
+            type="button"
+            onClick={() => navigate(-1)}
+          >
+            Back
+          </button>
+        </div>
       </form>
     </div>
   );
