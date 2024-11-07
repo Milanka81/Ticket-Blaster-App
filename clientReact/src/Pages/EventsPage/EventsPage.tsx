@@ -5,7 +5,8 @@ import { useAppDispatch, useAppSelector } from "../../hooks.ts";
 import { filteredEvents } from "../../store/eventsSlice.ts";
 import EventCard from "../../Components/EventCard/EventCard.tsx";
 import styles from "./EventsPage.module.css";
-import btnStyle from "../../Components/Button/Button.module.css";
+import btnStyles from "../../Components/Button/Button.module.css";
+
 interface Event {
   _id: string;
   imageCover: string;
@@ -17,6 +18,7 @@ interface Event {
 }
 const EventsPage = () => {
   const location = useLocation();
+
   const searchParams = new URLSearchParams(location.search);
   const category = searchParams.get("category") || "";
   const dispatch = useAppDispatch();
@@ -47,11 +49,13 @@ const EventsPage = () => {
 
   return (
     <div className={styles.container}>
-      {input ? (
-        <Title>Search results for: {input}</Title>
-      ) : (
-        <Title>{title}</Title>
-      )}
+      <div className={styles.flexContainer}>
+        {input ? (
+          <Title>Search results for: {input}</Title>
+        ) : (
+          <Title>{title}</Title>
+        )}
+      </div>
       <div
         className={
           input ? `${styles.searchContainer}` : `${styles.eventsContainer}`
@@ -62,7 +66,7 @@ const EventsPage = () => {
         ))}
       </div>
       <button
-        className={btnStyle.loadMoreButton}
+        className={btnStyles.loadMoreButton}
         onClick={() => setLimit((limit) => limit + 10)}
         disabled={results < limit}
       >
