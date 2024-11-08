@@ -8,12 +8,15 @@ import Input from "../../Components/Input/Input";
 import { getEvent, postEvent, updateEvent } from "../../services/eventService";
 import { useParams } from "react-router";
 import { handleEmpty, imgSrc } from "../../utils";
+import { useAppDispatch } from "../../hooks.ts";
+import { filteredEvents } from "../../store/eventsSlice.ts";
 type EventPageProps = {
   componentState: "add" | "edit";
 };
 const EventPage: FC<EventPageProps> = ({ componentState }) => {
   const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [event, setEvent] = useState({
     eventName: "",
     category: "",
@@ -48,9 +51,18 @@ const EventPage: FC<EventPageProps> = ({ componentState }) => {
           break;
         case "edit":
           if (eventId) {
-            updateEvent(eventId, values).then((res) =>
-              setEvent(res.data.data.event)
-            );
+            console.log(values.imageCover);
+            // updateEvent(eventId, values).then(() => {
+            //   dispatch(
+            //     filteredEvents({
+            //       page: 1,
+            //       limit: 10,
+            //       input: "",
+            //       category: "",
+            //     })
+            //   );
+            //   navigate(-1);
+            // });
           }
           break;
         default:

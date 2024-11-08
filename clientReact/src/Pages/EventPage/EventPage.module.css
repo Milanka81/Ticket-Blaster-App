@@ -1,7 +1,7 @@
 .container {
   display: grid;
-  grid-template-columns: auto auto auto;
-  gap: 2rem;
+  grid-template-columns: repeat(3 1fr);
+  gap: 1rem;
 }
 .imageContainer {
   display: flex;
@@ -51,7 +51,7 @@
 }
 .uploadBtn {
   font-size: 1rem;
-  width: 100%;
+  width: 24rem;
   height: 2.6rem;
   color: #fff;
   background: #000000;
@@ -100,7 +100,7 @@
   grid-column-start: 2;
 }
 .imagePlaceholder {
-  width: 25rem;
+  width: 24rem;
   height: 20rem;
   border-radius: 20px;
   background: #f0f0f0;
