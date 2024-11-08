@@ -24,3 +24,6 @@ export const updateEvent = (
 ): Promise<AxiosResponse> => {
   return axios.patch(`${BASE_URL}/${id}`, values);
 };
+export const deleteEvent = (id: string): Promise<AxiosResponse> => {
+  return axios.delete(`${BASE_URL}/${id}`);
+};
