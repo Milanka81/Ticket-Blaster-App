@@ -22,7 +22,9 @@ export const updateEvent = (
   id: string,
   { ...values }
 ): Promise<AxiosResponse> => {
-  return axios.patch(`${BASE_URL}/${id}`, values);
+  return axios.patch(`${BASE_URL}/${id}`, values, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
 };
 export const deleteEvent = (id: string): Promise<AxiosResponse> => {
   return axios.delete(`${BASE_URL}/${id}`);

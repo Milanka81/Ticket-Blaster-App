@@ -28,7 +28,7 @@ const EventPage: FC<EventPageProps> = ({ componentState }) => {
     eventDate: "",
   });
   const formattedDate = event.eventDate?.slice(0, 10);
-  console.log(" event.imageCover", event.imageCover);
+
   useEffect(() => {
     if (eventId) {
       getEvent(eventId).then((res) => {
@@ -50,19 +50,37 @@ const EventPage: FC<EventPageProps> = ({ componentState }) => {
             .catch((err) => console.log(err));
           break;
         case "edit":
-          if (eventId) {
-            console.log(values.imageCover);
-            // updateEvent(eventId, values).then(() => {
-            //   dispatch(
-            //     filteredEvents({
-            //       page: 1,
-            //       limit: 10,
-            //       input: "",
-            //       category: "",
-            //     })
-            //   );
-            //   navigate(-1);
-            // });
+          if (eventId && typeof values.imageCover === "string") {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { imageCover, ...data } = values;
+            updateEvent(eventId, data).then(() => {
+              dispatch(
+                filteredEvents({
+                  page: 1,
+                  limit: 10,
+                  input: "",
+                  category: "",
+                })
+              );
+              navigate(-1);
+            });
+          }
+          if (
+            eventId &&
+            values.imageCover &&
+            typeof values.imageCover === "object"
+          ) {
+            updateEvent(eventId, values).then(() => {
+              dispatch(
+                filteredEvents({
+                  page: 1,
+                  limit: 10,
+                  input: "",
+                  category: "",
+                })
+              );
+              navigate(-1);
+            });
           }
           break;
         default:
@@ -83,8 +101,6 @@ const EventPage: FC<EventPageProps> = ({ componentState }) => {
       eventDate: Yup.string().required("Event date is required"),
     }),
   });
-  console.log("formik.values.imageCover", formik.values.imageCover);
-  console.log(typeof formik.values.imageCover === "string");
 
   return (
     <div>
