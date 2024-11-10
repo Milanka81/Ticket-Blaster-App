@@ -72,6 +72,7 @@
   border: none;
 }
 .updateBtn {
-  background: #ff48ab;
   color: #000;
+  background-color: #fff;
+  border: 1px solid #ff48ab;
 }

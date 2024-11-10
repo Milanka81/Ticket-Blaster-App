@@ -86,8 +86,6 @@ exports.postEvent = async (req, res) => {
   }
 };
 exports.updateEvent = async (req, res) => {
-  console.log(req.body);
-  console.log(req.file);
   const {
     eventName,
     category,
