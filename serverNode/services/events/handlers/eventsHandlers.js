@@ -10,10 +10,6 @@ exports.getFilteredEvents = async (req, res) => {
 
     const skip = (page - 1) * limit;
 
-    const ticketPriceQuery = !isNaN(Number(input))
-      ? { ticketPrice: { $lte: Number(input) } }
-      : {};
-
     let query = {
       $or: [
         { eventName: { $regex: input, $options: "i" } },
@@ -90,31 +86,34 @@ exports.postEvent = async (req, res) => {
   }
 };
 exports.updateEvent = async (req, res) => {
+  console.log(req.body);
+  console.log(req.file);
   const {
     eventName,
     category,
-    genre,
     ticketPrice,
     totalTickets,
     description,
-    imageCover,
     location,
-    images,
     eventDate,
   } = req.body;
+
+  let imageCover = "";
+  if (req.file) {
+    imageCover = req.file.filename;
+  }
+
   try {
     const event = await Event.findByIdAndUpdate(
       req.params.id,
       {
         eventName,
         category,
-        genre,
         ticketPrice,
         totalTickets,
         description,
         imageCover,
         location,
-        images,
         eventDate,
       },
       {
