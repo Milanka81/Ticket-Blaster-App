@@ -28,7 +28,11 @@ app.get("/api/v1/events/:id", events.getEvent);
 
 app.use("/api/v1/events", auth.tokenVerify, protected.adminRoutes);
 app.post("/api/v1/events", upload.single("imageCover"), events.postEvent);
-app.patch("/api/v1/events/:id", events.updateEvent);
+app.patch(
+  "/api/v1/events/:id",
+  upload.single("imageCover"),
+  events.updateEvent
+);
 app.delete("/api/v1/events/:id", events.deleteEvent);
 
 app.listen(process.env.PORTEVENTS, (err) => {
