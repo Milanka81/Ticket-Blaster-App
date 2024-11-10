@@ -16,6 +16,7 @@ import BoughtTicketsPage from "../Pages/BoughtTicketsPage/BoughtTicketsPage";
 import AllUsersPage from "../Pages/AllUsersPage/AllUsersPage";
 import AdminEventsPage from "../Pages/AdminEventsPage/AdminEventsPage";
 import VerifyEmail from "../Pages/VerifyEmail/VerifyEmail";
+import ViewEvent from "../Components/ViewEvent/ViewEvent";
 
 export const router = createBrowserRouter([
   {
@@ -33,7 +34,14 @@ export const router = createBrowserRouter([
         path: "events",
         element: <EventsPage />,
       },
-      { path: "events/:eventId", element: <EventPage componentState="edit" /> },
+      {
+        path: "events/:eventId",
+        element: <ViewEvent />,
+      },
+      {
+        path: "events/edit/:eventId",
+        element: <EventPage componentState="edit" />,
+      },
       { path: "shopping-cart", element: <ShoppingCartPage /> },
       {
         path: "checkout",

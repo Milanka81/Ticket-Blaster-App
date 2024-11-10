@@ -43,7 +43,7 @@ const AdminEventCard: FC<EventCardProps> = ({ event }) => {
       <button
         className={`${styles.btn} ${styles.updateBtn}`}
         onClick={() => {
-          navigate(`/events/${event._id}`);
+          navigate(`/events/edit/${event._id}`);
         }}
       >
         Update
