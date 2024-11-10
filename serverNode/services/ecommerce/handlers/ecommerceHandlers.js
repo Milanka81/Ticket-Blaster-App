@@ -321,16 +321,20 @@ exports.getCart = async (req, res) => {
         id: cartItem._id,
       };
     });
-    res.status(200).json({ "my shopping cart": myCart });
+    res.status(200).json({ myCart });
   } catch (err) {
     res.status(400).send(err);
   }
 };
 
 exports.addToCart = async (req, res) => {
-  const { eventId } = req.params;
   const userId = req.user._id;
-  const { quantity } = req.body;
+  const { eventId, quantity } = req.body;
+
+  if (quantity <= 0) {
+    return res.status(400).json({ message: "The quantity must be above zero" });
+  }
+
   try {
     const item = await ShoppingCart.create({
       event: eventId,

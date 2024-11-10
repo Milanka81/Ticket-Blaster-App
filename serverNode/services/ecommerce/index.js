@@ -5,14 +5,23 @@ const db = require("../../src/db/index");
 const cors = require("cors");
 const helmet = require("helmet");
 const app = express();
-
+const cookieParser = require("cookie-parser");
 db.init();
 app.use(helmet());
 app.use(express.json());
-app.use(cors());
+app.use(cookieParser());
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
+    credentials: true,
+    maxAge: 900000,
+  })
+);
 app.use("/api/v1/ecommerce", auth.tokenVerify);
 app.get("/api/v1/ecommerce/shopping-cart", ecommerce.getCart);
-app.post("/api/v1/ecommerce/shopping-cart/:eventId", ecommerce.addToCart);
+app.post("/api/v1/ecommerce/shopping-cart", ecommerce.addToCart);
 app.patch(
   "/api/v1/ecommerce/shopping-cart/:itemId",
   ecommerce.updateCartQuantity
