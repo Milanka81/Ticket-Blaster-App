@@ -1,5 +1,11 @@
+import Title from "../../Components/Title/Title";
+import styles from "./CheckoutPage.module.css";
 const CheckoutPage = () => {
-  return <div>CheckoutPage</div>;
+  return (
+    <div className={styles.gridContainer}>
+      <Title>Checkout</Title>
+    </div>
+  );
 };
 
 export default CheckoutPage;
