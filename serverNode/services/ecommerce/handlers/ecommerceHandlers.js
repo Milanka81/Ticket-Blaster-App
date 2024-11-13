@@ -78,40 +78,29 @@ exports.getCheckoutSession = async (req, res) => {
 };
 
 exports.createPaymentIntent = async (req, res) => {
-  const { items } = { ...req.body };
-  const ids = items.map((el) => el._id);
-
+  const { items } = req.body;
   try {
     let totalAmount = 0;
 
-    const events = await Event.find({
-      _id: { $in: ids },
-    });
-
-    if (!events) return res.status(400).json({ message: "Invalid event id" });
-
-    const myCart = events.map((event) => {
-      const cartItem = items.find(
-        (item) => item._id.toString() === event._id.toString()
-      );
-      return {
-        event: event,
-        quantity: cartItem.quantity,
-      };
-    });
-
-    myCart.forEach((item) => {
+    items.forEach((item) => {
       if (
-        !item.event.availableTickets ||
-        item.event.availableTickets < item.quantity
+        !item.event?.availableTickets ||
+        item.event?.availableTickets < item.quantity
       ) {
         return res.status(400).json({
           message: "There are no tickets left for this or some of these events",
         });
       }
-      const price = item.event.ticketPrice * item.quantity;
-      totalAmount += price;
+      if (item.event?.ticketPrice && item.quantity) {
+        const price = item.event.ticketPrice * item.quantity;
+        totalAmount += price;
+      }
     });
+
+    const shoppingItems = items.map((el) => ({
+      _id: el.event._id,
+      quantity: el.quantity,
+    }));
 
     try {
       const paymentIntent = await stripe.paymentIntents.create({
@@ -119,7 +108,7 @@ exports.createPaymentIntent = async (req, res) => {
         currency: "eur",
         payment_method_types: ["card"],
         metadata: {
-          items: JSON.stringify(items),
+          items: JSON.stringify(shoppingItems),
         },
       });
 
@@ -311,10 +300,16 @@ exports.getCart = async (req, res) => {
     const cart = await ShoppingCart.find({ user: req.user.id });
     const eventsIds = cart.map((el) => el.event);
     const events = await Event.find({ _id: { $in: eventsIds } });
+
     const myCart = events.map((event) => {
       const cartItem = cart.find(
-        (item) => item.event.toString() === event._id.toString()
+        (item) => item.event?.toString() === event._id?.toString()
       );
+      if (!cartItem) {
+        return res.status(400).json({
+          message: `No matching cart item found for event ID: ${event._id}`,
+        });
+      }
       return {
         event: event,
         quantity: cartItem.quantity,

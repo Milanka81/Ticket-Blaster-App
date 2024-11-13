@@ -1,12 +1,15 @@
 import Title from "../../Components/Title/Title.tsx";
 import { useEffect, useState } from "react";
 import styles from "./ShoppingCartPage.module.css";
-import btnStyles from "../../Components/Button/Button.module.css";
 import { useNavigate } from "react-router";
-import { getCart } from "../../services/ecommerceService/index.ts";
-import AdminEventCard from "../../Components/AdminEventCard/AdminEventCard.tsx";
+import {
+  createPayment,
+  getCart,
+  removeFromCart,
+} from "../../services/ecommerceService/index.ts";
+import ShoppingCartItem from "../../Components/ShoppingCartItem/ShoppingCartItem.tsx";
 
-interface CartItem {
+interface Item {
   id: string;
   event: {
     _id: string;
@@ -17,6 +20,7 @@ interface CartItem {
     location: string;
     ticketPrice: number;
   };
+  quantity: number;
 }
 
 const ShoppingCartPage = () => {
@@ -26,31 +30,48 @@ const ShoppingCartPage = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cart, setCart] = useState<Item[]>([]);
 
   useEffect(() => {
-    getCart().then((res) => setCart(res.data.myCart));
+    getCart().then((res) => {
+      setCart(res.data.myCart);
+    });
   }, []);
-  console.log(cart);
+
+  const handleClick = (id: string) => {
+    removeFromCart(id).then(() =>
+      getCart().then((res) => setCart(res.data.myCart))
+    );
+  };
+
+  const handlePayment = () => {
+    createPayment(cart).then((res) => console.log(res));
+  };
+
   return (
     <div className={styles.container}>
-      <div className={styles.flexContainer}>
-        <Title>Shopping Cart</Title>
-      </div>
-      <div className={styles.searchContainer}>
+      <Title>Shopping Cart</Title>
+      <div className={styles.eventsContainer}>
         {cart.map((el) => (
-          <AdminEventCard key={el.id} event={el.event} />
+          <ShoppingCartItem
+            key={el.id}
+            cart={el}
+            handleClick={() => handleClick(el.id)}
+          />
         ))}
       </div>
-      {/* <button
-        className={btnStyles.loadMoreButton}
-        onClick={() => setLimit((limit) => limit + 10)}
-        disabled={results < limit}
-      >
-        {results < limit ? `No more events to display` : `Load More events`}
-      </button> */}
+      <div className={styles.flexBtnsContainer}>
+        <button className={styles.btn} onClick={() => navigate(-1)}>
+          Back
+        </button>
+        <button
+          className={`${styles.btn} ${styles.btnCheckoutBackground}`}
+          onClick={() => handlePayment()}
+        >
+          Check Out
+        </button>
+      </div>
     </div>
-    // </div>
   );
 };
 

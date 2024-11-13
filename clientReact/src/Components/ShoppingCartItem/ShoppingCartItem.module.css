@@ -1,0 +1,90 @@
+.container {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+.infoContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.mainData {
+  width: 100%;
+  gap: 1rem;
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+.priceContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-left: auto;
+  align-items: center;
+  padding-right: 0.5rem;
+}
+
+.image {
+  min-width: 12.25rem;
+  max-width: 12.25rem;
+  height: 7.25rem;
+  margin-right: 1rem;
+  border-radius: 20px;
+}
+
+.eventName {
+  font-weight: 700;
+  letter-spacing: -1.32px;
+  color: #000000;
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.date {
+  text-align: left;
+  font-weight: 700;
+  letter-spacing: -0.99px;
+  color: #ff48ab;
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.location {
+  text-align: left;
+  line-height: 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: -0.77px;
+  color: #393939;
+  margin: 0;
+}
+.totalPrice {
+  font-weight: 700;
+  letter-spacing: -1.32px;
+  color: #000000;
+  font-size: 1.5rem;
+  margin: 0;
+}
+.quantity {
+  margin: 0;
+  color: #ff48ab;
+  font-weight: 700;
+  letter-spacing: -0.99px;
+}
+.btn {
+  width: 8rem;
+  height: 2rem;
+  color: #fff;
+  background: #000000;
+  border-radius: 20px;
+  cursor: pointer;
+  border: none;
+}
+.updateBtn {
+  color: #000;
+  background-color: #fff;
+  border: 1px solid #ff48ab;
+}

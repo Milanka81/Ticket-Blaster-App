@@ -38,7 +38,9 @@ const eventSchema = new mongoose.Schema({
   availableTickets: {
     type: Number,
     min: 0,
-    default: this.totalTickets,
+    default: function () {
+      return this.totalTickets;
+    },
     validate: {
       validator: function (value) {
         return value <= this.totalTickets;
