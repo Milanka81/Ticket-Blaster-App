@@ -3,7 +3,9 @@ import styles from "./ShoppingCartItem.module.css";
 import { imgSrc } from "../../utils";
 import ModalWindow from "../ModalWindow/ModalWindow";
 import DialogMessage from "../DialogMessage/DialogMessage";
-
+import { removeFromCart } from "../../services/ecommerceService";
+import { useAppDispatch } from "../../hooks.ts";
+import { getShoppingCart } from "../../store/ecommerceSlice.ts";
 interface CartItem {
   id: string;
   event: {
@@ -20,19 +22,21 @@ interface CartItem {
 
 interface ShoppingCartProps {
   cart: CartItem;
-  handleClick: () => void;
 }
 
 const ShoppingCartItem: FC<ShoppingCartProps> = ({
   cart,
-  handleClick,
 }: ShoppingCartProps) => {
+  const dispatch = useAppDispatch();
   const { event, quantity } = cart;
 
   const [showModal, setShowModal] = useState(false);
   const total = quantity * event.ticketPrice;
   const date = event.eventDate.slice(0, 10);
 
+  const deleteItem = (id: string) => {
+    removeFromCart(id).then(() => dispatch(getShoppingCart()));
+  };
   return (
     <div className={styles.container}>
       <img
@@ -50,9 +54,13 @@ const ShoppingCartItem: FC<ShoppingCartProps> = ({
         <p className={styles.quantity}>
           {quantity} x {event.ticketPrice} €
         </p>
-        <button className={styles.btn} onClick={handleClick} type="button">
+        {<button
+          className={styles.btn}
+          onClick={() => deleteItem(cart.id)}
+          type="button"
+        >
           Remove
-        </button>
+        </button>}
       </div>
 
       {showModal && (

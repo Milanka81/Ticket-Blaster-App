@@ -3,10 +3,7 @@ import { useEffect } from "react";
 import styles from "./ShoppingCartPage.module.css";
 import { useNavigate } from "react-router";
 import { useAppDispatch, useAppSelector } from "../../hooks.ts";
-import {
-  createPayment,
-  removeFromCart,
-} from "../../services/ecommerceService/index.ts";
+import { createPayment } from "../../services/ecommerceService/index.ts";
 import ShoppingCartItem from "../../Components/ShoppingCartItem/ShoppingCartItem.tsx";
 import { getShoppingCart } from "../../store/ecommerceSlice.ts";
 
@@ -23,10 +20,6 @@ const ShoppingCartPage = () => {
     dispatch(getShoppingCart());
   }, [dispatch]);
 
-  const handleClick = (id: string) => {
-    removeFromCart(id).then(() => dispatch(getShoppingCart()));
-  };
-
   const handlePayment = () => {
     createPayment(cart).then((res) => console.log(res));
   };
@@ -36,11 +29,7 @@ const ShoppingCartPage = () => {
       <Title>Shopping Cart</Title>
       <div className={styles.eventsContainer}>
         {cart.map((el) => (
-          <ShoppingCartItem
-            key={el.id}
-            cart={el}
-            handleClick={() => handleClick(el.id)}
-          />
+          <ShoppingCartItem key={el.id} cart={el} />
         ))}
       </div>
       <div className={styles.flexBtnsContainer}>
