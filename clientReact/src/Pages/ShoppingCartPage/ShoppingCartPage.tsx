@@ -1,47 +1,30 @@
 import Title from "../../Components/Title/Title.tsx";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import styles from "./ShoppingCartPage.module.css";
 import { useNavigate } from "react-router";
+import { useAppDispatch, useAppSelector } from "../../hooks.ts";
 import {
   createPayment,
-  getCart,
   removeFromCart,
 } from "../../services/ecommerceService/index.ts";
 import ShoppingCartItem from "../../Components/ShoppingCartItem/ShoppingCartItem.tsx";
-
-interface Item {
-  id: string;
-  event: {
-    _id: string;
-    imageCover: string;
-    eventName: string;
-    eventDate: string;
-    description: string;
-    location: string;
-    ticketPrice: number;
-  };
-  quantity: number;
-}
+import { getShoppingCart } from "../../store/ecommerceSlice.ts";
 
 const ShoppingCartPage = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const cart = useAppSelector((state) => state.shoppingCart.cart);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const [cart, setCart] = useState<Item[]>([]);
-
   useEffect(() => {
-    getCart().then((res) => {
-      setCart(res.data.myCart);
-    });
-  }, []);
+    dispatch(getShoppingCart());
+  }, [dispatch]);
 
   const handleClick = (id: string) => {
-    removeFromCart(id).then(() =>
-      getCart().then((res) => setCart(res.data.myCart))
-    );
+    removeFromCart(id).then(() => dispatch(getShoppingCart()));
   };
 
   const handlePayment = () => {
