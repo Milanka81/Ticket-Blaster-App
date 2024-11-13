@@ -18,7 +18,7 @@ const ViewEvent = () => {
     location: "",
     eventDate: "",
   });
-  const [tickets, setTickets] = useState(1);
+  const [ticketQuantity, setTicketQuantity] = useState(1);
   const date = event.eventDate.slice(0, 10);
 
   useEffect(() => {
@@ -35,12 +35,12 @@ const ViewEvent = () => {
     if (Number(e.target.value) < 0) {
       return;
     } else {
-      setTickets(Number(e.target.value));
+      setTicketQuantity(Number(e.target.value));
     }
   };
   const handleAdd = () => {
     if (eventId) {
-      addToCart(eventId, tickets).then(() => navigate("/shopping-cart"));
+      addToCart(eventId, ticketQuantity).then(() => navigate("/shopping-cart"));
     }
   };
 
@@ -70,7 +70,7 @@ const ViewEvent = () => {
             type="number"
             id="tickets"
             min={1}
-            defaultValue={tickets}
+            defaultValue={ticketQuantity}
             onChange={handleChange}
           />
           <button className={styles.addBtn} onClick={handleAdd}>
