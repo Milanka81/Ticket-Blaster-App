@@ -20,6 +20,7 @@
 }
 .priceContainer {
   display: flex;
+  min-width: 5rem;
   flex-direction: column;
   gap: 0.3rem;
   margin-left: auto;

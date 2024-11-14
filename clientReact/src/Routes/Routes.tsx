@@ -7,7 +7,7 @@ import ForgotPasswordPage from "../Pages/ForgotPasswordPage/ForgotPasswordPage";
 import ResetPasswordPage from "../Pages/ResetPasswordPage/ResetPasswordPage";
 import EventsPage from "../Pages/EventsPage/EventsPage";
 import EventPage from "../Pages/EventPage/EventPage";
-import CheckoutPage from "../Pages/CheckoutPage/CheckoutPage";
+// import CheckoutPage from "../Pages/CheckoutPage/CheckoutPage";
 import PrintTicketPage from "../Pages/PrintTicketPage/PrintTicketPage";
 import ShoppingCartPage from "../Pages/ShoppingCartPage/ShoppingCartPage";
 import UserDetailsPage from "../Pages/UserDetailsPage/UserDetailsPage";
@@ -43,10 +43,14 @@ export const router = createBrowserRouter([
         element: <EventPage componentState="edit" />,
       },
       { path: "shopping-cart", element: <ShoppingCartPage /> },
-      {
-        path: "checkout",
-        element: <CheckoutPage />,
-      },
+      // {
+      //   path: "checkout",
+      //   element: (
+      //     <Elements stripe={stripePromise}>
+      //       <CheckoutPage />
+      //     </Elements>
+      //   ),
+      // },
       {
         path: "tickets",
         element: <BoughtTicketsPage />,
