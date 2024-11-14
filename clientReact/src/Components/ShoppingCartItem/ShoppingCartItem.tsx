@@ -22,10 +22,12 @@ interface CartItem {
 
 interface ShoppingCartProps {
   cart: CartItem;
+  showBtn: boolean;
 }
 
 const ShoppingCartItem: FC<ShoppingCartProps> = ({
   cart,
+  showBtn,
 }: ShoppingCartProps) => {
   const dispatch = useAppDispatch();
   const { event, quantity } = cart;
@@ -54,13 +56,15 @@ const ShoppingCartItem: FC<ShoppingCartProps> = ({
         <p className={styles.quantity}>
           {quantity} x {event.ticketPrice} €
         </p>
-        {<button
-          className={styles.btn}
-          onClick={() => deleteItem(cart.id)}
-          type="button"
-        >
-          Remove
-        </button>}
+        {showBtn ? (
+          <button
+            className={styles.btn}
+            onClick={() => deleteItem(cart.id)}
+            type="button"
+          >
+            Remove
+          </button>
+        ) : null}
       </div>
 
       {showModal && (
