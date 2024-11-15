@@ -24,7 +24,9 @@ const ShoppingCartPage = () => {
   }, [dispatch]);
 
   const handlePayment = () => {
-    createPayment(cart).then((res) => setClientSecret(res.data));
+    createPayment(cart).then((res) => {
+      setClientSecret(res.data.clientSecret);
+    });
   };
   const stripePromise = loadStripe(
     "pk_test_51Px6L7Rr71tg4yvXK2U9aiuumSrEzxap2KNix5lbEezZeoc0qvxcvtGtts2jeXVTTeTaz7QP9xu61FqUnmNPIz3O00cMIG1E50"
@@ -33,7 +35,7 @@ const ShoppingCartPage = () => {
     <>
       {clientSecret ? (
         <Elements stripe={stripePromise}>
-          <CheckoutPage secret={clientSecret} />
+          <CheckoutPage clientSecret={clientSecret} />
         </Elements>
       ) : (
         <div className={styles.container}>
