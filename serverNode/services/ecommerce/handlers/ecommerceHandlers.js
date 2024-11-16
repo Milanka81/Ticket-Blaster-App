@@ -6,8 +6,7 @@ const Event = require("../../../src/events/eventSchema");
 const User = require("./../../../src/users/userSchema");
 const Ticket = require("./../../../src/tickets/ticketSchema");
 const ShoppingCart = require("./../../../src/shoppingCart/shoppingCartSchema");
-const Stripe = require("stripe");
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const QRcode = require("qrcode");
 const Handlebars = require("handlebars");
 const sendEmail = require("./../../users/utils/email");
@@ -109,6 +108,7 @@ exports.createPaymentIntent = async (req, res) => {
         payment_method_types: ["card"],
         metadata: {
           items: JSON.stringify(shoppingItems),
+          userId: req.user.id,
         },
       });
 
@@ -122,31 +122,34 @@ exports.createPaymentIntent = async (req, res) => {
 };
 
 exports.confirmPayment = async (req, res) => {
-  const event = req.body;
+  // const event = req.body;
 
-  // const sig = req.headers["stripe-signature"];
+  const sig = req.headers["stripe-signature"];
 
-  // let event;
-  // try {
-  //   event = stripe.webhooks.constructEvent(
-  //     req.body,
-  //     sig,
-  //     process.env.STRIPE_SECRET_KEY
-  //   );
-  // } catch (err) {
-  //   console.error("Webhook signature verification failed:", err.message);
-  //   return res.status(400).send(`Webhook Error: ${err.message}`);
-  // }
+  let event;
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.WEBHOOK_SECRET
+    );
+  } catch (err) {
+    console.error("Webhook signature verification failed:", err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
 
   if (event.type === "payment_intent.succeeded") {
     try {
       const paymentIntent = event.data.object;
       const items = JSON.parse(paymentIntent.metadata.items);
+      const id = paymentIntent.metadata.userId;
+
       const ids = items.map((el) => el._id);
       const events = await Event.find({
         _id: { $in: ids },
       });
-      const user = await User.findById(req.user.id);
+
+      const user = await User.findById(id);
       const myCart = events.map((event) => {
         const cartItem = items.find(
           (item) => item._id.toString() === event._id.toString()
@@ -200,7 +203,7 @@ exports.confirmPayment = async (req, res) => {
 
       const tickets = await Promise.all(createTickets);
 
-      const myTimkkkkjkmckets = myCart.map((event) => {
+      const myTickets = myCart.map((event) => {
         const cartItem = tickets.find(
           (item) => item.event.toString() === event.event._id.toString()
         );
