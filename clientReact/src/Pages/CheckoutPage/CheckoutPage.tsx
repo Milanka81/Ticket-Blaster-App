@@ -7,7 +7,6 @@ import {
 } from "@stripe/react-stripe-js";
 import { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-
 import { getShoppingCart } from "../../store/ecommerceSlice.ts";
 import Title from "../../Components/Title/Title";
 import styles from "./CheckoutPage.module.css";
@@ -24,6 +23,7 @@ const CheckoutPage: FC<CheckoutPageProps> = ({ clientSecret }) => {
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
   const [fullName, setFullName] = useState("");
+
   const prices = cart.map((el) => ({
     price: el.event.ticketPrice,
     quantity: el.quantity,
@@ -64,9 +64,6 @@ const CheckoutPage: FC<CheckoutPageProps> = ({ clientSecret }) => {
             billing_details: {
               name: fullName,
             },
-            metadata: {
-              prices: JSON.stringify(prices),
-            },
           },
         }
       );
@@ -74,7 +71,6 @@ const CheckoutPage: FC<CheckoutPageProps> = ({ clientSecret }) => {
         console.error("[Payment Confirmation Error]", error.message);
       } else if (paymentIntent) {
         console.log("[Payment Confirmed]", paymentIntent);
-        // Handle the successful payment intent (e.g., display confirmation to the user)
       }
     } catch (err) {
       console.error("Error handling payment:", err);

@@ -1,11 +1,15 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { isLoggedIn } from "../services/authService";
+import { getMyAccount } from "../services/userService";
 
 export const checkAuth = createAsyncThunk("checkAuth", () =>
   isLoggedIn().then((res) => res.data.loggedIn)
 );
-
+export const fetchMyAccount = createAsyncThunk("fetchMyAccount", () =>
+  getMyAccount().then((res) => res.data.user)
+);
 interface UserState {
+  _id: string;
   fullName: string;
   email: string;
   role: string;
@@ -15,6 +19,7 @@ interface UserState {
 }
 
 const initialState: UserState = {
+  _id: "",
   fullName: "",
   email: "",
   role: "user",
@@ -56,6 +61,21 @@ const userSlice = createSlice({
       .addCase(checkAuth.rejected, (state, action) => {
         state.loading = false;
         state.isLoggedIn = false;
+        state.error = action.error.message ?? null;
+      })
+      .addCase(fetchMyAccount.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchMyAccount.fulfilled, (state, action) => {
+        state.loading = false;
+        state._id = action.payload._id;
+        state.fullName = action.payload.fullName;
+        state.email = action.payload.email;
+        state.role = action.payload.role;
+        state.error = null;
+      })
+      .addCase(fetchMyAccount.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.error.message ?? null;
       });
   },

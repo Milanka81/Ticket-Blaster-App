@@ -13,7 +13,9 @@ const UserBar = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getMyAccount().then((res) => dispatch(saveUserRole(res.data.user.role)));
+    getMyAccount().then((res) => {
+      dispatch(saveUserRole(res.data.user.role));
+    });
   }, [dispatch]);
 
   const userRole = useSelector((state: RootState) => state.user.role);

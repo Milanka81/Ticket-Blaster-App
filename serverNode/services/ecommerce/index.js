@@ -8,17 +8,23 @@ const app = express();
 const cookieParser = require("cookie-parser");
 db.init();
 app.use(helmet());
+app.post(
+  "/api/v1/ecommerce/webhook",
+  express.raw({ type: "application/json" }),
+  ecommerce.confirmPayment
+);
 app.use(express.json());
 app.use(cookieParser());
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173"],
     methods: ["GET", "POST", "DELETE", "PUT", "PATCH"],
     credentials: true,
     maxAge: 900000,
   })
 );
+
 app.use("/api/v1/ecommerce", auth.tokenVerify);
 app.get("/api/v1/ecommerce/shopping-cart", ecommerce.getCart);
 app.post("/api/v1/ecommerce/shopping-cart", ecommerce.addToCart);
@@ -31,7 +37,7 @@ app.delete("/api/v1/ecommerce/shopping-cart/:itemId", ecommerce.deleteFromCart);
 //   "/api/v1/ecommerce/checkout-session/:eventId",
 //   ecommerce.getCheckoutSession
 // );
-app.post("/api/v1/ecommerce/webhook", ecommerce.confirmPayment);
+
 app.post(
   "/api/v1/ecommerce/create-payment-intent",
   ecommerce.createPaymentIntent
