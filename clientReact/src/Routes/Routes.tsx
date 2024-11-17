@@ -1,4 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 import App from "../App";
 import HomePage from "../Pages/HomePage/HomePage";
 import RegisterPage from "../Pages/RegisterPage/RegisterPage";
@@ -7,17 +9,21 @@ import ForgotPasswordPage from "../Pages/ForgotPasswordPage/ForgotPasswordPage";
 import ResetPasswordPage from "../Pages/ResetPasswordPage/ResetPasswordPage";
 import EventsPage from "../Pages/EventsPage/EventsPage";
 import EventPage from "../Pages/EventPage/EventPage";
-// import CheckoutPage from "../Pages/CheckoutPage/CheckoutPage";
+import CheckoutPage from "../Pages/CheckoutPage/CheckoutPage";
 import PrintTicketPage from "../Pages/PrintTicketPage/PrintTicketPage";
 import ShoppingCartPage from "../Pages/ShoppingCartPage/ShoppingCartPage";
 import UserDetailsPage from "../Pages/UserDetailsPage/UserDetailsPage";
 import TicketHistoryPage from "../Pages/TicketHistoryPage/TicketHistoryPage";
-import BoughtTicketsPage from "../Pages/BoughtTicketsPage/BoughtTicketsPage";
+// import BoughtTicketsPage from "../Pages/BoughtTicketsPage/BoughtTicketsPage";
 import AllUsersPage from "../Pages/AllUsersPage/AllUsersPage";
 import AdminEventsPage from "../Pages/AdminEventsPage/AdminEventsPage";
 import VerifyEmail from "../Pages/VerifyEmail/VerifyEmail";
 import ViewEvent from "../Components/ViewEvent/ViewEvent";
+import ThankYouPage from "../Pages/ThankYouPage/ThankYouPage";
 
+const stripePromise = loadStripe(
+  "pk_test_51Px6L7Rr71tg4yvXK2U9aiuumSrEzxap2KNix5lbEezZeoc0qvxcvtGtts2jeXVTTeTaz7QP9xu61FqUnmNPIz3O00cMIG1E50"
+);
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -42,18 +48,21 @@ export const router = createBrowserRouter([
         path: "events/edit/:eventId",
         element: <EventPage componentState="edit" />,
       },
-      { path: "shopping-cart", element: <ShoppingCartPage /> },
-      // {
-      //   path: "checkout",
-      //   element: (
-      //     <Elements stripe={stripePromise}>
-      //       <CheckoutPage />
-      //     </Elements>
-      //   ),
-      // },
+      {
+        path: "shopping-cart",
+        element: <ShoppingCartPage />,
+      },
+      {
+        path: "checkout",
+        element: (
+          <Elements stripe={stripePromise}>
+            <CheckoutPage />
+          </Elements>
+        ),
+      },
       {
         path: "tickets",
-        element: <BoughtTicketsPage />,
+        element: <ThankYouPage />,
         children: [{ path: ":ticketId", element: <PrintTicketPage /> }],
       },
       { path: "tickets-history", element: <TicketHistoryPage /> },

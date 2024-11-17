@@ -33,6 +33,7 @@ app.patch(
   ecommerce.updateCartQuantity
 );
 app.delete("/api/v1/ecommerce/shopping-cart/:itemId", ecommerce.deleteFromCart);
+app.delete("/api/v1/ecommerce/shopping-cart", ecommerce.clearCart);
 // app.get(
 //   "/api/v1/ecommerce/checkout-session/:eventId",
 //   ecommerce.getCheckoutSession
@@ -43,6 +44,7 @@ app.post(
   ecommerce.createPaymentIntent
 );
 app.get("/api/v1/ecommerce/tickets-history", ecommerce.getMyTickets);
+app.get("/api/v1/ecommerce/recent-tickets", ecommerce.getLastPurchase);
 app.get("/api/v1/ecommerce/print-ticket/:ticketId", ecommerce.getPrintTicket);
 
 app.listen(process.env.PORTECOMMERCE, (err) => {

@@ -5,17 +5,18 @@ import {
   CardExpiryElement,
   CardCvcElement,
 } from "@stripe/react-stripe-js";
-import { FC, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { useLocation } from "react-router-dom";
 import { getShoppingCart } from "../../store/ecommerceSlice.ts";
 import Title from "../../Components/Title/Title";
 import styles from "./CheckoutPage.module.css";
 import ShoppingCartItem from "../../Components/ShoppingCartItem/ShoppingCartItem";
+import { clearCart } from "../../services/ecommerceService/index.ts";
 
-interface CheckoutPageProps {
-  clientSecret: string;
-}
-const CheckoutPage: FC<CheckoutPageProps> = ({ clientSecret }) => {
+const CheckoutPage = () => {
+  const { state } = useLocation();
+  const { clientSecret, cartItems } = state;
   const cart = useAppSelector((state) => state.shoppingCart.cart);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -23,6 +24,10 @@ const CheckoutPage: FC<CheckoutPageProps> = ({ clientSecret }) => {
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
   const [fullName, setFullName] = useState("");
+
+  useEffect(() => {
+    dispatch(getShoppingCart());
+  }, [dispatch]);
 
   const prices = cart.map((el) => ({
     price: el.event.ticketPrice,
@@ -33,10 +38,6 @@ const CheckoutPage: FC<CheckoutPageProps> = ({ clientSecret }) => {
     (acc, current) => acc + current.price * current.quantity,
     0
   );
-
-  useEffect(() => {
-    dispatch(getShoppingCart());
-  }, [dispatch]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -71,6 +72,8 @@ const CheckoutPage: FC<CheckoutPageProps> = ({ clientSecret }) => {
         console.error("[Payment Confirmation Error]", error.message);
       } else if (paymentIntent) {
         console.log("[Payment Confirmed]", paymentIntent);
+
+        clearCart(cartItems).then(() => navigate("/tickets"));
       }
     } catch (err) {
       console.error("Error handling payment:", err);
@@ -101,7 +104,12 @@ const CheckoutPage: FC<CheckoutPageProps> = ({ clientSecret }) => {
       <div className={styles.gridContainer}>
         <div className={styles.eventsContainer}>
           {cart.map((el) => (
-            <ShoppingCartItem key={el.id} cart={el} showBtn={false} />
+            <ShoppingCartItem
+              key={el._id}
+              cart={el}
+              showRemoveBtn={false}
+              showPrintBtn={false}
+            />
           ))}
           <p>Total: {total}</p>
         </div>

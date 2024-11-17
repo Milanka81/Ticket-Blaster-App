@@ -272,32 +272,6 @@ exports.confirmPayment = async (req, res) => {
   }
 };
 
-// exports.createTicketCheckout = async (req, res, next) => {
-//   const { event, user, price } = req.query;
-
-//   if (!event || !user || !price) return next();
-
-//   try {
-//     const currentEvent = await Event.findById(event);
-//     if (currentEvent.availableTickets > 0) {
-//       currentEvent.availableTickets -= 1;
-//       await currentEvent.save({ validateBeforeSave: false });
-//       try {
-//         await Ticket.create({ event, user, price });
-//         res.redirect(req.originalUrl.split("?")[0]);
-//       } catch (err) {
-//         res.status(400).json({ message: "Ticket is not created" });
-//       }
-//     } else {
-//       res.status(400).json({
-//         message: "Paymant failed. There are no tickets left for this event",
-//       });
-//     }
-//   } catch (err) {
-//     res.status(400).send(err);
-//   }
-// };
-
 exports.getCart = async (req, res) => {
   try {
     const cart = await ShoppingCart.find({ user: req.user.id });
@@ -316,7 +290,7 @@ exports.getCart = async (req, res) => {
       return {
         event: event,
         quantity: cartItem.quantity,
-        id: cartItem._id,
+        _id: cartItem._id,
       };
     });
     res.status(200).json({ myCart });
@@ -361,12 +335,31 @@ exports.updateCartQuantity = async (req, res) => {
 
 exports.getMyTickets = async (req, res) => {
   try {
-    const tickets = await Ticket.find({ user: req.user._id });
-    const eventsIds = tickets.map((el) => el.event);
-    const events = await Event.find({ _id: { $in: eventsIds } });
-    res.status(200).json({ "my tickets": events });
+    const tickets = await Ticket.find({ user: req.user._id }).populate("event");
+
+    res.status(200).json({ tickets });
   } catch (err) {
-    res.status(400).send(err);
+    res.status(400).json({ status: "fail", message: err.message });
+  }
+};
+exports.getLastPurchase = async (req, res) => {
+  try {
+    const mostRecentTicket = await Ticket.findOne({ user: req.user._id }).sort({
+      createdAt: -1,
+    });
+
+    if (!mostRecentTicket) {
+      return res.status(200).json({ tickets: [] });
+    }
+
+    const recentTickets = await Ticket.find({
+      user: req.user._id,
+      createdAt: mostRecentTicket.createdAt,
+    }).populate("event");
+
+    res.status(200).json({ tickets: recentTickets });
+  } catch (err) {
+    res.status(400).json({ status: "fail", message: err.message });
   }
 };
 
@@ -403,9 +396,30 @@ exports.getPrintTicket = async (req, res) => {
 exports.deleteFromCart = async (req, res) => {
   const { itemId } = req.params;
   try {
-    await ShoppingCart.findByIdAndUpdate(itemId, { active: false });
+    await ShoppingCart.findByIdAndDelete(itemId);
     res.status(204).json({ status: "success", data: null });
   } catch (err) {
     res.status(400).send(err);
+  }
+};
+exports.clearCart = async (req, res) => {
+  const { cartItems } = req.body;
+
+  if (!cartItems || !Array.isArray(cartItems)) {
+    return res
+      .status(400)
+      .json({ status: "fail", message: "cartItems must be an array" });
+  }
+
+  try {
+    await Promise.all(
+      cartItems.map(async (itemId) => {
+        await ShoppingCart.findByIdAndDelete(itemId);
+      })
+    );
+
+    res.status(204).json({ status: "success", data: null });
+  } catch (err) {
+    res.status(400).json({ status: "fail", message: err.message });
   }
 };

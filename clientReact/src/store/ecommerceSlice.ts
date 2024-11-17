@@ -7,7 +7,7 @@ export const getShoppingCart = createAsyncThunk("getShoppingCart", async () => {
 });
 
 interface CartItem {
-  id: string;
+  _id: string;
   event: {
     _id: string;
     imageCover: string;

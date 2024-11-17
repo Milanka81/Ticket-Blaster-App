@@ -28,21 +28,25 @@ const UserBar = () => {
   };
 
   return (
-    <nav className={styles.navContainer}>
-      <div className={styles.dropdownMenu}>
-        {userRole === "admin" && (
-          <>
-            <NavLink to="/admin-events">Events</NavLink>
-            <NavLink to="/all-users">Users</NavLink>
-          </>
-        )}
-        <NavLink to="/tickets-history">Tickets History</NavLink>
-        <NavLink to="/user-details">User Details</NavLink>
-        <NavLink to="#" onClick={handleLogOut}>
-          Log Out
-        </NavLink>
-      </div>
-    </nav>
+    <>
+      {userRole ? (
+        <nav className={styles.navContainer}>
+          <div className={styles.dropdownMenu}>
+            {userRole === "admin" && (
+              <>
+                <NavLink to="/admin-events">Events</NavLink>
+                <NavLink to="/all-users">Users</NavLink>
+              </>
+            )}
+            <NavLink to="/tickets-history">Tickets History</NavLink>
+            <NavLink to="/user-details">User Details</NavLink>
+            <NavLink to="#" onClick={handleLogOut}>
+              Log Out
+            </NavLink>
+          </div>
+        </nav>
+      ) : null}
+    </>
   );
 };
 export default UserBar;
