@@ -4,9 +4,11 @@
   row-gap: 2rem;
   column-gap: 2rem;
 }
-/* .eventsContainer {
-  border-bottom: 1px solid #333;
-} */
+.eventsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
 .flexBtnsContainer {
   display: flex;
   align-items: center;

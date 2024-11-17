@@ -18,7 +18,6 @@ interface Event {
 }
 const EventsPage = () => {
   const location = useLocation();
-
   const searchParams = new URLSearchParams(location.search);
   const category = searchParams.get("category") || "";
   const dispatch = useAppDispatch();

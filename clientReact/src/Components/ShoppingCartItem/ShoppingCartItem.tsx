@@ -7,7 +7,7 @@ import { removeFromCart } from "../../services/ecommerceService";
 import { useAppDispatch } from "../../hooks.ts";
 import { getShoppingCart } from "../../store/ecommerceSlice.ts";
 interface CartItem {
-  id: string;
+  _id: string;
   event: {
     _id: string;
     imageCover: string;
@@ -22,12 +22,14 @@ interface CartItem {
 
 interface ShoppingCartProps {
   cart: CartItem;
-  showBtn: boolean;
+  showRemoveBtn: boolean;
+  showPrintBtn: boolean;
 }
 
 const ShoppingCartItem: FC<ShoppingCartProps> = ({
   cart,
-  showBtn,
+  showRemoveBtn,
+  showPrintBtn,
 }: ShoppingCartProps) => {
   const dispatch = useAppDispatch();
   const { event, quantity } = cart;
@@ -56,13 +58,18 @@ const ShoppingCartItem: FC<ShoppingCartProps> = ({
         <p className={styles.quantity}>
           {quantity} x {event.ticketPrice} €
         </p>
-        {showBtn ? (
+        {showRemoveBtn ? (
           <button
             className={styles.btn}
-            onClick={() => deleteItem(cart.id)}
+            onClick={() => deleteItem(cart._id)}
             type="button"
           >
             Remove
+          </button>
+        ) : null}
+        {showPrintBtn ? (
+          <button className={styles.btn} onClick={() => {}} type="button">
+            Print
           </button>
         ) : null}
       </div>
