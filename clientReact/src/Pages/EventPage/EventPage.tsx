@@ -28,7 +28,9 @@ const EventPage: FC<EventPageProps> = ({ componentState }) => {
     eventDate: "",
   });
   const formattedDate = event.eventDate?.slice(0, 10);
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   useEffect(() => {
     if (eventId) {
       getEvent(eventId).then((res) => {
