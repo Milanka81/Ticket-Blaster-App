@@ -111,13 +111,16 @@ const CheckoutPage = () => {
               showPrintBtn={false}
             />
           ))}
-          <p>Total: {total}</p>
+          <div className={styles.total}>
+            <span>Total:</span>
+            <span>{total} €</span>
+          </div>
         </div>
 
         <div className={styles.inputLabelWrapper}>
           <label>Full Name</label>
           <input
-            className={styles.input}
+            className={`${styles.input} ${styles.paddingTopBottom}`}
             type="text"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
