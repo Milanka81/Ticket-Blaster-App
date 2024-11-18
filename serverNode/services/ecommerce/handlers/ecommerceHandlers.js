@@ -335,7 +335,11 @@ exports.updateCartQuantity = async (req, res) => {
 
 exports.getMyTickets = async (req, res) => {
   try {
-    const tickets = await Ticket.find({ user: req.user._id }).populate("event");
+    const tickets = await Ticket.find({ user: req.user._id })
+      .populate("event")
+      .sort({
+        createdAt: -1,
+      });
 
     res.status(200).json({ tickets });
   } catch (err) {
