@@ -368,31 +368,17 @@ exports.getLastPurchase = async (req, res) => {
 };
 
 exports.getPrintTicket = async (req, res) => {
-  const { ticketId } = req.params;
   try {
-    const ticket = await Ticket.findById(ticketId);
-    const event = await Event.findById(ticket.event);
-    const imageMime = event.imageCover?.split(".").pop();
-    const imagePath = path.join(
-      __dirname,
-      "..",
-      "..",
-      "..",
-      "public",
-      "images",
-      event.imageCover
-    );
+    const { ticketId } = req.params;
+    if (!ticketId) {
+      return res.status(400).json({ message: "Ticket ID is required" });
+    }
+    const ticket = await Ticket.findById(ticketId).populate("event");
+    if (!ticket) {
+      return res.status(404).json({ message: "Ticket not found" });
+    }
 
-    const imageBase64 = fs.readFileSync(imagePath, "base64");
-
-    const ticketInfo = {
-      name: event.eventName,
-      date: event.eventDate,
-      place: event.location,
-      image: `data:image/${imageMime};base64,${imageBase64}`,
-      qrCode: ticket.qr,
-    };
-    res.status(200).json({ ticketInfo });
+    res.status(200).json({ ticket });
   } catch (err) {
     res.status(400).send(err);
   }
