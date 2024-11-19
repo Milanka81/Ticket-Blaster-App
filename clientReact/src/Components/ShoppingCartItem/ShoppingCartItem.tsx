@@ -6,6 +6,7 @@ import DialogMessage from "../DialogMessage/DialogMessage";
 import { removeFromCart } from "../../services/ecommerceService";
 import { useAppDispatch } from "../../hooks.ts";
 import { getShoppingCart } from "../../store/ecommerceSlice.ts";
+import { useNavigate } from "react-router";
 interface CartItem {
   _id: string;
   event: {
@@ -32,6 +33,7 @@ const ShoppingCartItem: FC<ShoppingCartProps> = ({
   showPrintBtn,
 }: ShoppingCartProps) => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { event, quantity } = cart;
 
   const [showModal, setShowModal] = useState(false);
@@ -68,7 +70,13 @@ const ShoppingCartItem: FC<ShoppingCartProps> = ({
           </button>
         ) : null}
         {showPrintBtn ? (
-          <button className={styles.btn} onClick={() => {}} type="button">
+          <button
+            className={styles.btn}
+            onClick={() => {
+              navigate(`/print-ticket/${cart._id}`);
+            }}
+            type="button"
+          >
             Print
           </button>
         ) : null}

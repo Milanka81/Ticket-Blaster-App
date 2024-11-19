@@ -14,12 +14,13 @@ interface Event {
 
 interface EventCardProps {
   event: Event;
+  ticketId: string;
 }
 
-const EventCard: FC<EventCardProps> = ({ event }) => {
+const EventCard: FC<EventCardProps> = ({ event, ticketId }) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  console.log(event);
+
   const date = event.eventDate.slice(0, 10);
   return (
     <div className={styles.cardContainer}>
@@ -38,7 +39,12 @@ const EventCard: FC<EventCardProps> = ({ event }) => {
         <div className={styles.locationGetTicketBtnContainer}>
           <p className={styles.location}>{event.location}</p>
           {pathname === "/tickets-history" ? (
-            <button className={styles.getTicketBtn} onClick={() => {}}>
+            <button
+              className={styles.getTicketBtn}
+              onClick={() => {
+                navigate(`print-ticket/${ticketId}`);
+              }}
+            >
               Print
             </button>
           ) : (
