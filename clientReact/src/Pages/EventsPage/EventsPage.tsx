@@ -60,7 +60,7 @@ const EventsPage = () => {
         }
       >
         {events.map((el) => (
-          <EventCard key={el._id} event={el} />
+          <EventCard key={el._id} event={el} ticketId="" />
         ))}
       </div>
       <button

@@ -14,7 +14,9 @@ interface Ticket {
     description: string;
     location: string;
     category: string;
+    ticketPrice: number;
   };
+  quantity: number;
 }
 const TicketHistoryPage = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -31,7 +33,7 @@ const TicketHistoryPage = () => {
       <Title>Tickets History</Title>
       <div className={styles.eventsContainer}>
         {tickets.map((el) => (
-          <EventCard key={el._id} event={el.event} />
+          <EventCard key={el._id} event={el.event} ticketId={el._id} />
         ))}
       </div>
     </div>

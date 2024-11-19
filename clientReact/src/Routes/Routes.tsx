@@ -63,9 +63,12 @@ export const router = createBrowserRouter([
       {
         path: "tickets",
         element: <ThankYouPage />,
-        children: [{ path: ":ticketId", element: <PrintTicketPage /> }],
       },
-      { path: "tickets-history", element: <TicketHistoryPage /> },
+      { path: "print-ticket/:ticketId", element: <PrintTicketPage /> },
+      {
+        path: "tickets-history",
+        element: <TicketHistoryPage />,
+      },
       {
         path: "admin-events",
         element: <AdminEventsPage />,

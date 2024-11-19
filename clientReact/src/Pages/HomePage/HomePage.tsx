@@ -50,7 +50,7 @@ const HomePage = () => {
         <div className={styles.categoryContainer}>
           <Title>Musical Concerts</Title>
           {concertEvents.map((el) => (
-            <EventCard key={el._id} event={el} />
+            <EventCard key={el._id} event={el} ticketId="" />
           ))}
           <button
             className={btnStyle.loadMoreButton}
@@ -62,7 +62,7 @@ const HomePage = () => {
         <div className={styles.categoryContainer}>
           <Title>Stand-up Comedy</Title>
           {standUpEvents.map((el) => (
-            <EventCard key={el._id} event={el} />
+            <EventCard key={el._id} event={el} ticketId="" />
           ))}
           <button
             className={btnStyle.loadMoreButton}

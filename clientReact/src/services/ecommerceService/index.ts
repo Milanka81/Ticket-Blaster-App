@@ -39,6 +39,6 @@ export const clearCart = (cartItems: string[]): Promise<AxiosResponse> =>
 export const getTicketsHistory = () => axios.get(`${BASE_URL}/tickets-history`);
 export const getLastPurchase = () => axios.get(`${BASE_URL}/recent-tickets`);
 
-export const getPrintTicket = (id: string): Promise<AxiosResponse> => {
-  return axios.get(`${BASE_URL}/print-ticket/${id}`);
+export const getPrintTicket = (ticketId: string): Promise<AxiosResponse> => {
+  return axios.get(`${BASE_URL}/print-ticket/${ticketId}`);
 };

@@ -5,7 +5,7 @@ export const showContent = (content: string): string => {
 export const handleEmpty = (content: string): string => {
   return content || "";
 };
-export const imgSrc = (img: string): string => {
+export const imgSrc = (img: string | undefined | null): string => {
   if (img) {
     return `http://localhost:9005/images/${img}`;
   } else {
