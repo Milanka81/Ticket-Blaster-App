@@ -10,7 +10,7 @@ import ResetPasswordPage from "../Pages/ResetPasswordPage/ResetPasswordPage";
 import EventsPage from "../Pages/EventsPage/EventsPage";
 import EventPage from "../Pages/EventPage/EventPage";
 import CheckoutPage from "../Pages/CheckoutPage/CheckoutPage";
-import PrintTicketPage from "../Pages/PrintTicketPage/PrintTicketPage";
+// import PrintTicketPage from "../Pages/PrintTicketPage/PrintTicketPage";
 import ShoppingCartPage from "../Pages/ShoppingCartPage/ShoppingCartPage";
 import UserDetailsPage from "../Pages/UserDetailsPage/UserDetailsPage";
 import TicketHistoryPage from "../Pages/TicketHistoryPage/TicketHistoryPage";
@@ -64,7 +64,7 @@ export const router = createBrowserRouter([
         path: "tickets",
         element: <ThankYouPage />,
       },
-      { path: "print-ticket/:ticketId", element: <PrintTicketPage /> },
+
       {
         path: "tickets-history",
         element: <TicketHistoryPage />,

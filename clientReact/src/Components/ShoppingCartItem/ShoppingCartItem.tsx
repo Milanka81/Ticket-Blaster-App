@@ -4,9 +4,10 @@ import { imgSrc } from "../../utils";
 import ModalWindow from "../ModalWindow/ModalWindow";
 import DialogMessage from "../DialogMessage/DialogMessage";
 import { removeFromCart } from "../../services/ecommerceService";
-import { useAppDispatch } from "../../hooks.ts";
+import { useAppDispatch, useAppSelector } from "../../hooks.ts";
 import { getShoppingCart } from "../../store/ecommerceSlice.ts";
-import { useNavigate } from "react-router";
+import PrintTicketPage from "../../Pages/PrintTicketPage/PrintTicketPage.tsx";
+import { openModal } from "../../store/modalSlice.ts";
 interface CartItem {
   _id: string;
   event: {
@@ -33,10 +34,10 @@ const ShoppingCartItem: FC<ShoppingCartProps> = ({
   showPrintBtn,
 }: ShoppingCartProps) => {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const { event, quantity } = cart;
-
-  const [showModal, setShowModal] = useState(false);
+  const isOpenModal = useAppSelector((state) => state.modal.isOpen);
+  const [showMessage, setShowMessage] = useState(false);
+  const [showPrintDialog, setShowPrintDialog] = useState(false);
   const total = quantity * event.ticketPrice;
   const date = event.eventDate.slice(0, 10);
 
@@ -73,7 +74,8 @@ const ShoppingCartItem: FC<ShoppingCartProps> = ({
           <button
             className={styles.btn}
             onClick={() => {
-              navigate(`/print-ticket/${cart._id}`);
+              setShowPrintDialog(true);
+              dispatch(openModal());
             }}
             type="button"
           >
@@ -82,14 +84,18 @@ const ShoppingCartItem: FC<ShoppingCartProps> = ({
         ) : null}
       </div>
 
-      {showModal && (
+      {showMessage && (
         <ModalWindow>
           <DialogMessage
             message="You are about to remove an item from a cart"
             btnName="Remove"
-            handleCancel={() => setShowModal(false)}
-            handleClick={() => setShowModal(false)}
+            handleClick={() => setShowMessage(false)}
           />
+        </ModalWindow>
+      )}
+      {showPrintDialog && isOpenModal && (
+        <ModalWindow>
+          <PrintTicketPage ticketId={cart._id} />
         </ModalWindow>
       )}
     </div>

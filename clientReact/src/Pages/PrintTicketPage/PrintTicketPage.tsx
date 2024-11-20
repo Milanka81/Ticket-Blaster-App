@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useEffect, useState, forwardRef } from "react";
 import { getPrintTicket } from "../../services/ecommerceService";
 import styles from "./PrintTicketPage.module.css";
-import ModalWindow from "../../Components/ModalWindow/ModalWindow";
+
 interface Ticket {
   _id: string;
   event: {
@@ -17,21 +16,22 @@ interface Ticket {
   quantity: number;
   qrCode: string;
 }
+interface TicketProps {
+  ticketId: string;
+}
+const PrintTicketPage = forwardRef<HTMLDivElement, TicketProps>(
+  ({ ticketId }, ref) => {
+    const [ticket, setTicket] = useState<Ticket | null>(null);
 
-const PrintTicketPage = () => {
-  const { ticketId } = useParams<{ ticketId: string }>();
-  const [ticket, setTicket] = useState<Ticket | null>(null);
+    useEffect(() => {
+      if (ticketId) {
+        getPrintTicket(ticketId).then((res) => setTicket(res.data.ticket));
+      }
+    }, [ticketId]);
+    const date = ticket?.event.eventDate.slice(0, 10);
 
-  useEffect(() => {
-    if (ticketId) {
-      getPrintTicket(ticketId).then((res) => setTicket(res.data.ticket));
-    }
-  }, [ticketId]);
-  const date = ticket?.event.eventDate.slice(0, 10);
-
-  return (
-    <ModalWindow>
-      <div className={styles.container}>
+    return (
+      <div ref={ref} className={styles.container}>
         <img className={styles.logo} src="/img/Path 2.svg"></img>
         <img
           className={styles.image}
@@ -47,8 +47,8 @@ const PrintTicketPage = () => {
           <img className={styles.qr} src={ticket?.qrCode} alt="qrCode" />
         </div>
       </div>
-    </ModalWindow>
-  );
-};
+    );
+  }
+);
 
 export default PrintTicketPage;

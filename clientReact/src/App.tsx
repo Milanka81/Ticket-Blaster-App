@@ -5,13 +5,16 @@ import { useAppDispatch, useAppSelector } from "./hooks";
 import { closeDropdown } from "./store/dropdownSlice";
 import EventsPage from "./Pages/EventsPage/EventsPage";
 import { clearInput } from "./store/eventsSlice";
+import { closeModal } from "./store/modalSlice";
 
 function App() {
   const dispatch = useAppDispatch();
   const isDropdownOpen = useAppSelector((state) => state.dropdown.isOpen);
+  const isModalOpen = useAppSelector((state) => state.modal.isOpen);
   const input = useAppSelector((state) => state.events.input);
   const closeDropdownHandler = () => {
     if (isDropdownOpen) dispatch(closeDropdown());
+    if (isModalOpen) dispatch(closeModal());
     if (input) dispatch(clearInput());
   };
   return (

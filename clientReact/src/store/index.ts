@@ -3,12 +3,14 @@ import userReducer from "./userSlice";
 import eventsReducer from "./eventsSlice";
 import dropdownReducer from "./dropdownSlice";
 import ecommerceReducer from "./ecommerceSlice";
+import modalReducer from "./modalSlice";
 import { TypedUseSelectorHook, useSelector } from "react-redux";
 
 const store = configureStore({
   reducer: {
     user: userReducer,
     dropdown: dropdownReducer,
+    modal: modalReducer,
     events: eventsReducer,
     shoppingCart: ecommerceReducer,
   },

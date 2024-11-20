@@ -1,8 +1,12 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import styles from "./EventCard.module.css";
 import { imgSrc, showContent } from "../../utils";
 import { useNavigate } from "react-router";
 import { useLocation } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { openModal } from "../../store/modalSlice";
+import ModalWindow from "../ModalWindow/ModalWindow";
+import PrintTicketPage from "../../Pages/PrintTicketPage/PrintTicketPage";
 interface Event {
   _id: string;
   imageCover: string;
@@ -20,7 +24,9 @@ interface EventCardProps {
 const EventCard: FC<EventCardProps> = ({ event, ticketId }) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-
+  const dispatch = useAppDispatch();
+  const isOpenModal = useAppSelector((state) => state.modal.isOpen);
+  const [showPrintDialog, setShowPrintDialog] = useState(false);
   const date = event.eventDate.slice(0, 10);
   return (
     <div className={styles.cardContainer}>
@@ -42,7 +48,8 @@ const EventCard: FC<EventCardProps> = ({ event, ticketId }) => {
             <button
               className={styles.getTicketBtn}
               onClick={() => {
-                navigate(`print-ticket/${ticketId}`);
+                dispatch(openModal());
+                setShowPrintDialog(true);
               }}
             >
               Print
@@ -59,6 +66,11 @@ const EventCard: FC<EventCardProps> = ({ event, ticketId }) => {
           )}
         </div>
       </div>
+      {showPrintDialog && isOpenModal && (
+        <ModalWindow>
+          <PrintTicketPage ticketId={ticketId} />
+        </ModalWindow>
+      )}
     </div>
   );
 };
