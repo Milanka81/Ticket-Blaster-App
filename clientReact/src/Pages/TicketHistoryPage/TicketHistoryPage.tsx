@@ -24,8 +24,10 @@ const TicketHistoryPage = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {}, []);
-  getTicketsHistory().then((res) => setTickets(res.data.tickets));
+  useEffect(() => {
+    getTicketsHistory().then((res) => setTickets(res.data.tickets));
+  }, []);
+
   if (!tickets) return <p>No tickets to display</p>;
 
   return (

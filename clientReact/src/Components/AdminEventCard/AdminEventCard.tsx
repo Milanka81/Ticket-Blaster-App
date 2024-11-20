@@ -1,12 +1,13 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import styles from "./AdminEventCard.module.css";
 import { imgSrc } from "../../utils";
 import { useNavigate } from "react-router";
 import ModalWindow from "../ModalWindow/ModalWindow";
 import DialogMessage from "../DialogMessage/DialogMessage";
 import { deleteEvent } from "../../services/eventService";
-import { useAppDispatch } from "../../hooks.ts";
+import { useAppDispatch, useAppSelector } from "../../hooks.ts";
 import { filteredEvents } from "../../store/eventsSlice.ts";
+import { closeModal, openModal } from "../../store/modalSlice.ts";
 interface Event {
   _id: string;
   imageCover: string;
@@ -23,7 +24,7 @@ interface EventCardProps {
 const AdminEventCard: FC<EventCardProps> = ({ event }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [showModal, setShowModal] = useState(false);
+  const isModalOpen = useAppSelector((state) => state.modal.isOpen);
   const date = event.eventDate.slice(0, 10);
 
   return (
@@ -48,15 +49,14 @@ const AdminEventCard: FC<EventCardProps> = ({ event }) => {
       >
         Update
       </button>
-      <button className={styles.btn} onClick={() => setShowModal(true)}>
+      <button className={styles.btn} onClick={() => dispatch(openModal())}>
         Delete
       </button>
-      {showModal && (
+      {isModalOpen && (
         <ModalWindow>
           <DialogMessage
             message="You are about to delete an event from a system. Please proceed with caution"
             btnName="Delete event"
-            handleCancel={() => setShowModal(false)}
             handleClick={() =>
               deleteEvent(event._id).then(() => {
                 dispatch(
@@ -67,7 +67,7 @@ const AdminEventCard: FC<EventCardProps> = ({ event }) => {
                     category: "",
                   })
                 );
-                setShowModal(false);
+                dispatch(closeModal());
               })
             }
           />
