@@ -1,6 +1,7 @@
-import { useEffect, useState, forwardRef } from "react";
+import { useEffect, useState, FC, useRef } from "react";
 import { getPrintTicket } from "../../services/ecommerceService";
 import styles from "./PrintTicketPage.module.css";
+import { useReactToPrint } from "react-to-print";
 
 interface Ticket {
   _id: string;
@@ -19,19 +20,21 @@ interface Ticket {
 interface TicketProps {
   ticketId: string;
 }
-const PrintTicketPage = forwardRef<HTMLDivElement, TicketProps>(
-  ({ ticketId }, ref) => {
-    const [ticket, setTicket] = useState<Ticket | null>(null);
+const PrintTicketPage: FC<TicketProps> = ({ ticketId }) => {
+  const [ticket, setTicket] = useState<Ticket | null>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const reactToPrintFn = useReactToPrint({ contentRef });
 
-    useEffect(() => {
-      if (ticketId) {
-        getPrintTicket(ticketId).then((res) => setTicket(res.data.ticket));
-      }
-    }, [ticketId]);
-    const date = ticket?.event.eventDate.slice(0, 10);
+  useEffect(() => {
+    if (ticketId) {
+      getPrintTicket(ticketId).then((res) => setTicket(res.data.ticket));
+    }
+  }, [ticketId]);
+  const date = ticket?.event.eventDate.slice(0, 10);
 
-    return (
-      <div ref={ref} className={styles.container}>
+  return (
+    <div>
+      <div ref={contentRef} className={styles.container}>
         <img className={styles.logo} src="/img/Path 2.svg"></img>
         <img
           className={styles.image}
@@ -47,8 +50,14 @@ const PrintTicketPage = forwardRef<HTMLDivElement, TicketProps>(
           <img className={styles.qr} src={ticket?.qrCode} alt="qrCode" />
         </div>
       </div>
-    );
-  }
-);
+      <button
+        className={styles.printTicketBtn}
+        onClick={() => reactToPrintFn()}
+      >
+        Print Ticket
+      </button>
+    </div>
+  );
+};
 
 export default PrintTicketPage;
