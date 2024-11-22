@@ -49,3 +49,9 @@
 .infoMessageContainer {
   margin-top: 2rem;
 }
+.inputErrorWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 5.3rem;
+  font-weight: bold;
+}

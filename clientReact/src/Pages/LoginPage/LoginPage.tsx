@@ -46,29 +46,32 @@ const LoginPage = () => {
   return (
     <Form onSubmit={formik.handleSubmit}>
       <Title>Log In</Title>
-      <Input
-        name="email"
-        type="email"
-        label="Email"
-        value={formik.values.email}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-      />
-      {formik.touched.email && formik.errors.email && (
-        <p className={styles.inputError}>{formik.errors.email}</p>
-      )}
-
-      <Input
-        name="password"
-        type="password"
-        label="Password"
-        value={formik.values.password}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-      />
-      {formik.touched.password && formik.errors.password && (
-        <p className={styles.inputError}>{formik.errors.password}</p>
-      )}
+      <div className={styles.inputErrorWrapper}>
+        <Input
+          name="email"
+          type="email"
+          label="Email"
+          value={formik.values.email}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
+        {formik.touched.email && formik.errors.email && (
+          <p className={styles.inputError}>{formik.errors.email}</p>
+        )}
+      </div>
+      <div className={styles.inputErrorWrapper}>
+        <Input
+          name="password"
+          type="password"
+          label="Password"
+          value={formik.values.password}
+          onChange={formik.handleChange}
+          onBlur={formik.handleBlur}
+        />
+        {formik.touched.password && formik.errors.password && (
+          <p className={styles.inputError}>{formik.errors.password}</p>
+        )}
+      </div>
       <div className={styles.flex}>
         <Link className={styles.link} to="/forgot-password">
           Forgot Password?

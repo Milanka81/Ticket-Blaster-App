@@ -35,17 +35,19 @@ const ForgotPasswordPage = () => {
     <div>
       <Form onSubmit={formik.handleSubmit}>
         <Title>Forgot Password?</Title>
-        <Input
-          name="email"
-          type="email"
-          label="Email"
-          value={formik.values.email}
-          onChange={formik.handleChange}
-          onBlur={formik.handleBlur}
-        />
-        {formik.touched.email && formik.errors.email && (
-          <p className={styles.inputError}>{formik.errors.email}</p>
-        )}
+        <div className={styles.inputErrorWrapper}>
+          <Input
+            name="email"
+            type="email"
+            label="Email"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+          {formik.touched.email && formik.errors.email && (
+            <p className={styles.inputError}>{formik.errors.email}</p>
+          )}
+        </div>
         <button
           className={`${btnStyles.btnLarge} ${btnStyles.colorWhite} ${btnStyles.backgroundPink}`}
           type="submit"
