@@ -1,0 +1,56 @@
+.container {
+  display: grid;
+  width: 50%;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+}
+.avatarContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  grid-row: 1 / span 2;
+  align-items: center;
+}
+.imagePlaceholder {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: #f0f0f0;
+  border: 1px solid #707070;
+}
+.btn {
+  width: 8rem;
+  height: 2.6rem;
+  color: #fff;
+  background: #000000;
+  border-radius: 20px;
+  cursor: pointer;
+  border: none;
+  align-self: center;
+  justify-self: center;
+}
+.updateBtn {
+  color: #000;
+  background-color: #fff;
+  border: 1px solid #ff48ab;
+  grid-row: 1 / span 1;
+}
+.btnCheckoutBackground {
+  background: #ee47a0;
+}
+.inputError {
+  align-self: flex-end;
+  letter-spacing: -0.99px;
+  color: #ed0000a6;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+}
+.inputErrorWrapper {
+  display: flex;
+  flex-direction: column;
+  height: 5.3rem;
+  font-weight: bold;
+}
