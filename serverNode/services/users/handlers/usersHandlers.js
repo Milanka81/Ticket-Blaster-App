@@ -69,7 +69,41 @@ exports.deleteMyAccount = async (req, res) => {
     res.status(400).send(err);
   }
 };
+exports.changeMyPassword = async (req, res) => {
+  const { password, passwordConfirm } = req.body;
 
+  console.log(password, passwordConfirm);
+  try {
+    if (!password || !passwordConfirm) {
+      return res.status(404).json({
+        message: "Password or password confirmation are not provided ",
+      });
+    }
+    if (password !== passwordConfirm) {
+      return res.status(404).json({ message: "Passwords doesn't match" });
+    }
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.password = password;
+    await user.save({ validateBeforeSave: false });
+
+    res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "An error occurred", error });
+  }
+};
+exports.deleteMyAccount = async (req, res) => {
+  try {
+    await User.findByIdAndUpdate(req.user._id, { active: false });
+    res.status(204).json({ status: "success", data: null });
+  } catch (err) {
+    res.status(400).send(err);
+  }
+};
 exports.getUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);

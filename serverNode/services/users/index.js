@@ -23,6 +23,7 @@ app.use(cookieParser());
 app.use("/api/v1/users", auth.tokenVerify);
 app.get("/api/v1/users/get-my-account", users.getMyAccount);
 app.patch("/api/v1/users/update-my-account", users.updateMyAccount);
+app.patch("/api/v1/users/change-password", users.changeMyPassword);
 app.delete("/api/v1/users/delete-my-account", users.deleteMyAccount);
 
 app.use("/api/v1/users", protected.adminRoutes);

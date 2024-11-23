@@ -1,10 +1,11 @@
-.container {
+.formContainer {
   display: grid;
   width: 50%;
   grid-template-columns: 1fr 2fr;
   gap: 2rem;
   align-items: center;
   justify-content: center;
+  margin-bottom: 5rem;
 }
 .avatarContainer {
   display: flex;
@@ -28,7 +29,8 @@
   border-radius: 20px;
   cursor: pointer;
   border: none;
-  align-self: center;
+}
+.justifySelf {
   justify-self: center;
 }
 .updateBtn {
@@ -37,8 +39,11 @@
   border: 1px solid #ff48ab;
   grid-row: 1 / span 1;
 }
-.btnCheckoutBackground {
+.btnBackground {
   background: #ee47a0;
+  font-size: 1rem;
+  font-weight: 600;
+  width: 100%;
 }
 .inputError {
   align-self: flex-end;
@@ -53,4 +58,25 @@
   flex-direction: column;
   height: 5.3rem;
   font-weight: bold;
+}
+.password {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.flex {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-content: center;
+  padding-left: 2rem;
+  margin-bottom: 2rem;
+  width: 36rem;
+}
+.infoMessage {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #ee47a0;
+  margin: 0;
+}
+.infoMessageContainer {
+  margin-top: 2rem;
 }
