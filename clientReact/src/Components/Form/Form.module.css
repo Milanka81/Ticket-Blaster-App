@@ -55,3 +55,11 @@
   height: 5.3rem;
   font-weight: bold;
 }
+.reusableFormContainer {
+  display: grid;
+  width: 36rem;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding-left: 2rem;
+  justify-content: start;
+}
