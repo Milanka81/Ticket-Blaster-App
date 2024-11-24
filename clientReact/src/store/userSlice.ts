@@ -13,6 +13,7 @@ interface UserState {
   fullName: string;
   email: string;
   role: string;
+  avatarImage: string;
   isLoggedIn: boolean;
   loading: boolean;
   error: string | null;
@@ -23,6 +24,7 @@ const initialState: UserState = {
   fullName: "",
   email: "",
   role: "user",
+  avatarImage: "",
   isLoggedIn: false,
   loading: false,
   error: null,

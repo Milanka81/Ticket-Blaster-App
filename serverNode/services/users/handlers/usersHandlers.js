@@ -47,9 +47,14 @@ exports.updateMyAccount = async (req, res) => {
       });
     }
     const { fullName, email } = req.body;
+
+    let avatarImage;
+    if (req.file) {
+      avatarImage = req.file.filename;
+    }
     const user = await User.findByIdAndUpdate(
-      req.userd,
-      { fullName, email },
+      req.user._id,
+      { fullName, email, avatarImage },
       {
         new: true,
         runValidators: true,
