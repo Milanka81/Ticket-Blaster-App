@@ -52,26 +52,7 @@ const EventPage: FC<EventPageProps> = ({ componentState }) => {
             .catch((err) => console.log(err));
           break;
         case "edit":
-          if (eventId && typeof values.imageCover === "string") {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { imageCover, ...data } = values;
-            updateEvent(eventId, data).then(() => {
-              dispatch(
-                filteredEvents({
-                  page: 1,
-                  limit: 10,
-                  input: "",
-                  category: "",
-                })
-              );
-              navigate(-1);
-            });
-          }
-          if (
-            eventId &&
-            values.imageCover &&
-            typeof values.imageCover === "object"
-          ) {
+          if (eventId) {
             updateEvent(eventId, values).then(() => {
               dispatch(
                 filteredEvents({

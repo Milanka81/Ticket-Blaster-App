@@ -1,4 +1,5 @@
 .formContainer {
+  position: relative;
   display: grid;
   width: 50%;
   grid-template-columns: 1fr 2fr;
@@ -7,6 +8,7 @@
   justify-content: center;
   margin-bottom: 5rem;
 }
+
 .avatarContainer {
   display: flex;
   flex-direction: column;
@@ -15,6 +17,13 @@
   align-items: center;
 }
 .imagePlaceholder {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: #f0f0f0;
+  border: 1px solid #707070;
+}
+.avatarImage {
   width: 96px;
   height: 96px;
   border-radius: 50%;
@@ -34,16 +43,24 @@
   justify-self: center;
 }
 .updateBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: #000;
   background-color: #fff;
   border: 1px solid #ff48ab;
-  grid-row: 1 / span 1;
 }
 .btnBackground {
   background: #ee47a0;
   font-size: 1rem;
   font-weight: 600;
   width: 100%;
+}
+.btnHeight {
+  height: 1.5rem;
+  width: 100%;
+  font-weight: 500;
+  font-size: 0.8rem;
 }
 .inputError {
   align-self: flex-end;
