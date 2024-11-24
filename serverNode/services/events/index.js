@@ -6,7 +6,6 @@ const protected = require("../auth/utils/adminRoutes");
 const events = require("./handlers/eventsHandlers");
 const helmet = require("helmet");
 const app = express();
-const path = require("path");
 const cookieParser = require("cookie-parser");
 const { upload } = require("../middlewares/uploadImage");
 db.init();

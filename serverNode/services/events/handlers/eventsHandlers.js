@@ -96,7 +96,7 @@ exports.updateEvent = async (req, res) => {
     eventDate,
   } = req.body;
 
-  let imageCover = "";
+  let imageCover;
   if (req.file) {
     imageCover = req.file.filename;
   }
