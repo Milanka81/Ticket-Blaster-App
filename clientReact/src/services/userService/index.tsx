@@ -19,3 +19,7 @@ export const updateUserRole = (
   newRole: string
 ): Promise<AxiosResponse> =>
   axios.patch(`${BASE_URL}/toggle-role`, { userId, newRole });
+
+export const deleteUser = (id: string): Promise<AxiosResponse> => {
+  return axios.delete(`${BASE_URL}/${id}`);
+};

@@ -1,7 +1,7 @@
 import { FC } from "react";
 import styles from "./UserCard.module.css";
 import { imgSrc } from "../../utils";
-import { updateUserRole } from "../../services/userService";
+import { deleteUser, updateUserRole } from "../../services/userService";
 import { useAppDispatch } from "../../hooks.ts";
 import { fetchUsers } from "../../store/usersSlice.ts";
 interface User {
@@ -20,6 +20,10 @@ const UserCard: FC<UserCardProps> = ({ user }) => {
   const dispatch = useAppDispatch();
   const handleUpdateRole = (userId: string, newRole: string) => {
     updateUserRole(userId, newRole).then(() => dispatch(fetchUsers()));
+  };
+
+  const handleDelete = (id: string) => {
+    deleteUser(id).then(() => dispatch(fetchUsers()));
   };
   const newRole = user.role === "admin" ? "user" : "admin";
   const btnName = `Make ${newRole[0].toUpperCase() + newRole.slice(1)}`;
@@ -41,7 +45,7 @@ const UserCard: FC<UserCardProps> = ({ user }) => {
       >
         {btnName}
       </button>
-      <button className={styles.btn} onClick={() => {}}>
+      <button className={styles.btn} onClick={() => handleDelete(user._id)}>
         Delete
       </button>
     </div>
