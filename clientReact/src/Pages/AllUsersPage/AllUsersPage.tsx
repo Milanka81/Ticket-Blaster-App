@@ -1,8 +1,9 @@
 import Title from "../../Components/Title/Title.tsx";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import styles from "./AllUsersPage.module.css";
-import { getAllUsers } from "../../services/userService/index.tsx";
 import UserCard from "../../Components/UserCard/UserCard.tsx";
+import { useAppDispatch, useAppSelector } from "../../hooks.ts";
+import { fetchUsers } from "../../store/usersSlice.ts";
 interface User {
   _id: string;
   avatarImage: string;
@@ -11,15 +12,15 @@ interface User {
   role: string;
 }
 const AllUsersPage = () => {
-  const [users, setUsers] = useState<User[]>([]);
-
+  const dispatch = useAppDispatch();
+  const users: User[] = useAppSelector((state) => state.users.users);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
-    getAllUsers().then((res) => setUsers(res.data.users));
-  }, []);
+    dispatch(fetchUsers());
+  }, [dispatch]);
 
   return (
     <div className={styles.container}>
