@@ -88,7 +88,6 @@ const UserDetailsPage = () => {
     },
   });
 
-  console.log(formik.values.avatarImage);
   return (
     <div className={styles.container}>
       <Title>User Details</Title>
