@@ -7,9 +7,7 @@ exports.getAllUsers = async (req, res) => {
     res.status(200).json({
       status: "success",
       results: users.length,
-      data: {
-        users,
-      },
+      users,
     });
   } catch (err) {
     res.status(400).send(err);
@@ -77,7 +75,6 @@ exports.deleteMyAccount = async (req, res) => {
 exports.changeMyPassword = async (req, res) => {
   const { password, passwordConfirm } = req.body;
 
-  console.log(password, passwordConfirm);
   try {
     if (!password || !passwordConfirm) {
       return res.status(404).json({
@@ -119,9 +116,10 @@ exports.getUser = async (req, res) => {
 };
 
 exports.updateUserRole = async (req, res) => {
+  const { userId, newRole } = req.body;
   try {
-    const user = await User.findByIdAndUpdate(req.params.id, {
-      role: req.body.role,
+    const user = await User.findByIdAndUpdate(userId, {
+      role: newRole,
     });
 
     if (!user) {

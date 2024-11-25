@@ -1,0 +1,54 @@
+.adminCardContainer {
+  height: 5rem;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+.infoContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  margin-left: 1rem;
+}
+
+.avatarImage {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background: #f0f0f0;
+  border: 1px solid #707070;
+}
+
+.fullName {
+  font-weight: 700;
+  letter-spacing: -1.32px;
+  color: #000000;
+  margin: 0;
+  font-size: 1.1rem;
+}
+.email {
+  text-align: left;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: -0.77px;
+  color: #a7a7a7;
+  margin: 0;
+}
+.btn {
+  width: 8rem;
+  height: 2rem;
+  color: #fff;
+  background: #000000;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-left: auto;
+  margin-right: 0.5rem;
+  border: none;
+}
+.updateBtn {
+  color: #000;
+  background-color: #fff;
+  border: 1px solid #ff48ab;
+}
