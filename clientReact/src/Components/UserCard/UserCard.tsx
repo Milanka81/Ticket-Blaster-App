@@ -2,7 +2,8 @@ import { FC } from "react";
 import styles from "./UserCard.module.css";
 import { imgSrc } from "../../utils";
 import { updateUserRole } from "../../services/userService";
-
+import { useAppDispatch } from "../../hooks.ts";
+import { fetchUsers } from "../../store/usersSlice.ts";
 interface User {
   _id: string;
   avatarImage: string;
@@ -16,11 +17,13 @@ interface UserCardProps {
 }
 
 const UserCard: FC<UserCardProps> = ({ user }) => {
+  const dispatch = useAppDispatch();
   const handleUpdateRole = (userId: string, newRole: string) => {
-    updateUserRole(userId, newRole).then((res) => console.log(res.data));
+    updateUserRole(userId, newRole).then(() => dispatch(fetchUsers()));
   };
   const newRole = user.role === "admin" ? "user" : "admin";
-  const btnName = `Make ${newRole}`;
+  const btnName = `Make ${newRole[0].toUpperCase() + newRole.slice(1)}`;
+
   return (
     <div className={styles.adminCardContainer}>
       <img

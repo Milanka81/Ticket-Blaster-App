@@ -2,6 +2,10 @@ import axios, { AxiosResponse } from "axios";
 const BASE_URL = "http://localhost:9002/api/v1/users";
 axios.defaults.withCredentials = true;
 export const getAllUsers = () => axios.get(`${BASE_URL}`);
+
+export const getUser = (id: string): Promise<AxiosResponse> => {
+  return axios.get(`${BASE_URL}/${id}`);
+};
 export const getMyAccount = () => axios.get(`${BASE_URL}/get-my-account`);
 export const updateAccount = ({ ...values }) =>
   axios.patch(`${BASE_URL}/update-my-account`, values, {
