@@ -73,7 +73,7 @@ const CheckoutPage = () => {
       } else if (paymentIntent) {
         console.log("[Payment Confirmed]", paymentIntent);
 
-        clearCart(cartItems).then(() => navigate("/tickets"));
+        clearCart(cartItems).then(() => navigate("/ecommerce/tickets"));
       }
     } catch (err) {
       console.error("Error handling payment:", err);

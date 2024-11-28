@@ -4,9 +4,11 @@ import { imgSrc } from "../../utils";
 import { useNavigate, useParams } from "react-router";
 import { getEvent } from "../../services/eventService";
 import { addToCart } from "../../services/ecommerceService";
+import { useAppSelector } from "../../hooks";
 
 const ViewEvent = () => {
   const { eventId } = useParams<{ eventId: string }>();
+  const loggedIn = useAppSelector((state) => state.user.isLoggedIn);
   const navigate = useNavigate();
   const [event, setEvent] = useState({
     eventName: "",
@@ -39,8 +41,9 @@ const ViewEvent = () => {
     }
   };
   const handleAdd = () => {
+    if (!loggedIn) return navigate("/login");
     if (eventId) {
-      addToCart(eventId, ticketQuantity).then(() => navigate("/shopping-cart"));
+      addToCart(eventId, ticketQuantity).then(() => navigate("/ecommerce/shopping-cart"));
     }
   };
 

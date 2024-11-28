@@ -50,7 +50,7 @@ const AdminEventsPage = () => {
         <button
           className={`${btnStyles.btnMedium} ${btnStyles.colorWhite} ${btnStyles.backgroundPink}`}
           type="button"
-          onClick={() => navigate("create-event")}
+          onClick={() => navigate("/admin/create-event")}
         >
           Create Event
         </button>

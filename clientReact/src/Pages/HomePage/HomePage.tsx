@@ -34,7 +34,7 @@ const HomePage = () => {
     dispatch(filteredEvents({ page, limit, input, category }));
   }, [dispatch, page, limit, input, category]);
 
-  if (!events) return <p>No events available</p>;
+  if (!events) return <p className={styles.message}>No events available</p>;
 
   const concertEvents = events
     .filter((el) => el.category === "concert" && el._id !== events[0]._id)

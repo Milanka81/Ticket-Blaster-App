@@ -87,7 +87,7 @@ const MainBar = ({ role }: { role: string }) => {
                 </div>
               ) : (
                 <div className={styles.iconsContainer}>
-                  <NavLink to="/shopping-cart">
+                  <NavLink to="/ecommerce/shopping-cart">
                     <img src="/img/shopping-cart.svg"></img>
                   </NavLink>
                   <div
