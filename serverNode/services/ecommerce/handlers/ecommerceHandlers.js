@@ -122,8 +122,6 @@ exports.createPaymentIntent = async (req, res) => {
 };
 
 exports.confirmPayment = async (req, res) => {
-  // const event = req.body;
-
   const sig = req.headers["stripe-signature"];
 
   let event;
@@ -274,25 +272,10 @@ exports.confirmPayment = async (req, res) => {
 
 exports.getCart = async (req, res) => {
   try {
-    const cart = await ShoppingCart.find({ user: req.user.id });
-    const eventsIds = cart.map((el) => el.event);
-    const events = await Event.find({ _id: { $in: eventsIds } });
+    const myCart = await ShoppingCart.find({ user: req.user.id }).populate(
+      "event"
+    );
 
-    const myCart = events.map((event) => {
-      const cartItem = cart.find(
-        (item) => item.event?.toString() === event._id?.toString()
-      );
-      if (!cartItem) {
-        return res.status(400).json({
-          message: `No matching cart item found for event ID: ${event._id}`,
-        });
-      }
-      return {
-        event: event,
-        quantity: cartItem.quantity,
-        _id: cartItem._id,
-      };
-    });
     res.status(200).json({ myCart });
   } catch (err) {
     res.status(400).send(err);
