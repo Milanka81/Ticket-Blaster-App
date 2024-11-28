@@ -27,12 +27,13 @@ const EventCard: FC<EventCardProps> = ({ event, ticketId }) => {
   const dispatch = useAppDispatch();
   const isOpenModal = useAppSelector((state) => state.modal.isOpen);
   const [showPrintDialog, setShowPrintDialog] = useState(false);
-  const date = event.eventDate.slice(0, 10);
+  if (!event) return <p className={styles.message}>Event has been deleted</p>;
+  const date = event.eventDate?.slice(0, 10);
   return (
     <div className={styles.cardContainer}>
       <img
         src={imgSrc(event.imageCover)}
-        alt={event.eventName}
+        alt={event?.eventName}
         className={styles.image}
       />
       <div className={styles.infoContainer}>
@@ -44,7 +45,7 @@ const EventCard: FC<EventCardProps> = ({ event, ticketId }) => {
         </div>
         <div className={styles.locationGetTicketBtnContainer}>
           <p className={styles.location}>{event.location}</p>
-          {pathname === "/tickets-history" ? (
+          {pathname === "/ecommerce/tickets-history" ? (
             <button
               className={styles.getTicketBtn}
               onClick={() => {

@@ -28,7 +28,13 @@ const TicketHistoryPage = () => {
     getTicketsHistory().then((res) => setTickets(res.data.tickets));
   }, []);
 
-  if (!tickets) return <p>No tickets to display</p>;
+  if (!tickets.length)
+    return (
+      <div className={styles.container}>
+        <Title>Tickets History</Title>{" "}
+        <p className={styles.message}>You haven't bought any ticket yet</p>
+      </div>
+    );
 
   return (
     <div className={styles.container}>

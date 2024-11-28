@@ -35,7 +35,7 @@ const ShoppingCartPage = () => {
     createPayment(cart)
       .then((res) => {
         const clientSecret = res.data.clientSecret;
-        navigate("/checkout", {
+        navigate("/ecommerce/checkout", {
           state: { clientSecret, cartItems: cartItemsIds },
         });
       })

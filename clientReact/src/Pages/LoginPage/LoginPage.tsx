@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import axios from "axios";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
@@ -14,6 +14,9 @@ import { useAppDispatch } from "../../hooks.ts";
 import { fetchMyAccount, setLogin } from "../../store/userSlice.ts";
 
 const LoginPage = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
