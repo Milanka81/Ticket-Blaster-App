@@ -5,7 +5,7 @@ import btnStyles from "../Button/Button.module.css";
 import Button from "../Button/Button.tsx";
 import { useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks.ts";
-import { checkAuth } from "../../store/userSlice.ts";
+import { checkAuth, fetchMyAccount } from "../../store/userSlice.ts";
 import { toggleDropdown } from "../../store/dropdownSlice.ts";
 import UserBar from "../UserBar/UserBar.tsx";
 import { setInput } from "../../store/eventsSlice.ts";
@@ -17,6 +17,7 @@ const MainBar = ({ role }: { role: string }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const loggedIn = useAppSelector((state) => state.user.isLoggedIn);
+  const userRole = useAppSelector((state) => state.user.role);
   const loading = useAppSelector((state) => state.user.loading);
   const isDropdownOpen = useAppSelector((state) => state.dropdown.isOpen);
   const input = useAppSelector((state) => state.events.input);
@@ -28,6 +29,7 @@ const MainBar = ({ role }: { role: string }) => {
 
   useEffect(() => {
     dispatch(checkAuth());
+    dispatch(fetchMyAccount());
   }, [dispatch]);
 
   return (
@@ -95,7 +97,7 @@ const MainBar = ({ role }: { role: string }) => {
                     onClick={() => dispatch(toggleDropdown())}
                   >
                     <img src="/img/user.svg"></img>
-                    {isDropdownOpen && <UserBar />}
+                    {isDropdownOpen && <UserBar userRole={userRole} />}
                   </div>
                 </div>
               )}

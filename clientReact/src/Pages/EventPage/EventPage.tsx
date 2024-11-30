@@ -206,12 +206,12 @@ const EventPage: FC<EventPageProps> = ({ componentState }) => {
           <Input
             name="ticketPrice"
             type="number"
-            label="Ticket Price"
+            label="Ticket Price (serbian dinar)"
             id="ticketPrice"
             value={handleEmpty(formik.values.ticketPrice)}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-          />
+          />{" "}
           {formik.touched.ticketPrice && formik.errors.ticketPrice && (
             <p className={styles.inputError}>{formik.errors.ticketPrice}</p>
           )}

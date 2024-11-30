@@ -57,9 +57,9 @@ const ShoppingCartItem: FC<ShoppingCartProps> = ({
         <p className={styles.location}>{event.location}</p>
       </div>
       <div className={styles.priceContainer}>
-        <p className={styles.totalPrice}>{total} €</p>
+        <p className={styles.totalPrice}>{total} RSD</p>
         <p className={styles.quantity}>
-          {quantity} x {event.ticketPrice} €
+          {quantity} x {event.ticketPrice} RSD
         </p>
         {showRemoveBtn ? (
           <button

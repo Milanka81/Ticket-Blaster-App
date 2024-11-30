@@ -91,7 +91,7 @@ exports.createPaymentIntent = async (req, res) => {
         });
       }
       if (item.event?.ticketPrice && item.quantity) {
-        const price = item.event.ticketPrice * item.quantity;
+        const price = item.event.ticketPrice * 100 * item.quantity;
         totalAmount += price;
       }
     });
@@ -104,7 +104,7 @@ exports.createPaymentIntent = async (req, res) => {
     try {
       const paymentIntent = await stripe.paymentIntents.create({
         amount: totalAmount,
-        currency: "eur",
+        currency: "rsd",
         payment_method_types: ["card"],
         metadata: {
           items: JSON.stringify(shoppingItems),

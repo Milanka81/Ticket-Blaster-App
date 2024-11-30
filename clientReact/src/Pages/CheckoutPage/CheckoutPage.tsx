@@ -113,7 +113,7 @@ const CheckoutPage = () => {
           ))}
           <div className={styles.total}>
             <span>Total:</span>
-            <span>{total} €</span>
+            <span>{total} RSD</span>
           </div>
         </div>
 

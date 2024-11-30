@@ -1,16 +1,13 @@
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router";
-import { useDispatch } from "react-redux";
 import { setLogout } from "../../store/userSlice.ts";
 import styles from "./UserBar.module.css";
 import { logout } from "../../services/authService/index.tsx";
-import { useAppSelector } from "../../hooks.ts";
+import { useAppDispatch } from "../../hooks.ts";
 
-const UserBar = () => {
+const UserBar = ({ userRole }: { userRole: string }) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const userRole = useAppSelector((state) => state.user.role);
+  const dispatch = useAppDispatch();
 
   const handleLogOut = () => {
     logout().then(() => {
