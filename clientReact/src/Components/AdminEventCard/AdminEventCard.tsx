@@ -57,18 +57,19 @@ const AdminEventCard: FC<EventCardProps> = ({ event }) => {
           <DialogMessage
             message="You are about to delete an event from a system. Please proceed with caution"
             btnName="Delete event"
-            handleClick={() =>
-              deleteEvent(event._id).then(() => {
-                dispatch(
-                  filteredEvents({
-                    page: 1,
-                    limit: 10,
-                    input: "",
-                    category: "",
-                  })
-                );
-                dispatch(closeModal());
-              })
+            handleClick={
+              () => console.log(event._id)
+              // deleteEvent(event._id).then(() => {
+              //   dispatch(
+              //     filteredEvents({
+              //       page: 1,
+              //       limit: 10,
+              //       input: "",
+              //       category: "",
+              //     })
+              //   );
+              //   dispatch(closeModal());
+              // })
             }
           />
         </ModalWindow>

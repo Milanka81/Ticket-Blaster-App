@@ -43,7 +43,9 @@ const ViewEvent = () => {
   const handleAdd = () => {
     if (!loggedIn) return navigate("/login");
     if (eventId) {
-      addToCart(eventId, ticketQuantity).then(() => navigate("/ecommerce/shopping-cart"));
+      addToCart(eventId, ticketQuantity).then(() =>
+        navigate("/ecommerce/shopping-cart")
+      );
     }
   };
 
@@ -64,7 +66,7 @@ const ViewEvent = () => {
         <p className={styles.description}>{event.description}</p>
         <p className={styles.ticketPrice}>
           Ticket Price:
-          <span className={styles.price}> {event.ticketPrice} €</span>
+          <span className={styles.price}> {event.ticketPrice} RSD</span>
         </p>
         <div className={styles.quantityAddBtn}>
           <input
