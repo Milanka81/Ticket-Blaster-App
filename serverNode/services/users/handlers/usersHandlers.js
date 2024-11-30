@@ -34,7 +34,13 @@ exports.updatePassword = async (req, res) => {
 };
 
 exports.getMyAccount = async (req, res) => {
-  res.status(200).json({ user: req.user });
+  try {
+    const user = await User.findById(req.user._id);
+
+    res.status(200).json({ user });
+  } catch (err) {
+    res.status(400).send(err);
+  }
 };
 
 exports.updateMyAccount = async (req, res) => {
