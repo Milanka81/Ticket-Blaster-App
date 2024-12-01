@@ -8,6 +8,7 @@ import { deleteEvent } from "../../services/eventService";
 import { useAppDispatch, useAppSelector } from "../../hooks.ts";
 import { filteredEvents } from "../../store/eventsSlice.ts";
 import { closeModal, openModal } from "../../store/modalSlice.ts";
+
 interface Event {
   _id: string;
   imageCover: string;
@@ -25,6 +26,7 @@ const AdminEventCard: FC<EventCardProps> = ({ event }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const isModalOpen = useAppSelector((state) => state.modal.isOpen);
+  const selectedId = useAppSelector((state) => state.modal.selectedId);
   const date = event.eventDate.slice(0, 10);
 
   return (
@@ -49,7 +51,12 @@ const AdminEventCard: FC<EventCardProps> = ({ event }) => {
       >
         Update
       </button>
-      <button className={styles.btn} onClick={() => dispatch(openModal())}>
+      <button
+        className={styles.btn}
+        onClick={() => {
+          dispatch(openModal(event._id));
+        }}
+      >
         Delete
       </button>
       {isModalOpen && (
@@ -57,20 +64,21 @@ const AdminEventCard: FC<EventCardProps> = ({ event }) => {
           <DialogMessage
             message="You are about to delete an event from a system. Please proceed with caution"
             btnName="Delete event"
-            handleClick={
-              () => console.log(event._id)
-              // deleteEvent(event._id).then(() => {
-              //   dispatch(
-              //     filteredEvents({
-              //       page: 1,
-              //       limit: 10,
-              //       input: "",
-              //       category: "",
-              //     })
-              //   );
-              //   dispatch(closeModal());
-              // })
-            }
+            handleClick={() => {
+              if (selectedId) {
+                deleteEvent(selectedId).then(() => {
+                  dispatch(
+                    filteredEvents({
+                      page: 1,
+                      limit: 10,
+                      input: "",
+                      category: "",
+                    })
+                  );
+                  dispatch(closeModal());
+                });
+              }
+            }}
           />
         </ModalWindow>
       )}
