@@ -1,7 +1,8 @@
-import { useEffect, useState, FC, useRef } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getPrintTicket } from "../../services/ecommerceService";
 import styles from "./PrintTicketPage.module.css";
 import { useReactToPrint } from "react-to-print";
+import { useAppSelector } from "../../hooks";
 
 interface Ticket {
   _id: string;
@@ -17,19 +18,18 @@ interface Ticket {
   quantity: number;
   qrCode: string;
 }
-interface TicketProps {
-  ticketId: string;
-}
-const PrintTicketPage: FC<TicketProps> = ({ ticketId }) => {
+
+const PrintTicketPage = () => {
   const [ticket, setTicket] = useState<Ticket | null>(null);
+  const selectedId = useAppSelector((state) => state.modal.selectedId);
   const contentRef = useRef<HTMLDivElement>(null);
   const reactToPrintFn = useReactToPrint({ contentRef });
 
   useEffect(() => {
-    if (ticketId) {
-      getPrintTicket(ticketId).then((res) => setTicket(res.data.ticket));
+    if (selectedId) {
+      getPrintTicket(selectedId).then((res) => setTicket(res.data.ticket));
     }
-  }, [ticketId]);
+  }, [selectedId]);
   const date = ticket?.event.eventDate.slice(0, 10);
 
   return (

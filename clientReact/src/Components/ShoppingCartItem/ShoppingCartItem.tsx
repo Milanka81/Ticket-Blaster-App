@@ -44,6 +44,7 @@ const ShoppingCartItem: FC<ShoppingCartProps> = ({
   const deleteItem = (id: string) => {
     removeFromCart(id).then(() => dispatch(getShoppingCart()));
   };
+
   return (
     <div className={styles.container}>
       <img
@@ -75,7 +76,7 @@ const ShoppingCartItem: FC<ShoppingCartProps> = ({
             className={styles.btn}
             onClick={() => {
               setShowPrintDialog(true);
-              dispatch(openModal());
+              dispatch(openModal(cart._id));
             }}
             type="button"
           >
@@ -95,7 +96,7 @@ const ShoppingCartItem: FC<ShoppingCartProps> = ({
       )}
       {showPrintDialog && isOpenModal && (
         <ModalWindow>
-          <PrintTicketPage ticketId={cart._id} />
+          <PrintTicketPage />
         </ModalWindow>
       )}
     </div>

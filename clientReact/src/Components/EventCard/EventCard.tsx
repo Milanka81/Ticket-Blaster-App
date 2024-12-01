@@ -49,7 +49,7 @@ const EventCard: FC<EventCardProps> = ({ event, ticketId }) => {
             <button
               className={styles.getTicketBtn}
               onClick={() => {
-                dispatch(openModal());
+                dispatch(openModal(ticketId));
                 setShowPrintDialog(true);
               }}
             >
@@ -69,7 +69,7 @@ const EventCard: FC<EventCardProps> = ({ event, ticketId }) => {
       </div>
       {showPrintDialog && isOpenModal && (
         <ModalWindow>
-          <PrintTicketPage ticketId={ticketId} />
+          <PrintTicketPage />
         </ModalWindow>
       )}
     </div>
