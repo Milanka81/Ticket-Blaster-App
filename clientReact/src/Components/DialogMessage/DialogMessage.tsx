@@ -1,4 +1,4 @@
-import { useAppDispatch, useAppSelector } from "../../hooks";
+import { useAppDispatch } from "../../hooks";
 import { closeModal } from "../../store/modalSlice";
 import styles from "./DialogMessage.module.css";
 
@@ -9,9 +9,7 @@ interface DialogProps {
 }
 const DialogMessage = ({ message, btnName, handleClick }: DialogProps) => {
   const dispatch = useAppDispatch();
-  const selectedId = useAppSelector((state) => state.modal.selectedId);
 
-  console.log(selectedId);
   return (
     <div className={styles.dialogContainer}>
       <p className={styles.title}>Are you sure?</p>
