@@ -5,7 +5,7 @@ interface ModalProps {
 }
 const ModalWindow = ({ children }: ModalProps) => {
   return createPortal(
-    <div className={styles.overlay}>
+    <div>
       <div className={styles.modal}>{children}</div>
     </div>,
     document.body
