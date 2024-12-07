@@ -12,7 +12,7 @@ import {
   updateAccount,
 } from "../../services/userService";
 import { useAppDispatch } from "../../hooks";
-import { fetchMyAccount } from "../../store/userSlice";
+import { fetchMyAccount } from "../../store/loggedUserSlice";
 import Cropper from "react-easy-crop";
 import { Area } from "react-easy-crop";
 

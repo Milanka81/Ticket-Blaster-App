@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router";
-import { setLogout } from "../../store/userSlice.ts";
+import { setLogout } from "../../store/loggedUserSlice.ts";
 import styles from "./UserBar.module.css";
 import { logout } from "../../services/authService/index.tsx";
 import { useAppDispatch } from "../../hooks.ts";

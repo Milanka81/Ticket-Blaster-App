@@ -11,7 +11,7 @@ import btnStyles from "../../Components/Button/Button.module.css";
 import Title from "../../Components/Title/Title.tsx";
 import Form from "../../Components/Form/Form.tsx";
 import { useAppDispatch } from "../../hooks.ts";
-import { fetchMyAccount, setLogin } from "../../store/userSlice.ts";
+import { fetchMyAccount, setLogin } from "../../store/loggedUserSlice.ts";
 
 const LoginPage = () => {
   useEffect(() => {

@@ -8,7 +8,7 @@ import { useAppSelector } from "../../hooks";
 
 const ViewEvent = () => {
   const { eventId } = useParams<{ eventId: string }>();
-  const loggedIn = useAppSelector((state) => state.user.isLoggedIn);
+  const loggedIn = useAppSelector((state) => state.loggedUser.isLoggedIn);
   const navigate = useNavigate();
   const [event, setEvent] = useState({
     eventName: "",

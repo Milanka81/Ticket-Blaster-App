@@ -1,12 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { isLoggedIn } from "../services/authService";
-import { getMyAccount } from "../services/userService";
+import { getUser } from "../services/userService";
 
-export const checkAuth = createAsyncThunk("checkAuth", () =>
-  isLoggedIn().then((res) => res.data.loggedIn)
-);
-export const fetchMyAccount = createAsyncThunk("fetchMyAccount", () =>
-  getMyAccount().then((res) => res.data.user)
+export const fetchUser = createAsyncThunk("fetchUser", (id: string) =>
+  getUser(id).then((res) => res.data.user)
 );
 interface UserState {
   _id: string;
@@ -14,7 +10,6 @@ interface UserState {
   email: string;
   role: string;
   avatarImage: string;
-  isLoggedIn: boolean;
   loading: boolean;
   error: string | null;
 }
@@ -25,7 +20,6 @@ const initialState: UserState = {
   email: "",
   role: "user",
   avatarImage: "",
-  isLoggedIn: false,
   loading: false,
   error: null,
 };
@@ -33,42 +27,14 @@ const initialState: UserState = {
 const userSlice = createSlice({
   name: "user",
   initialState,
-  reducers: {
-    updateName(state, action) {
-      state.fullName = action.payload;
-    },
-    setLogin(state) {
-      state.isLoggedIn = true;
-    },
-    setLogout(state) {
-      state.isLoggedIn = false;
-    },
-    updateStatus(state, action) {
-      state.isLoggedIn = action.payload;
-    },
-    saveUserRole(state, action) {
-      state.role = action.payload;
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(checkAuth.pending, (state) => {
+
+      .addCase(fetchUser.pending, (state) => {
         state.loading = true;
       })
-      .addCase(checkAuth.fulfilled, (state, action) => {
-        state.loading = false;
-        state.isLoggedIn = action.payload;
-        state.error = null;
-      })
-      .addCase(checkAuth.rejected, (state, action) => {
-        state.loading = false;
-        state.isLoggedIn = false;
-        state.error = action.error.message ?? null;
-      })
-      .addCase(fetchMyAccount.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(fetchMyAccount.fulfilled, (state, action) => {
+      .addCase(fetchUser.fulfilled, (state, action) => {
         state.loading = false;
         state._id = action.payload._id;
         state.fullName = action.payload.fullName;
@@ -76,13 +42,11 @@ const userSlice = createSlice({
         state.role = action.payload.role;
         state.error = null;
       })
-      .addCase(fetchMyAccount.rejected, (state, action) => {
+      .addCase(fetchUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message ?? null;
       });
   },
 });
 
-export const { updateName, setLogin, setLogout, updateStatus, saveUserRole } =
-  userSlice.actions;
 export default userSlice.reducer;

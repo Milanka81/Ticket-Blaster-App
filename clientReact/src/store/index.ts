@@ -1,4 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
+import loggedUserReducer from "./loggedUserSlice";
 import userReducer from "./userSlice";
 import usersReducer from "./usersSlice";
 import eventsReducer from "./eventsSlice";
@@ -9,6 +10,7 @@ import { TypedUseSelectorHook, useSelector } from "react-redux";
 
 const store = configureStore({
   reducer: {
+    loggedUser: loggedUserReducer,
     user: userReducer,
     users: usersReducer,
     dropdown: dropdownReducer,

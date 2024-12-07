@@ -13,7 +13,7 @@ interface User {
 }
 const AllUsersPage = () => {
   const dispatch = useAppDispatch();
-  const users: User[] = useAppSelector((state) => state.users.users);
+  const users: User[] = useAppSelector((state) => state.loggedUsers.users);
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
