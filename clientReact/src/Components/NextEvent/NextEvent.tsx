@@ -1,6 +1,7 @@
 import styles from "./NextEvent.module.css";
 import { FC } from "react";
 import { useNavigate } from "react-router";
+import { formatDate } from "../../utils";
 interface Event {
   _id: string;
   imageCover: string;
@@ -26,12 +27,13 @@ const NextEvent: FC<EventProps> = ({ event }) => {
       rgba(239, 51, 51, 0.782)
     ), url(${imageUrl})`,
   };
+  const date = formatDate(event.eventDate);
   return (
     <div className={styles.hero} style={backgroundStyle}>
       <p className={styles.title}>{event.eventName}</p>
       <div className={styles.infoContainer}>
         <p className={styles.dateLocation}>
-          {event.eventDate.slice(0, 10)}, {event.location}
+          {date}, {event.location}
         </p>
         <button
           className={styles.getTicketBtn}

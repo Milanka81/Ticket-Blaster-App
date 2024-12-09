@@ -1,6 +1,6 @@
 import { FC } from "react";
 import styles from "./AdminEventCard.module.css";
-import { imgSrc } from "../../utils";
+import { formatDate, imgSrc } from "../../utils";
 import { useNavigate } from "react-router";
 import ModalWindow from "../ModalWindow/ModalWindow";
 import DialogMessage from "../DialogMessage/DialogMessage";
@@ -27,7 +27,7 @@ const AdminEventCard: FC<EventCardProps> = ({ event }) => {
   const navigate = useNavigate();
   const isModalOpen = useAppSelector((state) => state.modal.isOpen);
   const selectedId = useAppSelector((state) => state.modal.selectedId);
-  const date = event.eventDate.slice(0, 10);
+  const date = formatDate(event.eventDate);
 
   return (
     <div className={styles.adminCardContainer}>

@@ -28,13 +28,13 @@ const usersSlice = createSlice({
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.loading = false;
-        state.loggedUsers = action.payload.users;
+        state.users = action.payload.users;
         state.results = action.payload.results;
         state.error = null;
       })
       .addCase(fetchUsers.rejected, (state, action) => {
         state.loading = false;
-        state.loggedUsers = [];
+        state.users = [];
         state.error = action.error.message ?? null;
       });
   },
