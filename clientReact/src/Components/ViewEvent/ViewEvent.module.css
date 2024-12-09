@@ -67,3 +67,19 @@
   border: 1px solid #000;
   color: #fff;
 }
+.addBtn:disabled {
+  background-color: #f6f1f1b0;
+  color: #b3b3b3;
+  border-color: #b3b3b3;
+  cursor: auto;
+}
+.ticketMessage {
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin-left: auto;
+  margin-right: 2rem;
+  color: #000;
+  background-color: #ecd506;
+  padding: 1rem;
+  border-radius: 10px;
+}
