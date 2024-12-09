@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./ViewEvent.module.css";
-import { imgSrc } from "../../utils";
+import { formatDate, imgSrc } from "../../utils";
 import { useNavigate, useParams } from "react-router";
 import { getEvent } from "../../services/eventService";
 import { addToCart } from "../../services/ecommerceService";
@@ -21,7 +21,7 @@ const ViewEvent = () => {
     eventDate: "",
   });
   const [ticketQuantity, setTicketQuantity] = useState(1);
-  const date = event.eventDate.slice(0, 10);
+  const date = formatDate(event.eventDate);
 
   useEffect(() => {
     if (eventId) {

@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import styles from "./ShoppingCartItem.module.css";
-import { imgSrc } from "../../utils";
+import { formatDate, imgSrc } from "../../utils";
 import ModalWindow from "../ModalWindow/ModalWindow";
 import DialogMessage from "../DialogMessage/DialogMessage";
 import { removeFromCart } from "../../services/ecommerceService";
@@ -39,7 +39,7 @@ const ShoppingCartItem: FC<ShoppingCartProps> = ({
   const [showMessage, setShowMessage] = useState(false);
   const [showPrintDialog, setShowPrintDialog] = useState(false);
   const total = quantity * event.ticketPrice;
-  const date = event.eventDate.slice(0, 10);
+  const date = formatDate(event.eventDate);
 
   const deleteItem = (id: string) => {
     removeFromCart(id).then(() => dispatch(getShoppingCart()));

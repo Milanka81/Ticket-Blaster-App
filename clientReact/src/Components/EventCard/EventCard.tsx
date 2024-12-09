@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import styles from "./EventCard.module.css";
-import { imgSrc, showContent } from "../../utils";
+import { formatDate, imgSrc, showContent } from "../../utils";
 import { useNavigate } from "react-router";
 import { useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks";
@@ -28,7 +28,8 @@ const EventCard: FC<EventCardProps> = ({ event, ticketId }) => {
   const isOpenModal = useAppSelector((state) => state.modal.isOpen);
   const [showPrintDialog, setShowPrintDialog] = useState(false);
   if (!event) return <p className={styles.message}>Event has been deleted</p>;
-  const date = event.eventDate?.slice(0, 10);
+  const date = formatDate(event.eventDate);
+
   return (
     <div className={styles.cardContainer}>
       <img

@@ -58,3 +58,26 @@ export const getCroppedImg = async (
     };
   });
 };
+export function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+
+  const options: Intl.DateTimeFormatOptions = {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  };
+  const formatter = new Intl.DateTimeFormat("en-US", options);
+
+  const formattedDate = formatter.format(date);
+
+  const day = date.getDate();
+  const ordinalSuffix = (n: number): string => {
+    if (n % 10 === 1 && n % 100 !== 11) return "st";
+    if (n % 10 === 2 && n % 100 !== 12) return "nd";
+    if (n % 10 === 3 && n % 100 !== 13) return "rd";
+    return "th";
+  };
+
+  const [month, , year] = formattedDate.split(" ");
+  return `${month} ${day}${ordinalSuffix(day)}, ${year}`;
+}
