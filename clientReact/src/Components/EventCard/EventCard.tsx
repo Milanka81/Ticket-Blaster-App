@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
 import styles from "./EventCard.module.css";
-import { formatDate, imgSrc, showContent } from "../../utils";
+import { formatDate, imgSrc, isDateInThePast, showContent } from "../../utils";
 import { useNavigate } from "react-router";
 import { useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks";
@@ -31,7 +31,11 @@ const EventCard: FC<EventCardProps> = ({ event, ticketId }) => {
   const date = formatDate(event.eventDate);
 
   return (
-    <div className={styles.cardContainer}>
+    <div
+      className={`${styles.cardContainer} ${
+        isDateInThePast(event.eventDate) ? styles.greyFilter : ""
+      }`}
+    >
       <img
         src={imgSrc(event.imageCover)}
         alt={event?.eventName}

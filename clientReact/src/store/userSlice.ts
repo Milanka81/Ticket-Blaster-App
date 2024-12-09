@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getUser } from "../services/userService";
 
 export const fetchUser = createAsyncThunk("fetchUser", (id: string) =>
-  getUser(id).then((res) => res.data.user)
+  getUser(id).then((res) => res.data.data.user)
 );
 interface UserState {
   _id: string;

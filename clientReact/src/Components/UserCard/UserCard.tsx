@@ -3,7 +3,7 @@ import styles from "./UserCard.module.css";
 import { imgSrc } from "../../utils";
 import {
   deleteUser,
-  getUser,
+  // getUser,
   updateUserRole,
 } from "../../services/userService";
 import { useAppDispatch, useAppSelector } from "../../hooks.ts";
@@ -11,6 +11,7 @@ import { fetchUsers } from "../../store/usersSlice.ts";
 import { closeModal, openModal } from "../../store/modalSlice.ts";
 import ModalWindow from "../ModalWindow/ModalWindow.tsx";
 import DialogMessage from "../DialogMessage/DialogMessage.tsx";
+import { fetchUser } from "../../store/userSlice.ts";
 interface User {
   _id: string;
   avatarImage: string;
@@ -25,21 +26,24 @@ interface UserCardProps {
 
 const UserCard: FC<UserCardProps> = ({ user }) => {
   const dispatch = useAppDispatch();
-  const [currentUser, setCurrentUser] = useState({
-    role: "",
-    _id: "",
-  });
+
   const [delUser, setDelUser] = useState(false);
   const [editUser, setEditUser] = useState(false);
   const isModalOpen = useAppSelector((state) => state.modal.isOpen);
   const selectedId = useAppSelector((state) => state.modal.selectedId);
+  const currentUser = useAppSelector((state) => state.user);
+  const [newRole, setNewRole] = useState(user.role);
 
   useEffect(() => {
-    getUser(user._id).then((res) => setCurrentUser(res.data.data.user));
-  }, [user._id]);
-  const refreshUser = (id: string) =>
-    getUser(id).then((res) => setCurrentUser(res.data.data.user));
-  const newRole = currentUser.role === "admin" ? "user" : "admin";
+    if (selectedId) {
+      dispatch(fetchUser(selectedId));
+    }
+  }, [dispatch, selectedId]);
+
+  const refreshUser = (id: string) => {
+    dispatch(fetchUser(id)).then(() => setNewRole(currentUser.role));
+  };
+
   const btnName = `Make ${newRole[0].toUpperCase() + newRole.slice(1)}`;
 
   return (

@@ -59,6 +59,7 @@ export const getCroppedImg = async (
   });
 };
 export function formatDate(dateString: string): string {
+  if (!dateString) return "";
   const date = new Date(dateString);
 
   const options: Intl.DateTimeFormatOptions = {
@@ -80,4 +81,9 @@ export function formatDate(dateString: string): string {
 
   const [month, , year] = formattedDate.split(" ");
   return `${month} ${day}${ordinalSuffix(day)}, ${year}`;
+}
+export function isDateInThePast(dateString: string): boolean {
+  const givenDate = new Date(dateString);
+  const currentDate = new Date();
+  return givenDate < currentDate;
 }

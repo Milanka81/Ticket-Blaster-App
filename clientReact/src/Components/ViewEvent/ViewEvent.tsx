@@ -19,10 +19,13 @@ const ViewEvent = () => {
     imageCover: null,
     location: "",
     eventDate: "",
+    availableTickets: "",
   });
   const [ticketQuantity, setTicketQuantity] = useState(1);
   const date = formatDate(event.eventDate);
-
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   useEffect(() => {
     if (eventId) {
       getEvent(eventId).then((res) => {
@@ -55,6 +58,16 @@ const ViewEvent = () => {
         <p className={styles.eventName}>{event.eventName}</p>
         <p className={styles.eventDate}>{date}</p>
         <p className={styles.location}>{event.location}</p>
+        {+event.availableTickets <= 20 && +event.availableTickets > 0 ? (
+          <p className={styles.ticketMessage}>
+            Only <strong> {event.availableTickets} </strong> tickets left!
+          </p>
+        ) : null}
+        {+event.availableTickets === 0 ? (
+          <p className={styles.ticketMessage}>
+            <strong> Sold out! </strong>
+          </p>
+        ) : null}
       </div>
       <img
         src={event.imageCover ? imgSrc(event.imageCover) : undefined}
@@ -78,7 +91,11 @@ const ViewEvent = () => {
             defaultValue={ticketQuantity}
             onChange={handleChange}
           />
-          <button className={styles.addBtn} onClick={handleAdd}>
+          <button
+            className={styles.addBtn}
+            onClick={handleAdd}
+            disabled={+event.availableTickets === 0}
+          >
             Add to Cart
           </button>
         </div>

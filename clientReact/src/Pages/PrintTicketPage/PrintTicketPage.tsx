@@ -3,6 +3,7 @@ import { getPrintTicket } from "../../services/ecommerceService";
 import styles from "./PrintTicketPage.module.css";
 import { useReactToPrint } from "react-to-print";
 import { useAppSelector } from "../../hooks";
+import { formatDate } from "../../utils";
 
 interface Ticket {
   _id: string;
@@ -30,7 +31,7 @@ const PrintTicketPage = () => {
       getPrintTicket(selectedId).then((res) => setTicket(res.data.ticket));
     }
   }, [selectedId]);
-  const date = ticket?.event.eventDate.slice(0, 10);
+  const date = formatDate(ticket?.event.eventDate || "");
 
   return (
     <div>

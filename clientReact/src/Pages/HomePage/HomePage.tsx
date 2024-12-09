@@ -42,7 +42,7 @@ const HomePage = () => {
   const standUpEvents = events
     .filter((el) => el.category === "stand-up" && el._id !== events[0]._id)
     .slice(0, 5);
-  console.log(events);
+
   return (
     <div>
       {events[0] && <NextEvent event={events[0]} />}

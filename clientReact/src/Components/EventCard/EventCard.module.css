@@ -4,6 +4,9 @@
   height: 10rem;
   width: 100%;
 }
+.greyFilter {
+  filter: grayscale(100%);
+}
 .adminCardContainer {
   height: 5rem;
 }
